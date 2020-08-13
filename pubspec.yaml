@@ -1,0 +1,37 @@
+name: shintaikan
+description: Die Karate Club Shintaikan e.V. app.
+
+# The following line prevents the package from being accidentally published to
+# pub.dev using `pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+# The following defines the version and build number for your application.
+version: 2.5.0+31
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  webview_flutter:
+  outline_material_icons:
+  cupertino_icons:
+  flutter_statusbarcolor:
+  firebase_messaging:
+  cloud_firestore:
+  package_info:
+  flutter_html:
+  intl:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+# The following section is specific to Flutter.
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - assets/images/
