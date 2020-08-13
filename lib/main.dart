@@ -15,6 +15,7 @@ import 'package:shintaikan/drawerItems/item5.dart';
 import 'package:shintaikan/drawerItems/item6.dart';
 import 'package:shintaikan/drawerItems/item7.dart';
 import 'package:shintaikan/drawerItems/item8.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 void main() {
@@ -56,14 +57,12 @@ class MyAppState extends State<MyApp> with TickerProviderStateMixin {
   String appName = "name";
   String strToken = "...";
   String appBarTitle = "Shintaikan";
-  bool canRefresh = true;
   int clip = 0;
   int clickedItem = 0;
   double webViewOpacity = 0;
   String url = "https://www.shintaikan.de/index-app.html";
   WebViewController controller;
-  final Completer<WebViewController> _controller =
-      Completer<WebViewController>();
+
   @override
   Widget build(BuildContext context) {
     FlutterStatusbarcolor.setStatusBarColor(Colors.lightBlue[900]);
@@ -99,8 +98,7 @@ class MyAppState extends State<MyApp> with TickerProviderStateMixin {
           top: false,
           child: Scaffold(
             drawer: myAppDrawer(context, controller),
-            appBar:
-                AppBar(title: Text(appBarTitle), actions: <Widget>[refresh()]),
+            appBar: AppBar(title: Text(appBarTitle)),
             body: Center(
               child: mainBody(),
             ),
@@ -108,25 +106,6 @@ class MyAppState extends State<MyApp> with TickerProviderStateMixin {
         ),
       ),
     );
-  }
-
-  Widget refresh() {
-    if (canRefresh) {
-      CurvedAnimation animation = CurvedAnimation(
-          parent: rotationController, curve: Curves.easeOutCubic);
-      return (RotationTransition(
-          turns: Tween(begin: 0.0, end: 1.0).animate(animation),
-          child: IconButton(
-            icon: const Icon(Icons.refresh),
-            tooltip: 'Aktualisieren',
-            onPressed: () {
-              rotationController.forward(from: 0.0);
-              //controller.clearCache().then((value) => controller.reload());
-            },
-          )));
-    } else {
-      return Container();
-    }
   }
 
   Widget mainBody() {
@@ -144,7 +123,7 @@ class MyAppState extends State<MyApp> with TickerProviderStateMixin {
       return (Item0());
   }
 
-  Widget _buildWebView() {
+/*  Widget _buildWebView() {
     return WebView(
       javascriptMode: JavascriptMode.unrestricted,
       initialUrl: url,
@@ -163,7 +142,7 @@ class MyAppState extends State<MyApp> with TickerProviderStateMixin {
         });
       },
     );
-  }
+  }*/
 
   void showAlertDialog(BuildContext context) {
     Future<void> _showMyDialog() async {
@@ -332,7 +311,6 @@ class MyAppState extends State<MyApp> with TickerProviderStateMixin {
               setState(() {
                 clickedItem = 0;
                 appBarTitle = "Shintaikan";
-                canRefresh = true;
               });
               Navigator.pop(context);
             },
@@ -349,7 +327,6 @@ class MyAppState extends State<MyApp> with TickerProviderStateMixin {
               setState(() {
                 clickedItem = 1;
                 appBarTitle = "Trainingsplan";
-                canRefresh = true;
               });
               Navigator.pop(context);
             },
@@ -367,7 +344,6 @@ class MyAppState extends State<MyApp> with TickerProviderStateMixin {
               setState(() {
                 clickedItem = 2;
                 appBarTitle = "Gürtelprüfungen";
-                canRefresh = true;
               });
               Navigator.pop(context);
             },
@@ -384,7 +360,6 @@ class MyAppState extends State<MyApp> with TickerProviderStateMixin {
               setState(() {
                 clickedItem = 3;
                 appBarTitle = "Ferientraining";
-                canRefresh = true;
               });
               Navigator.pop(context);
             },
@@ -401,7 +376,6 @@ class MyAppState extends State<MyApp> with TickerProviderStateMixin {
               setState(() {
                 clickedItem = 4;
                 appBarTitle = "Nach den Sommerferien";
-                canRefresh = false;
               });
               Navigator.pop(context);
             },
@@ -418,7 +392,6 @@ class MyAppState extends State<MyApp> with TickerProviderStateMixin {
               setState(() {
                 clickedItem = 5;
                 appBarTitle = "Der Club/Wegbeschreibung";
-                canRefresh = false;
               });
               Navigator.pop(context);
             },
@@ -435,7 +408,6 @@ class MyAppState extends State<MyApp> with TickerProviderStateMixin {
               setState(() {
                 clickedItem = 6;
                 appBarTitle = "Anfänger/Interessenten";
-                canRefresh = false;
               });
               Navigator.pop(context);
             },
@@ -469,7 +441,6 @@ class MyAppState extends State<MyApp> with TickerProviderStateMixin {
               setState(() {
                 clickedItem = 8;
                 appBarTitle = "Lehrgänge + Turniere";
-                canRefresh = true;
               });
               Navigator.pop(context);
             },
@@ -518,25 +489,27 @@ class MyAppState extends State<MyApp> with TickerProviderStateMixin {
           Divider(),
           ListTile(
             leading: Icon(OMIcons.attachFile),
+            trailing: Icon(OMIcons.openInNew),
             title: Text('Impressum',
                 style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w500,
                     color: Colors.black)),
             onTap: () {
-              controller.loadUrl("https://shintaikan.de/?page_id=207");
+              loadBrowser("https://shintaikan.de/?page_id=207");
               Navigator.pop(context);
             },
           ),
           ListTile(
             leading: Icon(OMIcons.lock),
+            trailing: Icon(OMIcons.openInNew),
             title: Text('Datenschutz',
                 style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w500,
                     color: Colors.black)),
             onTap: () {
-              controller.loadUrl("https://shintaikan.de/?page_id=202");
+              loadBrowser("https://shintaikan.de/?page_id=378");
               Navigator.pop(context);
             },
           ),
@@ -550,7 +523,7 @@ class MyAppState extends State<MyApp> with TickerProviderStateMixin {
             onTap: () {
               Navigator.pop(context);
               showInfoDialog(context,
-                  "Was Rüdiger noch sagen wollte: Tiefer stehen, schneller schlagen! :)");
+                  "Was Rüdiger noch sagen wollte:\nTiefer stehen, schneller schlagen! :)");
             },
           ),
           ListTile(
@@ -563,9 +536,23 @@ class MyAppState extends State<MyApp> with TickerProviderStateMixin {
             onTap: () {
               showAboutDialog(
                   context: context,
-                  applicationVersion: buildNumber,
-                  applicationIcon: FlutterLogo(),
-                  applicationLegalese: 'http://old.shintaikan.de/impress.htm',
+                  applicationVersion: "Version: " + buildNumber,
+                  applicationIcon: Container(
+                    height: 50,
+                    width: 50,
+                    child: Image.asset('assets/images/pelli.png'),
+                  ),
+                  children: [
+                    OutlineButton(
+                      onPressed: () {
+                        loadBrowser(
+                            "https://github.com/Mister-Muffin/Shintaikan");
+                      },
+                      child: Text("GitHub"),
+                      borderSide: BorderSide(color: Colors.black),
+                      highlightedBorderColor: Colors.grey,
+                    )
+                  ],
                   applicationName: appName);
             },
           ),
@@ -626,6 +613,14 @@ class MyAppState extends State<MyApp> with TickerProviderStateMixin {
                 }),
           ),
         ]));
+  }
+
+  void loadBrowser(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }
 

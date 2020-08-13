@@ -14,15 +14,21 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  webview_flutter:
-  outline_material_icons:
-  cupertino_icons:
-  flutter_statusbarcolor:
+
+  #Firebase
+  firebase_core: ^0.4.0+9
   firebase_messaging:
   cloud_firestore:
+
+  cupertino_icons:
+  outline_material_icons:
+
+  webview_flutter:
+  flutter_statusbarcolor:
   package_info:
   flutter_html:
   intl:
+  url_launcher:
 
 dev_dependencies:
   flutter_test:

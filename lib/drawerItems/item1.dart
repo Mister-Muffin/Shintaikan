@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_html/style.dart';
+import 'package:intl/intl.dart';
 
 class Item1 extends StatefulWidget {
   @override
@@ -8,19 +11,26 @@ class Item1 extends StatefulWidget {
 
 class _Item1State extends State<Item1> {
   double spacing = 20;
+  String lastChanged = "";
 
   Future<String> getStatusFromFirestore() async {
-    String status = "[null]";
+    String html = "[null]";
+    final DateFormat formatter = DateFormat('dd-MM-yyyy, HH:mm');
+    Timestamp date;
     await Firestore.instance
         .collection('app')
         .document('trplan')
-        .collection("karamini")
-        .document("text")
         .get()
         .then((DocumentSnapshot ds) {
-//TODO Get array from Cloud Firestore
+      Map<String, dynamic> documentFields = ds.data.cast();
+
+      html = documentFields['html'];
+      date = documentFields['last_changed'];
+      setState(() {
+        lastChanged = formatter.format(date.toDate());
+      });
     });
-    return (status);
+    return (html);
   }
 
   @override
@@ -47,7 +57,21 @@ class _Item1State extends State<Item1> {
               SizedBox(height: spacing),
               Image.asset('assets/images/bambus.png'),
               SizedBox(height: spacing * 2),
-              Text(snapshot.data),
+              Html(data: snapshot.data, style: {
+                "html": Style(
+                  color: Color(0xff000066),
+//              color: Colors.white,
+                ),
+              }),
+              Text(
+                lastChanged,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w300,
+                  color: Colors.grey,
+                ),
+                textAlign: TextAlign.end,
+              ),
             ],
           );
         } else if (snapshot.hasError) {
