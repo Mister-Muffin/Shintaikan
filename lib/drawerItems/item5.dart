@@ -43,11 +43,12 @@ class _Item5State extends State<Item5> {
         Text(
           TextClub().text2,
           textAlign: TextAlign.center,
-          style:Theme.of(context).textTheme.bodyText1,
+          style: Theme.of(context).textTheme.bodyText1,
         ),
         Padding(
           padding: EdgeInsets.all(8),
-          child: Image.asset('assets/images/map02.jpg'),),
+          child: Image.asset('assets/images/map02.jpg'),
+        ),
       ],
     );
   }

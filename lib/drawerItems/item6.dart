@@ -12,11 +12,9 @@ class _Item6State extends State<Item6> {
     return ListView(
       padding: const EdgeInsets.all(8),
       children: <Widget>[
-        Text(
-          "Karate Club Shintaikan e.V.",
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headline1
-        ),
+        Text("Karate Club Shintaikan e.V.",
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headline1),
         SizedBox(height: 20),
         Text(
           "Anfänger und Interessenten",
@@ -90,7 +88,6 @@ class _Item6State extends State<Item6> {
         SizedBox(height: 20),
         Image.asset('assets/images/bambus.png'),
         SizedBox(height: 20),
-
         Text(
           "Beiträge und Zahlweise:",
           textAlign: TextAlign.center,

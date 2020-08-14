@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shintaikan/getFirestoreData.dart';
 
 class Item8 extends StatefulWidget {
   @override
@@ -28,14 +29,7 @@ class _Item8State extends State<Item8> {
           style: Theme.of(context).textTheme.headline2,
         ),
         SizedBox(height: 60),
-        Text(
-          "- Derzeit keine Lehrgänge oder Turniere! -",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20.0,
-              color: Colors.black),
-        ),
+        FirestoreData(document: "turniere", color: 0xff000066),
         SizedBox(height: 60),
         Text(
           "Die Auschreibungen\nhängen auch im Dojo!",
