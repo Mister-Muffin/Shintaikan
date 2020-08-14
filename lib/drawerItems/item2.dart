@@ -27,7 +27,7 @@ class _Item2State extends State<Item2> {
           style: Theme.of(context).textTheme.headline2,
         ),
         SizedBox(height: spacing),
-        FirestoreData(document: "pruefungen"),
+        FirestoreData(document: "pruefungen", color: 0xff000066),
         SizedBox(height: spacing),
         Image.asset('assets/images/seerose1.png'),
       ],

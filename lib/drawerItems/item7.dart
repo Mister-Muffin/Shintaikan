@@ -29,7 +29,7 @@ class _Item7State extends State<Item7> {
           style: Theme.of(context).textTheme.headline2,
         ),
         SizedBox(height: 60),
-        FirestoreData(document: "vorfuehrungen"),
+        FirestoreData(document: "vorfuehrungen", color: 0xff000066),
         SizedBox(height: 60),
         Image.asset('assets/images/bambus.png'),
       ],

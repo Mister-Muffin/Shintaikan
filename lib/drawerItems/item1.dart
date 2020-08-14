@@ -28,7 +28,7 @@ class _Item1State extends State<Item1> {
         SizedBox(height: spacing),
         Image.asset('assets/images/bambus.png'),
         SizedBox(height: spacing),
-        FirestoreData(document: "trplan"),
+        FirestoreData(document: "trplan", color: 0xff000066),
         SizedBox(height: spacing),
         Image.asset('assets/images/bambus.png'),
       ],
