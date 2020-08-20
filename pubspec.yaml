@@ -20,6 +20,8 @@ dependencies:
   firebase_messaging:
   cloud_firestore:
 
+  connectivity: ^0.4.9
+
   cupertino_icons:
   outline_material_icons:
 

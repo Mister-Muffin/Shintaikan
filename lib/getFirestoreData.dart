@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_html/style.dart';
 import 'package:intl/intl.dart';
+import 'package:shintaikan/checkConnection.dart';
+
 
 class FirestoreData extends StatefulWidget {
   final String document;
@@ -19,6 +21,8 @@ class _FirestoreDataState extends State<FirestoreData> {
   final int color;
 
   String lastChanged = "";
+
+  bool isOnline = false;
 
   _FirestoreDataState({@required this.document, this.color});
 
@@ -39,6 +43,9 @@ class _FirestoreDataState extends State<FirestoreData> {
         lastChanged = formatter.format(date.toDate());
       });
     });
+
+    isOnline = await CheckConnection().isConnected();
+
     return (status);
   }
 
@@ -79,6 +86,22 @@ class _FirestoreDataState extends State<FirestoreData> {
                           style: {"html": Style(color: Color(color))}),
                     ),
             ),
+          ];
+        } else if (snapshot.hasError && !isOnline) {
+          children = <Widget>[
+            Icon(
+              Icons.cloud_off,
+              color: Colors.red,
+              size: 60,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: Text(
+                'Du bist Offline!\nBitte starte die App neu, sobald du wieder Online bist..',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.red),
+              ),
+            )
           ];
         } else if (snapshot.hasError) {
           children = <Widget>[

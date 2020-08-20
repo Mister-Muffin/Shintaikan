@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:package_info/package_info.dart';
+import 'package:shintaikan/checkConnection.dart';
 import 'package:shintaikan/drawerItems/item0.dart';
 import 'package:shintaikan/drawerItems/item1.dart';
 import 'package:shintaikan/drawerItems/item2.dart';
@@ -17,60 +18,21 @@ import 'package:shintaikan/drawerItems/item7.dart';
 import 'package:shintaikan/drawerItems/item8.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:connectivity/connectivity.dart';
 
 void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatefulWidget {
-  MyApp({Key key}) : super(key: key);
-
-  @override
-  MyAppState createState() => MyAppState();
-}
-
-enum DrawerSelection { home, favorites, settings }
-enum Qualities { low, medium }
-
-Qualities _qualities = Qualities.low;
-
-// ignore: non_constant_identifier_names
-String GCMID = "";
-
-class MyAppState extends State<MyApp> with TickerProviderStateMixin {
-  Future<String> asyncFuture() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    await _firebaseMessaging
-        .getToken()
-        .then((value) => strToken = value.toString());
-    buildNumber = packageInfo.buildNumber;
-    appName = packageInfo.appName;
-    return Future.value("Data successfully");
-  }
-
-  AnimationController rotationController;
-
-  final listController = ScrollController();
-  double develInfoContainerHeight =
-      0; //height of the container at the bottom of the App Drawer
-  String buildNumber = "";
-  String appName = "name";
-  String strToken = "...";
-  String appBarTitle = "Shintaikan";
-  int clip = 0;
-  int clickedItem = 0;
-  double webViewOpacity = 0;
-  String url = "https://www.shintaikan.de/index-app.html";
-  WebViewController controller;
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    FlutterStatusbarcolor.setStatusBarColor(Colors.lightBlue[900]);
     return MaterialApp(
+      title: 'Welcome to Flutter',
+      debugShowCheckedModeBanner: false,
       routes: {
         Video.routeName: (context) => Video(),
       },
-      title: 'Shintaikan',
       theme: ThemeData(
           brightness: Brightness.light,
           primaryColor: Colors.lightBlue[800],
@@ -93,12 +55,70 @@ class MyAppState extends State<MyApp> with TickerProviderStateMixin {
                 fontWeight: FontWeight.bold,
                 color: Colors.red[900]),
           )),
-      home: Builder(
+      home: Main(),
+    );
+  }
+}
+
+class Main extends StatefulWidget {
+  Main({Key key}) : super(key: key);
+
+  @override
+  MyAppState createState() => MyAppState();
+}
+
+enum DrawerSelection { home, favorites, settings }
+enum Qualities { low, medium }
+
+Qualities _qualities = Qualities.low;
+
+// ignore: non_constant_identifier_names
+String GCMID = "";
+
+class MyAppState extends State<Main> with TickerProviderStateMixin {
+  Future<String> asyncFuture() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    await _firebaseMessaging
+        .getToken()
+        .then((value) => strToken = value.toString());
+    buildNumber = packageInfo.buildNumber;
+    appName = packageInfo.appName;
+    return Future.value("Data successfully");
+  }
+
+  AnimationController rotationController;
+  StreamSubscription subscription;
+
+  final listController = ScrollController();
+  double develInfoContainerHeight =
+      0; //height of the container at the bottom of the App Drawer
+  String buildNumber = "";
+  String appName = "name";
+  String strToken = "...";
+  String appBarTitle = "Shintaikan";
+  int clip = 0;
+  int clickedItem = 0;
+  double webViewOpacity = 0;
+  String url = "https://www.shintaikan.de/index-app.html";
+  WebViewController controller;
+
+  bool connectionIcon = false;
+
+  @override
+  Widget build(BuildContext context) {
+    FlutterStatusbarcolor.setStatusBarColor(Colors.lightBlue[900]);
+    return Scaffold(
+      body: Builder(
         builder: (context) => SafeArea(
           top: false,
           child: Scaffold(
             drawer: myAppDrawer(context, controller),
-            appBar: AppBar(title: Text(appBarTitle)),
+            appBar: AppBar(
+              title: Text(appBarTitle),
+              actions: <Widget>[
+                connectionWidget(),
+              ],
+            ),
             body: Center(
               child: mainBody(),
             ),
@@ -106,6 +126,44 @@ class MyAppState extends State<MyApp> with TickerProviderStateMixin {
         ),
       ),
     );
+  }
+
+  Widget connectionWidget() {
+    if (connectionIcon) {
+      return Container();
+    } else {
+      return IconButton(
+        icon: Icon(OMIcons.cloudOff),
+        onPressed: () async => {
+          showDialog<void>(
+            context: context,
+            barrierDismissible: true,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Keine Verbindung'),
+                content: SingleChildScrollView(
+                  child: ListBody(
+                    children: <Widget>[
+                      Icon(OMIcons.cloudOff, size: 48),
+                      Text('\nDu hast keine Verbindung zum Internet!', textAlign: TextAlign.center,),
+                      Text('\nDie Daten in der App sind möglicherweise veraltet und aktualisieren sich, sobald du wieder Online gehst'),
+                    ],
+                  ),
+                ),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text('Okay'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          ),
+        },
+      );
+    }
   }
 
   Widget mainBody() {
@@ -265,8 +323,27 @@ class MyAppState extends State<MyApp> with TickerProviderStateMixin {
   void initState() {
     rotationController = AnimationController(
         duration: const Duration(milliseconds: 1000), vsync: this);
-    super.initState();
     firebaseCloudMessagingListeners();
+    // Network listener
+    subscription = Connectivity()
+        .onConnectivityChanged
+        .listen((ConnectivityResult result) {
+      setState(() {
+        connectionIcon = result == ConnectivityResult.wifi || result == ConnectivityResult.mobile;
+      });
+    });
+    //
+   /* setState(() async {
+      connectionIcon = await CheckConnection().isConnected();
+    });*/
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    subscription.cancel();
   }
 
   void firebaseCloudMessagingListeners() {
