@@ -10,7 +10,7 @@ class SendMail extends StatefulWidget {
 
 class _SendMailState extends State<SendMail> {
   String subject = "Kein Betreff angegeben";
-  String email = "Keine Email angegeben";
+  String email = "";
   String message = "";
 
   bool showStatusWidget = false;
@@ -72,6 +72,7 @@ class _SendMailState extends State<SendMail> {
 
   void sendMessage() async {
     try {
+      if (email.isEmpty) email = "[Keine Email angegeben]";
       final HttpsCallableResult result = await callable.call(
         <String, dynamic>{
           'email': email,
