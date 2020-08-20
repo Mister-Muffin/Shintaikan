@@ -19,6 +19,7 @@ dependencies:
   firebase_core: ^0.5.0
   firebase_messaging:
   cloud_firestore: ^0.14.0+1
+  cloud_functions: ^0.6.0
 
   connectivity: ^0.4.9
 

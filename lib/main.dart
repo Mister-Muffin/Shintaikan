@@ -17,6 +17,7 @@ import 'package:shintaikan/drawerItems/item5.dart';
 import 'package:shintaikan/drawerItems/item6.dart';
 import 'package:shintaikan/drawerItems/item7.dart';
 import 'package:shintaikan/drawerItems/item8.dart';
+import 'package:shintaikan/sendMail.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -616,6 +617,21 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           Divider(),
+              ListTile(
+                leading: Icon(OMIcons.mail),
+                title: Text('Nachicht senden',
+                    style: TextStyle(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black)),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SendMail()),
+                  );
+                },
+              ),
           ListTile(
             leading: Icon(OMIcons.attachFile),
             trailing: Icon(OMIcons.openInNew),
