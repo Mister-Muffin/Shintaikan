@@ -619,7 +619,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
           Divider(),
               ListTile(
                 leading: Icon(OMIcons.mail),
-                title: Text('Nachicht senden',
+                title: Text('Kontakt & Feedback',
                     style: TextStyle(
                         fontSize: 17,
                         fontWeight: FontWeight.w500,

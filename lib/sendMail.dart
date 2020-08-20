@@ -15,6 +15,7 @@ class _SendMailState extends State<SendMail> {
 
   bool showStatusWidget = false;
   bool success = false;
+  bool loading = false;
   String cloudFuncReturnStatus = "";
 
   final HttpsCallable callable = CloudFunctions(region: 'europe-west1').getHttpsCallable(
@@ -71,6 +72,10 @@ class _SendMailState extends State<SendMail> {
   }
 
   void sendMessage() async {
+    setState(() {
+      showStatusWidget = true;
+      loading = true;
+    });
     try {
       if (email.isEmpty) email = "[Keine Email angegeben]";
       final HttpsCallableResult result = await callable.call(
@@ -103,6 +108,9 @@ class _SendMailState extends State<SendMail> {
         showStatusWidget = true;
       });
     }
+    setState(() {
+      loading = false;
+    });
   }
 
   Widget noEmailWarning() {
@@ -128,7 +136,7 @@ class _SendMailState extends State<SendMail> {
   }
 
   Widget messageStatusWidget() {
-    if (showStatusWidget) {
+    if (showStatusWidget && !loading) {
       if (success) {
         return Row(
           children: [
@@ -145,25 +153,38 @@ class _SendMailState extends State<SendMail> {
                 textAlign: TextAlign.center)
           ],
         );
-      } else {
+      } else if (!success) {
         return Row(
           children: [
             Icon(
               OMIcons.error,
               color: Colors.red,
             ),
-            Text('Ein Fehler ist aufgetreten!',
+            Text('Ein Fehler ist aufgetreten!\nSollte das Problem wiederholt auftreten,\nschreib bitte eine Mail an shintaikan@web.de.',
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 14,
                   fontWeight: FontWeight.normal,
                 ),
-                textAlign: TextAlign.center)
+                textAlign: TextAlign.justify)
           ],
         );
-      }
+      } else {}
+    } else if (showStatusWidget && loading) {
+      return Row(
+        children: [
+          CircularProgressIndicator(),
+          Text('Email wird gesendet...',
+              style: TextStyle(
+                color: Colors.black,
+                fontSize: 14,
+                fontWeight: FontWeight.normal,
+              ),
+              textAlign: TextAlign.center)
+        ],
+      );
     } else {
-      return Container();
+    return Container();
     }
   }
 }
