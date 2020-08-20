@@ -16,9 +16,9 @@ dependencies:
     sdk: flutter
 
   #Firebase
-  firebase_core: ^0.4.0+9
+  firebase_core: ^0.5.0
   firebase_messaging:
-  cloud_firestore:
+  cloud_firestore: ^0.14.0+1
 
   connectivity: ^0.4.9
 

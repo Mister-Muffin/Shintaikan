@@ -5,7 +5,6 @@ import 'package:flutter_html/style.dart';
 import 'package:intl/intl.dart';
 import 'package:shintaikan/checkConnection.dart';
 
-
 class FirestoreData extends StatefulWidget {
   final String document;
   final int color;
@@ -30,12 +29,13 @@ class _FirestoreDataState extends State<FirestoreData> {
     String status = "[null]";
     final DateFormat formatter = DateFormat('dd-MM-yyyy, HH:mm');
     Timestamp date;
-    await Firestore.instance
+
+    await FirebaseFirestore.instance
         .collection('app')
-        .document(document)
+        .doc(document)
         .get()
         .then((DocumentSnapshot ds) {
-      Map<String, dynamic> documentFields = ds.data.cast();
+      Map<String, dynamic> documentFields = ds.data();
 
       status = documentFields['html'];
       date = documentFields['last_changed'];

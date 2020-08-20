@@ -1,12 +1,13 @@
 import 'dart:async';
 
+import 'package:connectivity/connectivity.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:package_info/package_info.dart';
-import 'package:shintaikan/checkConnection.dart';
 import 'package:shintaikan/drawerItems/item0.dart';
 import 'package:shintaikan/drawerItems/item1.dart';
 import 'package:shintaikan/drawerItems/item2.dart';
@@ -18,7 +19,6 @@ import 'package:shintaikan/drawerItems/item7.dart';
 import 'package:shintaikan/drawerItems/item8.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:connectivity/connectivity.dart';
 
 void main() {
   runApp(MyApp());
@@ -89,13 +89,18 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
   AnimationController rotationController;
   StreamSubscription subscription;
 
+  bool initialized = false;
+  bool initError = false;
+
   final listController = ScrollController();
-  double develInfoContainerHeight =
-      0; //height of the container at the bottom of the App Drawer
+  double develInfoContainerHeight = 0; //height of the container at the bottom of the App Drawer
   String buildNumber = "";
   String appName = "name";
   String strToken = "...";
   String appBarTitle = "Shintaikan";
+
+  final String messagingTopic = "push";
+
   int clip = 0;
   int clickedItem = 0;
   double webViewOpacity = 0;
@@ -107,6 +112,58 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     FlutterStatusbarcolor.setStatusBarColor(Colors.lightBlue[900]);
+
+    if (initError) {
+      return Scaffold(
+        body: Builder(
+          builder: (context) => SafeArea(
+            top: false,
+            child: Scaffold(
+              appBar: AppBar(
+                title: Text(appBarTitle),
+              ),
+              body: Center(
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.error_outline,
+                      color: Colors.red,
+                      size: 60,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: Text(
+                        'Ein Fehler ist aufgetreten!',
+                        textAlign: TextAlign.center,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    if (!initialized) {
+      return Scaffold(
+        body: Builder(
+          builder: (context) => SafeArea(
+            top: false,
+            child: Scaffold(
+              appBar: AppBar(
+                title: Text(appBarTitle),
+              ),
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       body: Builder(
         builder: (context) => SafeArea(
@@ -145,8 +202,12 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
                   child: ListBody(
                     children: <Widget>[
                       Icon(OMIcons.cloudOff, size: 48),
-                      Text('\nDu hast keine Verbindung zum Internet!', textAlign: TextAlign.center,),
-                      Text('\nDie Daten in der App sind möglicherweise veraltet und aktualisieren sich, sobald du wieder Online gehst'),
+                      Text(
+                        '\nDu hast keine Verbindung zum Internet!',
+                        textAlign: TextAlign.center,
+                      ),
+                      Text(
+                          '\nDie Daten in der App sind möglicherweise veraltet und aktualisieren sich, sobald du wieder Online gehst'),
                     ],
                   ),
                 ),
@@ -180,27 +241,6 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
     else
       return (Item0());
   }
-
-/*  Widget _buildWebView() {
-    return WebView(
-      javascriptMode: JavascriptMode.unrestricted,
-      initialUrl: url,
-      onWebViewCreated: (WebViewController webViewController) {
-        _controller.complete(webViewController);
-        controller = webViewController;
-      },
-      onPageStarted: (String s) {
-        setState(() {
-          webViewOpacity = 0.0;
-        });
-      },
-      onPageFinished: (String s) {
-        setState(() {
-          webViewOpacity = 1.0;
-        });
-      },
-    );
-  }*/
 
   void showAlertDialog(BuildContext context) {
     Future<void> _showMyDialog() async {
@@ -319,23 +359,37 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
 
   static FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
+  void initializeFlutterFire() async {
+    try {
+      // Wait for Firebase to initialize and set `_initialized` state to true
+      await Firebase.initializeApp();
+      setState(() {
+        initialized = true;
+      });
+    } catch (e) {
+      // Set `_error` state to true if Firebase initialization fails
+      setState(() {
+        initError = true;
+      });
+    }
+    firebaseCloudMessagingListeners();
+  }
+
   @override
   void initState() {
+    initializeFlutterFire();
     rotationController = AnimationController(
         duration: const Duration(milliseconds: 1000), vsync: this);
-    firebaseCloudMessagingListeners();
     // Network listener
     subscription = Connectivity()
         .onConnectivityChanged
         .listen((ConnectivityResult result) {
       setState(() {
-        connectionIcon = result == ConnectivityResult.wifi || result == ConnectivityResult.mobile;
+        connectionIcon = result == ConnectivityResult.wifi ||
+            result == ConnectivityResult.mobile;
       });
     });
-    //
-   /* setState(() async {
-      connectionIcon = await CheckConnection().isConnected();
-    });*/
+
     super.initState();
   }
 
@@ -348,10 +402,6 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
 
   void firebaseCloudMessagingListeners() {
     _firebaseMessaging.setAutoInitEnabled(true);
-    _firebaseMessaging.getToken().then((token) {
-      print(token);
-      showInfoDialog(context, token);
-    });
 
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
@@ -364,6 +414,8 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
         print('on launch $message');
       },
     );
+
+    _firebaseMessaging.subscribeToTopic(messagingTopic);
   }
 
   Widget myAppDrawer(BuildContext context, WebViewController controller) {
