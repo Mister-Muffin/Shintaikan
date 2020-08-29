@@ -1,1 +1,1 @@
-# Shintaikan (BETA)
+# Shintaikan
