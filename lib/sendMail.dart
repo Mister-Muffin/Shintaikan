@@ -136,15 +136,14 @@ class _SendMailState extends State<SendMail> {
   }
 
   Widget messageStatusWidget() {
-    if (showStatusWidget && !loading) {
-      if (success) {
+    if (!showStatusWidget) {
+      return Container();
+    } else {
+      if (loading) {
         return Row(
           children: [
-            Icon(
-              OMIcons.done,
-              color: Colors.green,
-            ),
-            Text('Die Nachicht wurde versandt!',
+            CircularProgressIndicator(),
+            Text('Email wird gesendet...',
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 14,
@@ -153,38 +152,41 @@ class _SendMailState extends State<SendMail> {
                 textAlign: TextAlign.center)
           ],
         );
-      } else if (!success) {
-        return Row(
-          children: [
-            Icon(
-              OMIcons.error,
-              color: Colors.red,
-            ),
-            Text('Ein Fehler ist aufgetreten!\nSollte das Problem wiederholt auftreten,\nschreib bitte eine Mail an shintaikan@web.de.',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 14,
-                  fontWeight: FontWeight.normal,
-                ),
-                textAlign: TextAlign.justify)
-          ],
-        );
-      } else {}
-    } else if (showStatusWidget && loading) {
-      return Row(
-        children: [
-          CircularProgressIndicator(),
-          Text('Email wird gesendet...',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 14,
-                fontWeight: FontWeight.normal,
+      } else {
+        if (success) {
+          return Row(
+            children: [
+              Icon(
+                OMIcons.done,
+                color: Colors.green,
               ),
-              textAlign: TextAlign.center)
-        ],
-      );
-    } else {
-    return Container();
+              Text('Die Nachicht wurde versandt!',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontWeight: FontWeight.normal,
+                  ),
+                  textAlign: TextAlign.center)
+            ],
+          );
+        } else {
+          return Row(
+            children: [
+              Icon(
+                OMIcons.error,
+                color: Colors.red,
+              ),
+              Text(
+                  'Ein Fehler ist aufgetreten!\nSollte das Problem wiederholt auftreten,\nschreib bitte eine Mail an shintaikan@web.de.',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontWeight: FontWeight.normal,
+                  ),
+                  textAlign: TextAlign.justify)
+            ],
+          );
+        }
+      }
     }
   }
-}
