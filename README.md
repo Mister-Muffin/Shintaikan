@@ -1,6 +1,6 @@
 # Shintaikan
 
-## Die App des Karate Club Shintaikan e.V. in Freiburg
+## Die App des Karate Club Shintaikan e.V.
 
 Weitere Informationen: [shintaikan.de](https://shintaikan.de)
 
