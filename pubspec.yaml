@@ -9,19 +9,19 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 3.0.0+32
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
   #Firebase
-  firebase_core: ^0.5.0
+  firebase_core: ^1.4.0
   firebase_messaging:
-  cloud_firestore: ^0.14.0+1
-  cloud_functions: ^0.6.0
+  cloud_firestore: ^2.4.0
+  cloud_functions: ^3.0.0
 
-  connectivity: ^0.4.9
+  connectivity: ^3.0.6
 
   cupertino_icons:
   outline_material_icons:
@@ -32,6 +32,7 @@ dependencies:
   flutter_html:
   intl:
   url_launcher:
+  flutter_wordpress: ^0.2.0
 dependency_overrides:
   flutter_svg: ^0.18.0
 

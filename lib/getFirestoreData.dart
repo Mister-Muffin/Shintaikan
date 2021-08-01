@@ -7,8 +7,8 @@ import 'package:shintaikan/checkConnection.dart';
 
 class FirestoreData extends StatefulWidget {
   final String document;
-  final int color;
-  FirestoreData({@required this.document, this.color});
+  final int ?color;
+  FirestoreData({required this.document, this.color});
 
   @override
   _FirestoreDataState createState() =>
@@ -17,13 +17,13 @@ class FirestoreData extends StatefulWidget {
 
 class _FirestoreDataState extends State<FirestoreData> {
   final String document;
-  final int color;
+  final int ?color;
 
   String lastChanged = "";
 
   bool isOnline = false;
 
-  _FirestoreDataState({@required this.document, this.color});
+  _FirestoreDataState({required this.document, this.color});
 
   Future<String> getStatusFromFirestore(String document) async {
     String status = "[null]";
@@ -53,7 +53,7 @@ class _FirestoreDataState extends State<FirestoreData> {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        html(document, color),
+        html(document, color!),
         Text(
           lastChanged,
           style: TextStyle(
