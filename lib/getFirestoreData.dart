@@ -75,12 +75,7 @@ class _FirestoreDataState extends State<FirestoreData> {
         if (snapshot.hasData) {
           children = <Widget>[
             Container(
-              child: color == null
-                  ? new Container(
-                      child: Html(
-                      data: snapshot.data,
-                    ))
-                  : new Container(
+              child: new Container(
                       child: Html(
                           data: snapshot.data,
                           style: {"html": Style(color: Color(color))}),
