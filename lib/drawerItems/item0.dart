@@ -27,13 +27,13 @@ class _Item0State extends State<Item0> with TickerProviderStateMixin {
 
   @override
   void initState() {
+    // getPosts();
     super.initState();
 
     _controllerReset = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
     );
-    getPosts();
   }
 
   @override
@@ -45,10 +45,8 @@ class _Item0State extends State<Item0> with TickerProviderStateMixin {
   Future<List<dynamic>> getPosts() async {
     Response res =
         await get(Uri.parse("https://shintaikan.de/?rest_route=/wp/v2/posts"));
-
     if (res.statusCode == 200) {
       final List<dynamic> jsonResponse = convert.json.decode(res.body);
-
       return jsonResponse;
     } else {
       throw "Unable to retrieve posts.";
@@ -80,7 +78,7 @@ class _Item0State extends State<Item0> with TickerProviderStateMixin {
     _controllerReset.forward();
   }
 
-// Stop a running reset to home transform animation.
+  // Stop a running reset to home transform animation.
   void _animateResetStop() {
     _controllerReset.stop();
     _animationReset?.removeListener(_onAnimateReset);
@@ -107,12 +105,15 @@ class _Item0State extends State<Item0> with TickerProviderStateMixin {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return RefreshIndicator(
-                onRefresh: getPosts,
+                onRefresh: () {
+                  setState(() {});
+                  return getPosts();
+                },
                 child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
                   padding: const EdgeInsets.all(8),
                   children: <Widget>[
                     Part1(spacing: spacing),
-
                     ListView.separated(
                       //Wordpress content
                       physics: NeverScrollableScrollPhysics(),
@@ -136,10 +137,7 @@ class _Item0State extends State<Item0> with TickerProviderStateMixin {
                                       classAndIdMatcher(
                                         classToMatch:
                                             "flutter_html_custom_renderer",
-                                      ): classAndIdRender(
-                                          classToMatch:
-                                              "flutter_html_custom_renderer",
-                                          buildContext: context)
+                                      ): classAndIdRender(buildContext: context)
                                     },
                                     data: snapshot.data![index]["content"]
                                         ["rendered"])),
@@ -178,61 +176,40 @@ class _Item0State extends State<Item0> with TickerProviderStateMixin {
         });
   }
 
+  //Always returns true so every image is interactive
   ImageSourceMatcher classAndIdMatcher(
           {required String classToMatch, String? idToMatch}) =>
-      (attributes, element) =>
-          attributes["class"] != null &&
-          (attributes["class"]!.contains(classToMatch) ||
-              attributes["id"]!.contains(idToMatch!));
+      (attributes, element) => true;
+  // attributes["class"] != null &&
+  // (attributes["class"]!.contains(classToMatch) ||
+  //     attributes["id"]!.contains(idToMatch!));
 
-  ImageRender classAndIdRender(
-          {required String classToMatch, required buildContext}) =>
+  ImageRender classAndIdRender({required buildContext}) =>
       (context, attributes, element) {
-        if (attributes["class"] != null &&
-            attributes["class"]!.contains(classToMatch)) {
-          return InteractiveViewer(
-            boundaryMargin: EdgeInsets.all(double.infinity),
-            transformationController: _transformationController,
-            onInteractionStart: _onInteractionStart,
-            onInteractionEnd: _onInteractionEnd,
-            child: GestureDetector(
-              onTap: () {
-                ScaffoldMessenger.of(buildContext).showSnackBar(SnackBar(
-                  content: Text("Ziehe mit zwei Fingern zum Zoomen!"),
-                ));
-              },
-              child: Image.network(
-                attributes["src"] ?? "about:blank",
-                semanticLabel: attributes["longdesc"] ?? "",
-                frameBuilder: (ctx, child, frame, _) {
-                  if (frame == null) {
-                    return Text(attributes["alt"] ?? "",
-                        style: context.style.generateTextStyle());
-                  }
-                  return child;
-                },
-              ),
-            ),
-          );
-        } else {
-          return InteractiveViewer(
-              boundaryMargin: EdgeInsets.all(double.infinity),
-              // transformationController: _transformationController,
-              // onInteractionStart: _onInteractionStart,
-              // onInteractionEnd: _onInteractionEnd,
-              child: Image.network(
-                attributes["src"] ?? "about:blank",
-                semanticLabel: attributes["longdesc"] ?? "",
-                color: context.style.color,
-                frameBuilder: (ctx, child, frame, _) {
-                  if (frame == null) {
-                    return Text(attributes["alt"] ?? "",
-                        style: context.style.generateTextStyle());
-                  }
-                  return child;
-                },
+        return InteractiveViewer(
+          boundaryMargin: EdgeInsets.all(double.infinity),
+          transformationController: _transformationController,
+          onInteractionStart: _onInteractionStart,
+          onInteractionEnd: _onInteractionEnd,
+          child: GestureDetector(
+            onTap: () {
+              ScaffoldMessenger.of(buildContext).showSnackBar(SnackBar(
+                content: Text("Ziehe mit zwei Fingern zum Zoomen!"),
               ));
-        }
+            },
+            child: Image.network(
+              attributes["src"] ?? "about:blank",
+              semanticLabel: attributes["longdesc"] ?? "",
+              frameBuilder: (ctx, child, frame, _) {
+                if (frame == null) {
+                  return Text(attributes["alt"] ?? "",
+                      style: context.style.generateTextStyle());
+                }
+                return child;
+              },
+            ),
+          ),
+        );
       };
 }
 
