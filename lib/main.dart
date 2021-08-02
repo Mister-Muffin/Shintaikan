@@ -5,7 +5,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:package_info/package_info.dart';
 import 'package:shintaikan/drawerItems/item0.dart';
@@ -43,19 +42,19 @@ class MyApp extends StatelessWidget {
             headline1: TextStyle(
                 fontSize: 40.0,
                 fontWeight: FontWeight.bold,
-                color: Colors.blue[900]),
+                color: Colors.lightBlue[800]),
             headline2: TextStyle(
                 fontSize: 30.0,
                 fontWeight: FontWeight.bold,
-                color: Colors.blue[900]),
+                color: Colors.lightBlue[800]),
             bodyText1: TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
-                color: Colors.blue[900]),
+                color: Colors.lightBlue[900]),
             bodyText2: TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
-                color: Colors.red[900]),
+                color: Color.fromRGBO(180, 0, 0, 1)),
           )),
       home: App(),
     );
@@ -189,7 +188,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    FlutterStatusbarcolor.setStatusBarColor(Colors.lightBlue[900]);
+    //TODO: FlutterStatusbarcolor.setStatusBarColor(Colors.lightBlue[900]);
     return Scaffold(
       body: Builder(
         builder: (context) => SafeArea(
@@ -588,21 +587,23 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
               Navigator.pop(context);
             },
           ),
+          Divider(),
           ListTile(
             leading: Icon(OMIcons.movie),
-            title: Text('Infofilmchen starten',
+            title: Text('Infofilmchen',
                 style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w500,
                     color: Colors.black)),
             onTap: () {
-              Navigator.push(
+              Navigator.pushNamed(
                 context,
-                MaterialPageRoute(builder: (context) => Video()),
+                Video.routeName,
+                arguments:
+                    ScreenArguments("https://shintaikan.de/Shintaikanfilm.mp4"),
               );
             },
           ),
-          Divider(),
           ListTile(
             leading: Icon(OMIcons.movie),
             title: Text('Seefest 2019',
