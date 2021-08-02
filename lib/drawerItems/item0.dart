@@ -158,7 +158,19 @@ class _Item0State extends State<Item0> with TickerProviderStateMixin {
                   padding: const EdgeInsets.all(8),
                   children: <Widget>[
                     Part1(spacing: spacing),
-                    Offline(),
+                    Icon(
+                      Icons.cloud_off,
+                      color: Colors.red,
+                      size: 60,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: Text(
+                        'Du bist Offline!\nDie Daten werden geladen, sobald du wieder Online bist...',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
                     Part2(spacing: spacing),
                   ]);
             } else {
