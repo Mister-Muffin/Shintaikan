@@ -1,7 +1,7 @@
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 
-//TODO: PLS HELP! 😥
+//TO_DO: PLS HELP! 😥
 class SendMail extends StatefulWidget {
   static const routeName = '/mail';
   @override

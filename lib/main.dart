@@ -88,6 +88,7 @@ class _AppState extends State<App> {
                 child: Scaffold(
                   appBar: AppBar(
                     title: Text(appBarTitle),
+                    brightness: Brightness.dark,
                   ),
                   body: Center(
                     child: Column(
@@ -126,6 +127,7 @@ class _AppState extends State<App> {
               child: Scaffold(
                 appBar: AppBar(
                   title: Text(appBarTitle),
+                  brightness: Brightness.dark,
                 ),
                 body: Center(
                   child: CircularProgressIndicator(),
@@ -193,6 +195,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             drawer: myAppDrawer(context),
             appBar: AppBar(
               title: Text(appBarTitle),
+              brightness: Brightness.dark,
               actions: <Widget>[
                 connectionWidget(),
               ],
@@ -444,7 +447,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             child: Image.asset('assets/images/pelli.png'),
           ),
           ListTile(
-            leading: Icon(Icons.info),
+            leading: Icon(Icons.info_outlined),
             title: Text('Start',
                 style: TextStyle(
                     fontSize: 17,
@@ -525,7 +528,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(Icons.home),
+            leading: Icon(Icons.home_outlined),
             title: Text('Der Club/Wegbeschreibung',
                 style: TextStyle(
                     fontSize: 17,
@@ -574,7 +577,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(Icons.people),
+            leading: Icon(Icons.people_outline),
             title: Text('Lehrgänge + Turniere',
                 style: TextStyle(
                     fontSize: 17,
@@ -591,7 +594,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
           ),
           Divider(),
           ListTile(
-            leading: Icon(Icons.movie),
+            leading: Icon(Icons.movie_outlined),
             title: Text('Infofilmchen',
                 style: TextStyle(
                     fontSize: 17,
@@ -607,7 +610,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(Icons.movie),
+            leading: Icon(Icons.movie_outlined),
             title: Text('Seefest 2019',
                 style: TextStyle(
                     fontSize: 17,
@@ -620,7 +623,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(Icons.movie),
+            leading: Icon(Icons.movie_outlined),
             title: Text('Mixfilm 2019',
                 style: TextStyle(
                     fontSize: 17,
@@ -634,7 +637,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
           ),
           Divider(),
           ListTile(
-            leading: Icon(Icons.mail),
+            leading: Icon(Icons.mail_outlined),
             title: Text('Kontakt & Feedback',
                 style: TextStyle(
                     fontSize: 17,
@@ -662,7 +665,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(Icons.lock),
+            leading: Icon(Icons.lock_outlined),
             trailing: Icon(Icons.open_in_new_outlined),
             title: Text('Datenschutz',
                 style: TextStyle(
@@ -688,7 +691,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(Icons.info),
+            leading: Icon(Icons.info_outlined),
             title: Text('Über',
                 style: TextStyle(
                     fontSize: 17,
