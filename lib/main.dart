@@ -5,7 +5,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:package_info/package_info.dart';
 import 'package:shintaikan/drawerItems/item0.dart';
 import 'package:shintaikan/drawerItems/item1.dart';
@@ -212,7 +211,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
       return Container();
     } else {
       return IconButton(
-        icon: Icon(OMIcons.cloudOff),
+        icon: Icon(Icons.cloud_off_outlined),
         onPressed: () async => {
           showDialog<void>(
             context: context,
@@ -223,7 +222,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
                 content: SingleChildScrollView(
                   child: ListBody(
                     children: <Widget>[
-                      Icon(OMIcons.cloudOff, size: 48),
+                      Icon(Icons.cloud_off_outlined, size: 48),
                       Text(
                         '\nDu hast keine Verbindung zum Internet!',
                         textAlign: TextAlign.center,
@@ -313,13 +312,13 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
               ),
             ),
             actions: <Widget>[
-              OutlineButton(
+              OutlinedButton(
                 child: Text('Abbrechen'),
                 onPressed: () {
                   Navigator.pop(context);
                 },
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                   String url = "https://www.shintaikan.de";
@@ -346,12 +345,9 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
                     arguments: ScreenArguments(url),
                   );
                 },
-                textColor: Colors.white,
-                padding: const EdgeInsets.all(0.0),
+                // textColor: Colors.white,
+                // padding: const EdgeInsets.all(0.0),
                 child: Container(
-                  decoration: const BoxDecoration(
-                    color: Color(0xFF42A5F5),
-                  ),
                   padding: const EdgeInsets.all(10.0),
                   child: const Text('Film ab!'),
                 ),
@@ -374,7 +370,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
           return AlertDialog(
             content: Text(text),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -448,7 +444,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             child: Image.asset('assets/images/pelli.png'),
           ),
           ListTile(
-            leading: Icon(OMIcons.info),
+            leading: Icon(Icons.info),
             title: Text('Start',
                 style: TextStyle(
                     fontSize: 17,
@@ -464,7 +460,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(OMIcons.dateRange),
+            leading: Icon(Icons.date_range_outlined),
             title: Text('Trainingsplan',
                 style: TextStyle(
                     fontSize: 17,
@@ -481,7 +477,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             selected: _drawerSelection == DrawerSelection.favorites,
           ),
           ListTile(
-            leading: Icon(OMIcons.callMade),
+            leading: Icon(Icons.call_made_outlined),
             title: Text('Gürtelprüfungen',
                 style: TextStyle(
                     fontSize: 17,
@@ -497,7 +493,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(OMIcons.beachAccess),
+            leading: Icon(Icons.beach_access_outlined),
             title: Text('Ferientraining',
                 style: TextStyle(
                     fontSize: 17,
@@ -513,7 +509,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(OMIcons.wbSunny),
+            leading: Icon(Icons.wb_sunny_outlined),
             title: Text('Nach den Sommerferien',
                 style: TextStyle(
                     fontSize: 17,
@@ -529,7 +525,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(OMIcons.home),
+            leading: Icon(Icons.home),
             title: Text('Der Club/Wegbeschreibung',
                 style: TextStyle(
                     fontSize: 17,
@@ -545,7 +541,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(OMIcons.directionsWalk),
+            leading: Icon(Icons.directions_walk_outlined),
             title: Text('Anfänger/Interessenten',
                 style: TextStyle(
                     fontSize: 17,
@@ -561,7 +557,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(OMIcons.removeRedEye),
+            leading: Icon(Icons.remove_red_eye_outlined),
             title: Text('Vorführungen',
                 style: TextStyle(
                     fontSize: 17,
@@ -578,7 +574,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(OMIcons.people),
+            leading: Icon(Icons.people),
             title: Text('Lehrgänge + Turniere',
                 style: TextStyle(
                     fontSize: 17,
@@ -595,7 +591,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
           ),
           Divider(),
           ListTile(
-            leading: Icon(OMIcons.movie),
+            leading: Icon(Icons.movie),
             title: Text('Infofilmchen',
                 style: TextStyle(
                     fontSize: 17,
@@ -611,7 +607,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(OMIcons.movie),
+            leading: Icon(Icons.movie),
             title: Text('Seefest 2019',
                 style: TextStyle(
                     fontSize: 17,
@@ -624,7 +620,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(OMIcons.movie),
+            leading: Icon(Icons.movie),
             title: Text('Mixfilm 2019',
                 style: TextStyle(
                     fontSize: 17,
@@ -638,7 +634,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
           ),
           Divider(),
           ListTile(
-            leading: Icon(OMIcons.mail),
+            leading: Icon(Icons.mail),
             title: Text('Kontakt & Feedback',
                 style: TextStyle(
                     fontSize: 17,
@@ -653,8 +649,8 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(OMIcons.attachFile),
-            trailing: Icon(OMIcons.openInNew),
+            leading: Icon(Icons.attach_file_outlined),
+            trailing: Icon(Icons.open_in_new_outlined),
             title: Text('Impressum',
                 style: TextStyle(
                     fontSize: 17,
@@ -666,8 +662,8 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(OMIcons.lock),
-            trailing: Icon(OMIcons.openInNew),
+            leading: Icon(Icons.lock),
+            trailing: Icon(Icons.open_in_new_outlined),
             title: Text('Datenschutz',
                 style: TextStyle(
                     fontSize: 17,
@@ -679,7 +675,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(OMIcons.tagFaces),
+            leading: Icon(Icons.tag_faces_outlined),
             title: Text('Weiteres',
                 style: TextStyle(
                     fontSize: 17,
@@ -692,7 +688,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(OMIcons.info),
+            leading: Icon(Icons.info),
             title: Text('Über',
                 style: TextStyle(
                     fontSize: 17,
@@ -708,14 +704,17 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
                     child: Image.asset('assets/images/pelli.png'),
                   ),
                   children: [
-                    OutlineButton(
+                    OutlinedButton(
                       onPressed: () {
                         loadBrowser(
                             "https://github.com/Mister-Muffin/Shintaikan");
                       },
                       child: Text("GitHub"),
-                      borderSide: BorderSide(color: Colors.black),
-                      highlightedBorderColor: Colors.grey,
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: Colors.black),
+                        elevation: 0,
+                        primary: Colors.black,
+                      ),
                     )
                   ],
                   applicationName: appName);
@@ -754,7 +753,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
                         fontSize: 10,
                       ),
                     ),
-                    FlatButton(
+                    TextButton(
                         onPressed: () {
                           Navigator.pop(context);
                           Clipboard.setData(new ClipboardData(text: strToken))
@@ -762,7 +761,8 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
                             final snackBar = SnackBar(
                               content: Text('In die Zwischenablage kopiert'),
                             );
-                            Scaffold.of(context).showSnackBar(snackBar);
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
                           });
                         },
                         child: Text(

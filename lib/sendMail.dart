@@ -1,6 +1,5 @@
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
 
 //TODO: PLS HELP! 😥
 class SendMail extends StatefulWidget {
@@ -18,7 +17,7 @@ class _SendMailState extends State<SendMail> {
   bool success = false;
   bool loading = false;
   String cloudFuncReturnStatus = "";
-//TODO: Futurebuilder?
+ //Maybe Futurebuilder?
   final HttpsCallable callable = FirebaseFunctions
       .instanceFor(region: 'europe-west1')
       .httpsCallable('sendEmail');
@@ -31,7 +30,7 @@ class _SendMailState extends State<SendMail> {
         title: Text("Kontakt & Feedback"),
         actions: [
           IconButton(
-              icon: Icon(OMIcons.send),
+              icon: Icon(Icons.send),
               onPressed: () {
                 sendMessage(formKey);
               })
@@ -76,7 +75,6 @@ class _SendMailState extends State<SendMail> {
                 minLines: 1,
                 maxLines: 20,
                 maxLength: 500,
-                maxLengthEnforced: false,
                 onChanged: (String value) {
                   message = value;
                 },
@@ -114,7 +112,7 @@ class _SendMailState extends State<SendMail> {
         success = true;
         showStatusWidget = true;
       });
-    } on Exception catch (e) {
+    } on Exception {
       print('caught firebase functions exception');
       setState(() {
         success = false;
@@ -155,7 +153,7 @@ class _SendMailState extends State<SendMail> {
           return Row(
             children: [
               Icon(
-                OMIcons.done,
+                Icons.done,
                 color: Colors.green,
               ),
               Text('Die Nachicht wurde versandt!',
@@ -171,7 +169,7 @@ class _SendMailState extends State<SendMail> {
           return Row(
             children: [
               Icon(
-                OMIcons.error,
+                Icons.error,
                 color: Colors.red,
               ),
               Text(

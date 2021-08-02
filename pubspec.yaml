@@ -24,7 +24,6 @@ dependencies:
   connectivity: ^3.0.6
 
   cupertino_icons:
-  outline_material_icons:
 
   webview_flutter:
   package_info:
