@@ -1,5 +1,5 @@
 # Shintaikan
-
+<!-- markdownlint-disable MD026 -->
 ## Die App des Karate Club Shintaikan e.V.
 
 Weitere Informationen: [shintaikan.de](https://shintaikan.de)
