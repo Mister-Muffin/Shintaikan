@@ -31,7 +31,7 @@ class _Item0State extends State<Item0> with TickerProviderStateMixin {
 
     _controllerReset = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 400),
+      duration: const Duration(milliseconds: 200),
     );
     getPosts();
   }
@@ -130,18 +130,19 @@ class _Item0State extends State<Item0> with TickerProviderStateMixin {
                                         ["rendered"]
                                     .toString())),
                             Align(
-                              alignment: Alignment.centerLeft,
-                              child: InteractiveViewer(
-                                  boundaryMargin:
-                                      EdgeInsets.all(double.infinity),
-                                  transformationController:
-                                      _transformationController,
-                                  onInteractionStart: _onInteractionStart,
-                                  onInteractionEnd: _onInteractionEnd,
-                                  child: Html(
-                                      data: snapshot.data![index]["content"]
-                                          ["rendered"])),
-                            )
+                                alignment: Alignment.centerLeft,
+                                child: Html(
+                                    customImageRenders: {
+                                      classAndIdMatcher(
+                                        classToMatch:
+                                            "flutter_html_custom_renderer",
+                                      ): classAndIdRender(
+                                          classToMatch:
+                                              "flutter_html_custom_renderer",
+                                          buildContext: context)
+                                    },
+                                    data: snapshot.data![index]["content"]
+                                        ["rendered"])),
                           ],
                         );
                       },
@@ -176,6 +177,63 @@ class _Item0State extends State<Item0> with TickerProviderStateMixin {
           }
         });
   }
+
+  ImageSourceMatcher classAndIdMatcher(
+          {required String classToMatch, String? idToMatch}) =>
+      (attributes, element) =>
+          attributes["class"] != null &&
+          (attributes["class"]!.contains(classToMatch) ||
+              attributes["id"]!.contains(idToMatch!));
+
+  ImageRender classAndIdRender(
+          {required String classToMatch, required buildContext}) =>
+      (context, attributes, element) {
+        if (attributes["class"] != null &&
+            attributes["class"]!.contains(classToMatch)) {
+          return InteractiveViewer(
+            boundaryMargin: EdgeInsets.all(double.infinity),
+            transformationController: _transformationController,
+            onInteractionStart: _onInteractionStart,
+            onInteractionEnd: _onInteractionEnd,
+            child: GestureDetector(
+              onTap: () {
+                ScaffoldMessenger.of(buildContext).showSnackBar(SnackBar(
+                  content: Text("Ziehe mit zwei Fingern zum Zoomen!"),
+                ));
+              },
+              child: Image.network(
+                attributes["src"] ?? "about:blank",
+                semanticLabel: attributes["longdesc"] ?? "",
+                frameBuilder: (ctx, child, frame, _) {
+                  if (frame == null) {
+                    return Text(attributes["alt"] ?? "",
+                        style: context.style.generateTextStyle());
+                  }
+                  return child;
+                },
+              ),
+            ),
+          );
+        } else {
+          return InteractiveViewer(
+              boundaryMargin: EdgeInsets.all(double.infinity),
+              // transformationController: _transformationController,
+              // onInteractionStart: _onInteractionStart,
+              // onInteractionEnd: _onInteractionEnd,
+              child: Image.network(
+                attributes["src"] ?? "about:blank",
+                semanticLabel: attributes["longdesc"] ?? "",
+                color: context.style.color,
+                frameBuilder: (ctx, child, frame, _) {
+                  if (frame == null) {
+                    return Text(attributes["alt"] ?? "",
+                        style: context.style.generateTextStyle());
+                  }
+                  return child;
+                },
+              ));
+        }
+      };
 }
 
 class Part1 extends StatelessWidget {
