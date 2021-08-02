@@ -188,7 +188,6 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    //TODO: FlutterStatusbarcolor.setStatusBarColor(Colors.lightBlue[900]);
     return Scaffold(
       body: Builder(
         builder: (context) => SafeArea(
