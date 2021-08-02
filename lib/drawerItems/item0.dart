@@ -4,8 +4,6 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:http/http.dart';
 import 'dart:convert' as convert;
 
-import 'package:shintaikan/widgets/offline.dart';
-
 class Item0 extends StatefulWidget {
   final bool connected;
 
