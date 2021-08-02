@@ -209,6 +209,10 @@ class _Item0State extends State<Item0> with TickerProviderStateMixin {
             },
             child: Image.network(
               attributes["src"] ?? "about:blank",
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return Center(child: CircularProgressIndicator());
+              },
               semanticLabel: attributes["longdesc"] ?? "",
               frameBuilder: (ctx, child, frame, _) {
                 if (frame == null) {
