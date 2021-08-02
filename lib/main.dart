@@ -141,8 +141,6 @@ class _AppState extends State<App> {
 }
 
 class Main extends StatefulWidget {
-  Main({Key? key}) : super(key: key);
-
   @override
   MyAppState createState() => MyAppState();
 }
@@ -210,7 +208,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
   }
 
   Widget connectionWidget() {
-    if (connectionIcon) {
+    if (!connectionIcon) {
       return Container();
     } else {
       return IconButton(
@@ -236,7 +234,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
                   ),
                 ),
                 actions: <Widget>[
-                  FlatButton(
+                  TextButton(
                     child: Text('Okay'),
                     onPressed: () {
                       Navigator.of(context).pop();
@@ -252,18 +250,28 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
   }
 
   Widget mainBody() {
-    if (clickedItem == 0) return (Item0());
-    if (clickedItem == 1) return (Item1());
-    if (clickedItem == 2) return (Item2());
-    if (clickedItem == 3) return (Item3());
-    if (clickedItem == 4) return (Item4());
-    if (clickedItem == 5) return (Item5());
-    if (clickedItem == 6) return (Item6());
-    if (clickedItem == 7) return (Item7());
-    if (clickedItem == 8)
+    if (clickedItem == 0)
+      return (Item0(
+        connected: !connectionIcon,
+      ));
+    else if (clickedItem == 1)
+      return (Item1());
+    else if (clickedItem == 2)
+      return (Item2());
+    else if (clickedItem == 3)
+      return (Item3());
+    else if (clickedItem == 4)
+      return (Item4());
+    else if (clickedItem == 5)
+      return (Item5());
+    else if (clickedItem == 6)
+      return (Item6());
+    else if (clickedItem == 7)
+      return (Item7());
+    else if (clickedItem == 8)
       return (Item8());
     else
-      return (Item0());
+      return (Item0(connected: !connectionIcon));
   }
 
   void showAlertDialog(BuildContext context) {
@@ -409,8 +417,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
         .onConnectivityChanged
         .listen((ConnectivityResult result) {
       setState(() {
-        connectionIcon = result == ConnectivityResult.wifi ||
-            result == ConnectivityResult.mobile;
+        connectionIcon = result == ConnectivityResult.none;
       });
     });
 
