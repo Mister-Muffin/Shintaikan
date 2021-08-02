@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_wordpress/flutter_wordpress.dart' as wp;
+import 'package:flutter_html/flutter_html.dart';
 import 'package:shintaikan/getFirestoreData.dart';
+import 'package:http/http.dart';
+import 'dart:convert' as convert;
 
 class Item0 extends StatefulWidget {
-  final wp.WordPress wordPress;
-
-  const Item0({required Key key, required this.wordPress}) : super(key: key);
-
   @override
   _Item0State createState() => _Item0State();
 }
@@ -16,30 +14,30 @@ class _Item0State extends State<Item0> {
   final double spacing = 20.0;
   final double blueFontSize = 18.0;
 
-  late Future<List<wp.Post>> posts;
-
   @override
   void initState() {
     super.initState();
 
-    fetchPosts();
+    getPosts();
   }
 
-  Future<void> fetchPosts() {
-    setState(() {
-      posts = widget.wordPress.fetchPosts(
-        postParams: wp.ParamsPostList(perPage: 1),
-        fetchAuthor: true,
-        fetchFeaturedMedia: true,
-      );
-    });
-    return posts;
+  Future<List<dynamic>> getPosts() async {
+    Response res =
+        await get(Uri.parse("https://shintaikan.de/?rest_route=/wp/v2/posts"));
+
+    if (res.statusCode == 200) {
+      final List<dynamic> jsonResponse = convert.json.decode(res.body);
+
+      return jsonResponse;
+    } else {
+      throw "Unable to retrieve posts.";
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<wp.Post>>(
-        future: posts,
+    return FutureBuilder<List<dynamic>>(
+        future: getPosts(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return ListView(
@@ -57,7 +55,34 @@ class _Item0State extends State<Item0> {
                   style: Theme.of(context).textTheme.headline2,
                 ),
                 Image.asset('assets/images/pelli.png'),
-                FirestoreData(document: "status"),
+                ListView.separated(
+                  physics: NeverScrollableScrollPhysics(),
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.all(8),
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Align(
+                            alignment: Alignment.center,
+                            child: Text(snapshot.data![index]["title"]
+                                    ["rendered"]
+                                .toString())),
+                        Align(
+                            alignment: Alignment.centerLeft,
+                            child: Html(
+                                data: snapshot.data![index]["content"]
+                                    ["rendered"])),
+                      ],
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) =>
+                      const Divider(),
+                ),
+                //Text(snapshot.data![0]["id"].toString()),
+                //FirestoreData(document: "status"),
                 SizedBox(height: spacing),
                 Container(
                   child: Row(

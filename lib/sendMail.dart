@@ -17,10 +17,10 @@ class _SendMailState extends State<SendMail> {
   bool success = false;
   bool loading = false;
   String cloudFuncReturnStatus = "";
-
-  final HttpsCallable callable = CloudFunctions(region: 'europe-west1').getHttpsCallable(
-    functionName: 'sendEmail',
-  );
+//TODO: Futurebuilder?
+  final HttpsCallable callable = FirebaseFunctions
+      .instanceFor(region: 'europe-west1')
+      .httpsCallable('sendEmail');
 
   @override
   Widget build(BuildContext context) {
@@ -51,8 +51,8 @@ class _SendMailState extends State<SendMail> {
                 email = value;
               });
             },
-            validator: (String value) {
-              return value.contains('@') ? null : 'Ungültige E-Mail Adresse';
+            validator: (String? value) {
+              return value!.contains('@') ? null : 'Ungültige E-Mail Adresse';
             },
           ),
           TextFormField(
@@ -91,11 +91,8 @@ class _SendMailState extends State<SendMail> {
         success = true;
         showStatusWidget = true;
       });
-    } on CloudFunctionsException catch (e) {
+    } on Exception catch (e) {
       print('caught firebase functions exception');
-      print(e.code);
-      print(e.message);
-      print(e.details);
       setState(() {
         success = false;
         showStatusWidget = true;
@@ -153,14 +150,14 @@ class _SendMailState extends State<SendMail> {
                 textAlign: TextAlign.center)
           ],
         );
-      } else if (!success) {
+      } else {
         return Row(
           children: [
             Icon(
               OMIcons.error,
               color: Colors.red,
             ),
-            Text('Ein Fehler ist aufgetreten!\nSollte das Problem wiederholt auftreten,\nschreib bitte eine Mail an shintaikan@web.de.',
+            Text('Ein Fehler ist aufgetreten!\nSollte das Problem wiederholt auftreten,\nschreibe bitte eine Mail an shintaikan@web.de.',
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 14,
@@ -169,7 +166,7 @@ class _SendMailState extends State<SendMail> {
                 textAlign: TextAlign.justify)
           ],
         );
-      } else {}
+      }
     } else if (showStatusWidget && loading) {
       return Row(
         children: [

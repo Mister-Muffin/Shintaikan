@@ -22,6 +22,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 
@@ -56,13 +57,92 @@ class MyApp extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 color: Colors.red[900]),
           )),
-      home: Main(),
+      home: App(),
+    );
+  }
+}
+
+class App extends StatefulWidget {
+  // Create the initialization Future outside of `build`:
+  @override
+  _AppState createState() => _AppState();
+}
+
+String appBarTitle = "Shintaikan";
+
+class _AppState extends State<App> {
+  /// The future is part of the state of our widget. We should not call `initializeApp`
+  /// directly inside [build].
+  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      // Initialize FlutterFire:
+      future: _initialization,
+      builder: (context, snapshot) {
+        // Check for errors
+        if (snapshot.hasError) {
+          return Scaffold(
+            body: Builder(
+              builder: (context) => SafeArea(
+                top: false,
+                child: Scaffold(
+                  appBar: AppBar(
+                    title: Text(appBarTitle),
+                  ),
+                  body: Center(
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.error_outline,
+                          color: Colors.red,
+                          size: 60,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 16),
+                          child: Text(
+                            'Ein Fehler ist aufgetreten!',
+                            textAlign: TextAlign.center,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+
+        // Once complete, show your application
+        if (snapshot.connectionState == ConnectionState.done) {
+          return Main();
+        }
+
+        // Otherwise, show something whilst waiting for initialization to complete
+        return Scaffold(
+          body: Builder(
+            builder: (context) => SafeArea(
+              top: false,
+              child: Scaffold(
+                appBar: AppBar(
+                  title: Text(appBarTitle),
+                ),
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
 
 class Main extends StatefulWidget {
-  Main({Key key}) : super(key: key);
+  Main({Key? key}) : super(key: key);
 
   @override
   MyAppState createState() => MyAppState();
@@ -79,26 +159,24 @@ String GCMID = "";
 class MyAppState extends State<Main> with TickerProviderStateMixin {
   Future<String> asyncFuture() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    await _firebaseMessaging
-        .getToken()
-        .then((value) => strToken = value.toString());
+    await messaging.getToken().then((value) => strToken = value.toString());
     buildNumber = packageInfo.buildNumber;
     appName = packageInfo.appName;
     return Future.value("Data successfully");
   }
 
-  AnimationController rotationController;
-  StreamSubscription subscription;
+  late AnimationController rotationController;
+  late StreamSubscription subscription;
 
   bool initialized = false;
   bool initError = false;
 
   final listController = ScrollController();
-  double develInfoContainerHeight = 0; //height of the container at the bottom of the App Drawer
+  double develInfoContainerHeight =
+      0; //height of the container at the bottom of the App Drawer
   String buildNumber = "";
   String appName = "name";
   String strToken = "...";
-  String appBarTitle = "Shintaikan";
 
   final String messagingTopic = "push";
 
@@ -106,71 +184,18 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
   int clickedItem = 0;
   double webViewOpacity = 0;
   String url = "https://www.shintaikan.de/index-app.html";
-  WebViewController controller;
 
   bool connectionIcon = false;
 
   @override
   Widget build(BuildContext context) {
     FlutterStatusbarcolor.setStatusBarColor(Colors.lightBlue[900]);
-
-    if (initError) {
-      return Scaffold(
-        body: Builder(
-          builder: (context) => SafeArea(
-            top: false,
-            child: Scaffold(
-              appBar: AppBar(
-                title: Text(appBarTitle),
-              ),
-              body: Center(
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.error_outline,
-                      color: Colors.red,
-                      size: 60,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16),
-                      child: Text(
-                        'Ein Fehler ist aufgetreten!',
-                        textAlign: TextAlign.center,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-
-    if (!initialized) {
-      return Scaffold(
-        body: Builder(
-          builder: (context) => SafeArea(
-            top: false,
-            child: Scaffold(
-              appBar: AppBar(
-                title: Text(appBarTitle),
-              ),
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-
     return Scaffold(
       body: Builder(
         builder: (context) => SafeArea(
           top: false,
           child: Scaffold(
-            drawer: myAppDrawer(context, controller),
+            drawer: myAppDrawer(context),
             appBar: AppBar(
               title: Text(appBarTitle),
               actions: <Widget>[
@@ -259,9 +284,9 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
                     leading: Radio(
                       value: Qualities.low,
                       groupValue: _qualities,
-                      onChanged: (Qualities value) {
+                      onChanged: (Qualities? value) {
                         setState(() {
-                          _qualities = value;
+                          _qualities = value!;
                         });
                       },
                     ),
@@ -271,9 +296,9 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
                     leading: Radio(
                       value: Qualities.medium,
                       groupValue: _qualities,
-                      onChanged: (Qualities value) {
+                      onChanged: (Qualities? value) {
                         setState(() {
-                          _qualities = value;
+                          _qualities = value!;
                         });
                       },
                     ),
@@ -358,7 +383,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
     _showMyDialog();
   }
 
-  static FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
 
   void initializeFlutterFire() async {
     try {
@@ -402,24 +427,12 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
   }
 
   void firebaseCloudMessagingListeners() {
-    _firebaseMessaging.setAutoInitEnabled(true);
+    messaging.setAutoInitEnabled(true);
 
-    _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print('on message $message');
-      },
-      onResume: (Map<String, dynamic> message) async {
-        print('on resume $message');
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-        print('on launch $message');
-      },
-    );
-
-    _firebaseMessaging.subscribeToTopic(messagingTopic);
+    messaging.subscribeToTopic(messagingTopic);
   }
 
-  Widget myAppDrawer(BuildContext context, WebViewController controller) {
+  Widget myAppDrawer(BuildContext context) {
     DrawerSelection _drawerSelection = DrawerSelection.home;
     return Drawer(
         child: ListView(
@@ -617,21 +630,21 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           Divider(),
-              ListTile(
-                leading: Icon(OMIcons.mail),
-                title: Text('Kontakt & Feedback',
-                    style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black)),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SendMail()),
-                  );
-                },
-              ),
+          ListTile(
+            leading: Icon(OMIcons.mail),
+            title: Text('Kontakt & Feedback',
+                style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black)),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SendMail()),
+              );
+            },
+          ),
           ListTile(
             leading: Icon(OMIcons.attachFile),
             trailing: Icon(OMIcons.openInNew),
@@ -710,13 +723,11 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
                 develInfoContainerHeight = 80.0;
               });
               Future.delayed(const Duration(milliseconds: 500), () {
-                if (listController != null) {
-                  listController.animateTo(
-                    listController.position.maxScrollExtent,
-                    duration: Duration(seconds: 1),
-                    curve: Curves.fastOutSlowIn,
-                  );
-                }
+                listController.animateTo(
+                  listController.position.maxScrollExtent,
+                  duration: Duration(seconds: 1),
+                  curve: Curves.fastOutSlowIn,
+                );
               });
             },
           )),
@@ -780,7 +791,8 @@ class Video extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ScreenArguments args = ModalRoute.of(context).settings.arguments;
+    final ScreenArguments args =
+        ModalRoute.of(context)!.settings.arguments as ScreenArguments;
     return Scaffold(
         appBar: AppBar(
           title: null,
