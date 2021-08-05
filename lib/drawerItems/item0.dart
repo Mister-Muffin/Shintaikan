@@ -194,6 +194,7 @@ class _Item0State extends State<Item0> with TickerProviderStateMixin {
   // (attributes["class"]!.contains(classToMatch) ||
   //     attributes["id"]!.contains(idToMatch!));
 
+  var snackbar = false;
   ImageRender classAndIdRender({required buildContext}) =>
       (context, attributes, element) {
         return InteractiveViewer(
@@ -203,9 +204,15 @@ class _Item0State extends State<Item0> with TickerProviderStateMixin {
           onInteractionEnd: _onInteractionEnd,
           child: GestureDetector(
             onTap: () {
-              ScaffoldMessenger.of(buildContext).showSnackBar(SnackBar(
-                content: Text("Ziehe mit zwei Fingern zum Zoomen!"),
-              ));
+              if (!snackbar) {
+                snackbar = true;
+                ScaffoldMessenger.of(buildContext)
+                    .showSnackBar(SnackBar(
+                      content: Text("Ziehe mit zwei Fingern zum Zoomen!"),
+                    ))
+                    .closed
+                    .then((value) => snackbar = false);
+              }
             },
             child: Image.network(
               attributes["src"] ?? "about:blank",
