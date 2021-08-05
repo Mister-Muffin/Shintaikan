@@ -200,8 +200,8 @@ class _Item0State extends State<Item0> with TickerProviderStateMixin {
         return InteractiveViewer(
           boundaryMargin: EdgeInsets.all(double.infinity),
           transformationController: _transformationController,
-          onInteractionStart: _onInteractionStart,
-          onInteractionEnd: _onInteractionEnd,
+          // onInteractionStart: _onInteractionStart,
+          // onInteractionEnd: _onInteractionEnd,
           child: GestureDetector(
             onTap: () {
               if (!snackbar) {
