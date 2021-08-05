@@ -84,6 +84,7 @@ class _Item0State extends State<Item0> with TickerProviderStateMixin {
     _controllerReset.reset();
   }
 
+  // ignore: unused_element
   void _onInteractionStart(ScaleStartDetails details) {
     // If the user tries to cause a transformation while the reset animation is
     // running, cancel the reset animation.
@@ -92,6 +93,7 @@ class _Item0State extends State<Item0> with TickerProviderStateMixin {
     }
   }
 
+  // ignore: unused_element
   void _onInteractionEnd(ScaleEndDetails details) {
     _animateResetInitialize();
   }
