@@ -183,7 +183,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
   double webViewOpacity = 0;
   String url = "https://www.shintaikan.de/index-app.html";
 
-  bool connectionIcon = false;
+  bool hasInternetConnection = false;
 
   @override
   Widget build(BuildContext context) {
@@ -210,7 +210,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
   }
 
   Widget connectionWidget() {
-    if (!connectionIcon) {
+    if (hasInternetConnection) {
       return Container();
     } else {
       return IconButton(
@@ -254,7 +254,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
   Widget mainBody() {
     if (clickedItem == 0)
       return (Item0(
-        connected: !connectionIcon,
+        connected: hasInternetConnection, //true when not connected
       ));
     else if (clickedItem == 1)
       return (Item1());
@@ -273,7 +273,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
     else if (clickedItem == 8)
       return (Item8());
     else
-      return (Item0(connected: !connectionIcon));
+      return (Item0(connected: hasInternetConnection));
   }
 
   void showAlertDialog(BuildContext context) {
@@ -416,7 +416,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
         .onConnectivityChanged
         .listen((ConnectivityResult result) {
       setState(() {
-        connectionIcon = result == ConnectivityResult.none;
+        hasInternetConnection = result != ConnectivityResult.none;
       });
     });
 
