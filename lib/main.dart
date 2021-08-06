@@ -164,7 +164,6 @@ class MyAppState extends State<Main> with SingleTickerProviderStateMixin {
     return Future.value("Data successfully");
   }
 
-  late AnimationController rotationController;
   late StreamSubscription subscription;
 
   bool initialized = false;
@@ -197,15 +196,6 @@ class MyAppState extends State<Main> with SingleTickerProviderStateMixin {
           brightness: Brightness.dark,
           actions: <Widget>[
             connectionWidget(),
-            AnimatedBuilder(
-              animation: CurvedAnimation(
-                  parent: rotationController, curve: Curves.easeOutSine),
-              child: importantInfo(),
-              builder: (BuildContext context, Widget? _widget) {
-                return new Transform.rotate(
-                    angle: rotationController.value * 6.3, child: _widget);
-              },
-            )
           ],
         ),
         body: Center(
@@ -462,9 +452,6 @@ class MyAppState extends State<Main> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     initializeFlutterFire();
-    rotationController = AnimationController(
-        duration: const Duration(milliseconds: 500), vsync: this);
-    rotationController.repeat();
     // Network listener
     subscription = Connectivity()
         .onConnectivityChanged
