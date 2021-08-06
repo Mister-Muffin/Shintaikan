@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:package_info/package_info.dart';
 import 'package:shintaikan/drawerItems/item0.dart';
 import 'package:shintaikan/drawerItems/item1.dart';
@@ -197,7 +198,8 @@ class MyAppState extends State<Main> with SingleTickerProviderStateMixin {
           actions: <Widget>[
             connectionWidget(),
             AnimatedBuilder(
-              animation: CurvedAnimation(parent: rotationController, curve: Curves.easeOutSine),
+              animation: CurvedAnimation(
+                  parent: rotationController, curve: Curves.easeOutSine),
               child: importantInfo(),
               builder: (BuildContext context, Widget? _widget) {
                 return new Transform.rotate(
@@ -294,28 +296,36 @@ class MyAppState extends State<Main> with SingleTickerProviderStateMixin {
   }
 
   Widget mainBody() {
+    Widget requestedBody = Item0(connected: hasInternetConnection);
+    
     if (clickedItem == 0)
-      return (Item0(
-        connected: hasInternetConnection, //true when not connected
-      ));
+      requestedBody = Item0(connected: hasInternetConnection);
     else if (clickedItem == 1)
-      return (Item1());
+      requestedBody = Item1();
     else if (clickedItem == 2)
-      return (Item2());
+      requestedBody = Item2();
     else if (clickedItem == 3)
-      return (Item3());
+      requestedBody = Item3();
     else if (clickedItem == 4)
-      return (Item4());
+      requestedBody = Item4();
     else if (clickedItem == 5)
-      return (Item5());
+      requestedBody = Item5();
     else if (clickedItem == 6)
-      return (Item6());
+      requestedBody = Item6();
     else if (clickedItem == 7)
-      return (Item7());
-    else if (clickedItem == 8)
-      return (Item8());
-    else
-      return (Item0(connected: hasInternetConnection));
+      requestedBody = Item7();
+    else if (clickedItem == 8) {
+      requestedBody = Item8();
+    }
+
+    return Column(
+      children: [
+        if (!hasInternetConnection) OfflineWidget(context: context),
+        Expanded(
+          child: requestedBody,
+        ),
+      ],
+    );
   }
 
   void showAlertDialog(BuildContext context) {
@@ -829,6 +839,34 @@ class MyAppState extends State<Main> with SingleTickerProviderStateMixin {
     } else {
       throw 'Could not launch $url';
     }
+  }
+}
+
+class OfflineWidget extends StatelessWidget {
+  const OfflineWidget({
+    Key? key,
+    required this.context,
+  }) : super(key: key);
+
+  final BuildContext context;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "OFFLINE",
+            style:
+                TextStyle(color: Colors.white, fontSize: FontSize.large.size),
+          ),
+        ],
+      ),
+      color: Colors.red,
+      width: MediaQuery.of(context).size.width,
+      height: 25,
+    );
   }
 }
 
