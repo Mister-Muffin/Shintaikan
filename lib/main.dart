@@ -154,7 +154,7 @@ Qualities _qualities = Qualities.low;
 // ignore: non_constant_identifier_names
 String GCMID = "";
 
-class MyAppState extends State<Main> with TickerProviderStateMixin {
+class MyAppState extends State<Main> with SingleTickerProviderStateMixin {
   Future<String> asyncFuture() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     await messaging.getToken().then((value) => strToken = value.toString());
@@ -187,25 +187,67 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Builder(
-        builder: (context) => SafeArea(
-          top: false,
-          child: Scaffold(
-            drawer: myAppDrawer(context),
-            appBar: AppBar(
-              title: Text(appBarTitle),
-              brightness: Brightness.dark,
-              actions: <Widget>[
-                connectionWidget(),
-              ],
-            ),
-            body: Center(
-              child: mainBody(),
-            ),
-          ),
+    return SafeArea(
+      top: false,
+      child: Scaffold(
+        drawer: myAppDrawer(context),
+        appBar: AppBar(
+          title: Text(appBarTitle),
+          brightness: Brightness.dark,
+          actions: <Widget>[
+            connectionWidget(),
+            AnimatedBuilder(
+              animation: CurvedAnimation(parent: rotationController, curve: Curves.easeOutSine),
+              child: importantInfo(),
+              builder: (BuildContext context, Widget? _widget) {
+                return new Transform.rotate(
+                    angle: rotationController.value * 6.3, child: _widget);
+              },
+            )
+          ],
+        ),
+        body: Center(
+          child: mainBody(),
         ),
       ),
+    );
+  }
+
+  Widget importantInfo() {
+    return IconButton(
+      icon: Icon(Icons.error_outline_outlined, color: Color(0xFFFF0000)),
+      onPressed: () async => {
+        showDialog<void>(
+          context: context,
+          barrierDismissible: true,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Keine Verbindung'),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Icon(Icons.cloud_off_outlined, size: 48),
+                    Text(
+                      '\nDu hast keine Verbindung zum Internet!',
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                        '\nDie Daten in der App sind möglicherweise veraltet und aktualisieren sich, sobald du wieder Online gehst'),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('Okay'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        ),
+      },
     );
   }
 
@@ -408,9 +450,11 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
 
   @override
   void initState() {
+    super.initState();
     initializeFlutterFire();
     rotationController = AnimationController(
-        duration: const Duration(milliseconds: 1000), vsync: this);
+        duration: const Duration(milliseconds: 500), vsync: this);
+    rotationController.repeat();
     // Network listener
     subscription = Connectivity()
         .onConnectivityChanged
@@ -419,8 +463,6 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
         hasInternetConnection = result != ConnectivityResult.none;
       });
     });
-
-    super.initState();
   }
 
   @override
