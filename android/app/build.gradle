@@ -47,7 +47,7 @@ android {
     defaultConfig {
         applicationId "de.schweininchen.shintaikan.shintaikan.new"
         minSdkVersion 23
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
