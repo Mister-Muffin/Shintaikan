@@ -5,8 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_statusbarcolor/flutter_statusbarcolor.dart';
-import 'package:outline_material_icons/outline_material_icons.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:package_info/package_info.dart';
 import 'package:shintaikan/drawerItems/item0.dart';
 import 'package:shintaikan/drawerItems/item1.dart';
@@ -22,6 +21,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 
@@ -42,28 +42,107 @@ class MyApp extends StatelessWidget {
             headline1: TextStyle(
                 fontSize: 40.0,
                 fontWeight: FontWeight.bold,
-                color: Colors.blue[900]),
+                color: Colors.lightBlue[800]),
             headline2: TextStyle(
                 fontSize: 30.0,
                 fontWeight: FontWeight.bold,
-                color: Colors.blue[900]),
+                color: Colors.lightBlue[800]),
             bodyText1: TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
-                color: Colors.blue[900]),
+                color: Colors.lightBlue[900]),
             bodyText2: TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
-                color: Colors.red[900]),
+                color: Color.fromRGBO(180, 0, 0, 1)),
           )),
-      home: Main(),
+      home: App(),
+    );
+  }
+}
+
+class App extends StatefulWidget {
+  // Create the initialization Future outside of `build`:
+  @override
+  _AppState createState() => _AppState();
+}
+
+String appBarTitle = "Shintaikan";
+
+class _AppState extends State<App> {
+  /// The future is part of the state of our widget. We should not call `initializeApp`
+  /// directly inside [build].
+  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      // Initialize FlutterFire:
+      future: _initialization,
+      builder: (context, snapshot) {
+        // Check for errors
+        if (snapshot.hasError) {
+          return Scaffold(
+            body: Builder(
+              builder: (context) => SafeArea(
+                top: false,
+                child: Scaffold(
+                  appBar: AppBar(
+                    title: Text(appBarTitle),
+                    brightness: Brightness.dark,
+                  ),
+                  body: Center(
+                    child: Column(
+                      children: [
+                        Icon(
+                          Icons.error_outline,
+                          color: Colors.red,
+                          size: 60,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 16),
+                          child: Text(
+                            'Ein Fehler ist aufgetreten!',
+                            textAlign: TextAlign.center,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        }
+
+        // Once complete, show your application
+        if (snapshot.connectionState == ConnectionState.done) {
+          return Main();
+        }
+
+        // Otherwise, show something whilst waiting for initialization to complete
+        return Scaffold(
+          body: Builder(
+            builder: (context) => SafeArea(
+              top: false,
+              child: Scaffold(
+                appBar: AppBar(
+                  title: Text(appBarTitle),
+                  brightness: Brightness.dark,
+                ),
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
 
 class Main extends StatefulWidget {
-  Main({Key key}) : super(key: key);
-
   @override
   MyAppState createState() => MyAppState();
 }
@@ -76,29 +155,26 @@ Qualities _qualities = Qualities.low;
 // ignore: non_constant_identifier_names
 String GCMID = "";
 
-class MyAppState extends State<Main> with TickerProviderStateMixin {
+class MyAppState extends State<Main> with SingleTickerProviderStateMixin {
   Future<String> asyncFuture() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    await _firebaseMessaging
-        .getToken()
-        .then((value) => strToken = value.toString());
+    await messaging.getToken().then((value) => strToken = value.toString());
     buildNumber = packageInfo.buildNumber;
     appName = packageInfo.appName;
     return Future.value("Data successfully");
   }
 
-  AnimationController rotationController;
-  StreamSubscription subscription;
+  late StreamSubscription subscription;
 
   bool initialized = false;
   bool initError = false;
 
   final listController = ScrollController();
-  double develInfoContainerHeight = 0; //height of the container at the bottom of the App Drawer
+  double develInfoContainerHeight =
+      0; //height of the container at the bottom of the App Drawer
   String buildNumber = "";
   String appName = "name";
   String strToken = "...";
-  String appBarTitle = "Shintaikan";
 
   final String messagingTopic = "push";
 
@@ -106,92 +182,73 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
   int clickedItem = 0;
   double webViewOpacity = 0;
   String url = "https://www.shintaikan.de/index-app.html";
-  WebViewController controller;
 
-  bool connectionIcon = false;
+  bool hasInternetConnection = false;
 
   @override
   Widget build(BuildContext context) {
-    FlutterStatusbarcolor.setStatusBarColor(Colors.lightBlue[900]);
-
-    if (initError) {
-      return Scaffold(
-        body: Builder(
-          builder: (context) => SafeArea(
-            top: false,
-            child: Scaffold(
-              appBar: AppBar(
-                title: Text(appBarTitle),
-              ),
-              body: Center(
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.error_outline,
-                      color: Colors.red,
-                      size: 60,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16),
-                      child: Text(
-                        'Ein Fehler ist aufgetreten!',
-                        textAlign: TextAlign.center,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
+    return SafeArea(
+      top: false,
+      child: Scaffold(
+        drawer: myAppDrawer(context),
+        appBar: AppBar(
+          title: Text(appBarTitle),
+          brightness: Brightness.dark,
+          actions: <Widget>[
+            connectionWidget(),
+          ],
         ),
-      );
-    }
-
-    if (!initialized) {
-      return Scaffold(
-        body: Builder(
-          builder: (context) => SafeArea(
-            top: false,
-            child: Scaffold(
-              appBar: AppBar(
-                title: Text(appBarTitle),
-              ),
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-
-    return Scaffold(
-      body: Builder(
-        builder: (context) => SafeArea(
-          top: false,
-          child: Scaffold(
-            drawer: myAppDrawer(context, controller),
-            appBar: AppBar(
-              title: Text(appBarTitle),
-              actions: <Widget>[
-                connectionWidget(),
-              ],
-            ),
-            body: Center(
-              child: mainBody(),
-            ),
-          ),
+        body: Center(
+          child: mainBody(),
         ),
       ),
     );
   }
 
+  Widget importantInfo() {
+    return IconButton(
+      icon: Icon(Icons.error_outline_outlined, color: Color(0xFFFF0000)),
+      onPressed: () async => {
+        showDialog<void>(
+          context: context,
+          barrierDismissible: true,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Keine Verbindung'),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Icon(Icons.cloud_off_outlined, size: 48),
+                    Text(
+                      '\nDu hast keine Verbindung zum Internet!',
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                        '\nDie Daten in der App sind möglicherweise veraltet und aktualisieren sich, sobald du wieder Online gehst'),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('Okay'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        ),
+      },
+    );
+  }
+
   Widget connectionWidget() {
-    if (connectionIcon) {
+    if (hasInternetConnection) {
       return Container();
     } else {
       return IconButton(
-        icon: Icon(OMIcons.cloudOff),
+        icon: Icon(Icons.cloud_off_outlined),
         onPressed: () async => {
           showDialog<void>(
             context: context,
@@ -202,7 +259,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
                 content: SingleChildScrollView(
                   child: ListBody(
                     children: <Widget>[
-                      Icon(OMIcons.cloudOff, size: 48),
+                      Icon(Icons.cloud_off_outlined, size: 48),
                       Text(
                         '\nDu hast keine Verbindung zum Internet!',
                         textAlign: TextAlign.center,
@@ -213,7 +270,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
                   ),
                 ),
                 actions: <Widget>[
-                  FlatButton(
+                  TextButton(
                     child: Text('Okay'),
                     onPressed: () {
                       Navigator.of(context).pop();
@@ -229,18 +286,36 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
   }
 
   Widget mainBody() {
-    if (clickedItem == 0) return (Item0());
-    if (clickedItem == 1) return (Item1());
-    if (clickedItem == 2) return (Item2());
-    if (clickedItem == 3) return (Item3());
-    if (clickedItem == 4) return (Item4());
-    if (clickedItem == 5) return (Item5());
-    if (clickedItem == 6) return (Item6());
-    if (clickedItem == 7) return (Item7());
-    if (clickedItem == 8)
-      return (Item8());
-    else
-      return (Item0());
+    Widget requestedBody = Item0(connected: hasInternetConnection);
+    
+    if (clickedItem == 0)
+      requestedBody = Item0(connected: hasInternetConnection);
+    else if (clickedItem == 1)
+      requestedBody = Item1();
+    else if (clickedItem == 2)
+      requestedBody = Item2();
+    else if (clickedItem == 3)
+      requestedBody = Item3();
+    else if (clickedItem == 4)
+      requestedBody = Item4();
+    else if (clickedItem == 5)
+      requestedBody = Item5();
+    else if (clickedItem == 6)
+      requestedBody = Item6();
+    else if (clickedItem == 7)
+      requestedBody = Item7();
+    else if (clickedItem == 8) {
+      requestedBody = Item8();
+    }
+
+    return Column(
+      children: [
+        if (!hasInternetConnection) OfflineWidget(context: context),
+        Expanded(
+          child: requestedBody,
+        ),
+      ],
+    );
   }
 
   void showAlertDialog(BuildContext context) {
@@ -259,9 +334,9 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
                     leading: Radio(
                       value: Qualities.low,
                       groupValue: _qualities,
-                      onChanged: (Qualities value) {
+                      onChanged: (Qualities? value) {
                         setState(() {
-                          _qualities = value;
+                          _qualities = value!;
                         });
                       },
                     ),
@@ -271,9 +346,9 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
                     leading: Radio(
                       value: Qualities.medium,
                       groupValue: _qualities,
-                      onChanged: (Qualities value) {
+                      onChanged: (Qualities? value) {
                         setState(() {
-                          _qualities = value;
+                          _qualities = value!;
                         });
                       },
                     ),
@@ -282,13 +357,13 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
               ),
             ),
             actions: <Widget>[
-              OutlineButton(
+              OutlinedButton(
                 child: Text('Abbrechen'),
                 onPressed: () {
                   Navigator.pop(context);
                 },
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                   String url = "https://www.shintaikan.de";
@@ -315,12 +390,9 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
                     arguments: ScreenArguments(url),
                   );
                 },
-                textColor: Colors.white,
-                padding: const EdgeInsets.all(0.0),
+                // textColor: Colors.white,
+                // padding: const EdgeInsets.all(0.0),
                 child: Container(
-                  decoration: const BoxDecoration(
-                    color: Color(0xFF42A5F5),
-                  ),
                   padding: const EdgeInsets.all(10.0),
                   child: const Text('Film ab!'),
                 ),
@@ -343,7 +415,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
           return AlertDialog(
             content: Text(text),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -358,7 +430,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
     _showMyDialog();
   }
 
-  static FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
 
   void initializeFlutterFire() async {
     try {
@@ -378,20 +450,16 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
 
   @override
   void initState() {
+    super.initState();
     initializeFlutterFire();
-    rotationController = AnimationController(
-        duration: const Duration(milliseconds: 1000), vsync: this);
     // Network listener
     subscription = Connectivity()
         .onConnectivityChanged
         .listen((ConnectivityResult result) {
       setState(() {
-        connectionIcon = result == ConnectivityResult.wifi ||
-            result == ConnectivityResult.mobile;
+        hasInternetConnection = result != ConnectivityResult.none;
       });
     });
-
-    super.initState();
   }
 
   @override
@@ -402,24 +470,12 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
   }
 
   void firebaseCloudMessagingListeners() {
-    _firebaseMessaging.setAutoInitEnabled(true);
+    messaging.setAutoInitEnabled(true);
 
-    _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print('on message $message');
-      },
-      onResume: (Map<String, dynamic> message) async {
-        print('on resume $message');
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-        print('on launch $message');
-      },
-    );
-
-    _firebaseMessaging.subscribeToTopic(messagingTopic);
+    messaging.subscribeToTopic(messagingTopic);
   }
 
-  Widget myAppDrawer(BuildContext context, WebViewController controller) {
+  Widget myAppDrawer(BuildContext context) {
     DrawerSelection _drawerSelection = DrawerSelection.home;
     return Drawer(
         child: ListView(
@@ -430,7 +486,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             child: Image.asset('assets/images/pelli.png'),
           ),
           ListTile(
-            leading: Icon(OMIcons.info),
+            leading: Icon(Icons.info_outlined),
             title: Text('Start',
                 style: TextStyle(
                     fontSize: 17,
@@ -446,7 +502,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(OMIcons.dateRange),
+            leading: Icon(Icons.date_range_outlined),
             title: Text('Trainingsplan',
                 style: TextStyle(
                     fontSize: 17,
@@ -463,7 +519,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             selected: _drawerSelection == DrawerSelection.favorites,
           ),
           ListTile(
-            leading: Icon(OMIcons.callMade),
+            leading: Icon(Icons.call_made_outlined),
             title: Text('Gürtelprüfungen',
                 style: TextStyle(
                     fontSize: 17,
@@ -479,7 +535,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(OMIcons.beachAccess),
+            leading: Icon(Icons.beach_access_outlined),
             title: Text('Ferientraining',
                 style: TextStyle(
                     fontSize: 17,
@@ -495,7 +551,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(OMIcons.wbSunny),
+            leading: Icon(Icons.wb_sunny_outlined),
             title: Text('Nach den Sommerferien',
                 style: TextStyle(
                     fontSize: 17,
@@ -511,7 +567,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(OMIcons.home),
+            leading: Icon(Icons.home_outlined),
             title: Text('Der Club/Wegbeschreibung',
                 style: TextStyle(
                     fontSize: 17,
@@ -527,7 +583,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(OMIcons.directionsWalk),
+            leading: Icon(Icons.directions_walk_outlined),
             title: Text('Anfänger/Interessenten',
                 style: TextStyle(
                     fontSize: 17,
@@ -543,7 +599,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(OMIcons.removeRedEye),
+            leading: Icon(Icons.remove_red_eye_outlined),
             title: Text('Vorführungen',
                 style: TextStyle(
                     fontSize: 17,
@@ -560,7 +616,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(OMIcons.people),
+            leading: Icon(Icons.people_outline),
             title: Text('Lehrgänge + Turniere',
                 style: TextStyle(
                     fontSize: 17,
@@ -575,23 +631,25 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
               Navigator.pop(context);
             },
           ),
+          Divider(),
           ListTile(
-            leading: Icon(OMIcons.movie),
-            title: Text('Infofilmchen starten',
+            leading: Icon(Icons.movie_outlined),
+            title: Text('Infofilmchen',
                 style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w500,
                     color: Colors.black)),
             onTap: () {
-              Navigator.push(
+              Navigator.pushNamed(
                 context,
-                MaterialPageRoute(builder: (context) => Video()),
+                Video.routeName,
+                arguments:
+                    ScreenArguments("https://shintaikan.de/Shintaikanfilm.mp4"),
               );
             },
           ),
-          Divider(),
           ListTile(
-            leading: Icon(OMIcons.movie),
+            leading: Icon(Icons.movie_outlined),
             title: Text('Seefest 2019',
                 style: TextStyle(
                     fontSize: 17,
@@ -604,7 +662,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(OMIcons.movie),
+            leading: Icon(Icons.movie_outlined),
             title: Text('Mixfilm 2019',
                 style: TextStyle(
                     fontSize: 17,
@@ -617,24 +675,24 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           Divider(),
-              ListTile(
-                leading: Icon(OMIcons.mail),
-                title: Text('Kontakt & Feedback',
-                    style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black)),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SendMail()),
-                  );
-                },
-              ),
           ListTile(
-            leading: Icon(OMIcons.attachFile),
-            trailing: Icon(OMIcons.openInNew),
+            leading: Icon(Icons.mail_outlined),
+            title: Text('Kontakt & Feedback',
+                style: TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black)),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SendMail()),
+              );
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.attach_file_outlined),
+            trailing: Icon(Icons.open_in_new_outlined),
             title: Text('Impressum',
                 style: TextStyle(
                     fontSize: 17,
@@ -646,8 +704,8 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(OMIcons.lock),
-            trailing: Icon(OMIcons.openInNew),
+            leading: Icon(Icons.lock_outlined),
+            trailing: Icon(Icons.open_in_new_outlined),
             title: Text('Datenschutz',
                 style: TextStyle(
                     fontSize: 17,
@@ -659,7 +717,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(OMIcons.tagFaces),
+            leading: Icon(Icons.tag_faces_outlined),
             title: Text('Weiteres',
                 style: TextStyle(
                     fontSize: 17,
@@ -672,7 +730,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
             },
           ),
           ListTile(
-            leading: Icon(OMIcons.info),
+            leading: Icon(Icons.info_outlined),
             title: Text('Über',
                 style: TextStyle(
                     fontSize: 17,
@@ -688,14 +746,17 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
                     child: Image.asset('assets/images/pelli.png'),
                   ),
                   children: [
-                    OutlineButton(
+                    OutlinedButton(
                       onPressed: () {
                         loadBrowser(
                             "https://github.com/Mister-Muffin/Shintaikan");
                       },
                       child: Text("GitHub"),
-                      borderSide: BorderSide(color: Colors.black),
-                      highlightedBorderColor: Colors.grey,
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: Colors.black),
+                        elevation: 0,
+                        primary: Colors.black,
+                      ),
                     )
                   ],
                   applicationName: appName);
@@ -710,13 +771,11 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
                 develInfoContainerHeight = 80.0;
               });
               Future.delayed(const Duration(milliseconds: 500), () {
-                if (listController != null) {
-                  listController.animateTo(
-                    listController.position.maxScrollExtent,
-                    duration: Duration(seconds: 1),
-                    curve: Curves.fastOutSlowIn,
-                  );
-                }
+                listController.animateTo(
+                  listController.position.maxScrollExtent,
+                  duration: Duration(seconds: 1),
+                  curve: Curves.fastOutSlowIn,
+                );
               });
             },
           )),
@@ -736,7 +795,7 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
                         fontSize: 10,
                       ),
                     ),
-                    FlatButton(
+                    TextButton(
                         onPressed: () {
                           Navigator.pop(context);
                           Clipboard.setData(new ClipboardData(text: strToken))
@@ -744,7 +803,8 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
                             final snackBar = SnackBar(
                               content: Text('In die Zwischenablage kopiert'),
                             );
-                            Scaffold.of(context).showSnackBar(snackBar);
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
                           });
                         },
                         child: Text(
@@ -769,6 +829,34 @@ class MyAppState extends State<Main> with TickerProviderStateMixin {
   }
 }
 
+class OfflineWidget extends StatelessWidget {
+  const OfflineWidget({
+    Key? key,
+    required this.context,
+  }) : super(key: key);
+
+  final BuildContext context;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "OFFLINE",
+            style:
+                TextStyle(color: Colors.white, fontSize: FontSize.large.size),
+          ),
+        ],
+      ),
+      color: Colors.red,
+      width: MediaQuery.of(context).size.width,
+      height: 25,
+    );
+  }
+}
+
 class ScreenArguments {
   final String url;
 
@@ -780,7 +868,8 @@ class Video extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ScreenArguments args = ModalRoute.of(context).settings.arguments;
+    final ScreenArguments args =
+        ModalRoute.of(context)!.settings.arguments as ScreenArguments;
     return Scaffold(
         appBar: AppBar(
           title: null,
