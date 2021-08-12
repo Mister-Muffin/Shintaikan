@@ -6,34 +6,31 @@ description: Die Karate Club Shintaikan e.V. app.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
-version: 3.0.0+32
+version: 3.1.1+34
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
   #Firebase
-  firebase_core: ^0.5.0
+  firebase_core: ^1.4.0
   firebase_messaging:
-  cloud_firestore: ^0.14.0+1
-  cloud_functions: ^0.6.0
+  cloud_firestore: ^2.4.0
+  cloud_functions: ^3.0.0
 
-  connectivity: ^0.4.9
+  connectivity: ^3.0.6
 
   cupertino_icons:
-  outline_material_icons:
 
   webview_flutter:
-  flutter_statusbarcolor:
   package_info:
   flutter_html:
   intl:
   url_launcher:
-dependency_overrides:
-  flutter_svg: ^0.18.0
+  http: ^0.13.3
 
 dev_dependencies:
   flutter_test:

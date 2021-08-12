@@ -1,6 +1,7 @@
 # Shintaikan
 <!-- markdownlint-disable MD026 -->
 ## Die App des Karate Club Shintaikan e.V.
+
 ![](https://img.shields.io/badge/Version-34-f39f37)
 
 Weitere Informationen: [shintaikan.de](https://shintaikan.de)
