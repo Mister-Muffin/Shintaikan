@@ -56,7 +56,7 @@ fun Home() {
 
 @Preview(showBackground = true)
 @Composable
-fun DefaultPreview() {
+private fun DefaultPreview() {
     ShintaikanJetpackTheme {
         Home()
     }
