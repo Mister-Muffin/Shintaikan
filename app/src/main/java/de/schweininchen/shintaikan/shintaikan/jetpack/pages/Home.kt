@@ -2,6 +2,8 @@ package de.schweininchen.shintaikan.shintaikan.jetpack.pages
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -12,44 +14,62 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
 import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.ShintaikanJetpackTheme
+import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.Typography
 
 @Composable
 fun Home() {
     val imageSize = 100.dp
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = "Karate Club Shintaikan")
-        Text(text = "Linnéstraße 14, Freiburg West")
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.verticalScroll(
+            rememberScrollState()
+        )
+    ) {
+        Text(text = "Karate Club\nShintaikan e.V.", style = Typography.h1)
+        Text(text = "Linnéstraße 14, Freiburg West", style = Typography.h2)
         Image(
             painter = painterResource(id = R.drawable.pelli),
             contentDescription = "Shintaikan logo",
             Modifier.size(200.dp)
         )
-        Text("***WORDPRESS***")
+        Text(style = Typography.h3, text = "***WORDPRESS***")
         Row {
             Image(
                 painter = painterResource(id = R.drawable.icon_karate),
                 contentDescription = null,
-                modifier = Modifier.width(imageSize).height(imageSize)
+                modifier = Modifier
+                    .width(imageSize)
+                    .height(imageSize)
             )
             Image(
                 painter = painterResource(id = R.drawable.icon_karate_2),
                 contentDescription = null,
-                modifier = Modifier.width(imageSize).height(imageSize)
+                modifier = Modifier
+                    .width(imageSize)
+                    .height(imageSize)
             )
         }
-            Divider()
-            Image(
-                painter = painterResource(id = R.drawable.zeichen_kara),
-                contentDescription = "kara",
-                modifier = Modifier.width(imageSize).height(imageSize)
-            )
-            Image(
-                painter = painterResource(id = R.drawable.zeichen_te),
-                contentDescription = "te",
-                modifier = Modifier.width(imageSize).height(imageSize)
-            )
-            Text("Kontakt:")
-            Text("shintaikan@web.de")
+        Text("Lieber Karateka,", style = Typography.body2)
+        Text(
+            "Mit der Installation unserer App erhälst du direkt alle Informationen",
+            style = Typography.body2
+        )
+        Divider()
+        Image(
+            painter = painterResource(id = R.drawable.zeichen_kara),
+            contentDescription = "kara",
+            modifier = Modifier
+                .width(imageSize)
+                .height(imageSize)
+        )
+        Image(
+            painter = painterResource(id = R.drawable.zeichen_te),
+            contentDescription = "te",
+            modifier = Modifier
+                .width(imageSize)
+                .height(imageSize)
+        )
+        Text("Kontakt:")
+        Text("shintaikan@web.de")
 
     }
 }

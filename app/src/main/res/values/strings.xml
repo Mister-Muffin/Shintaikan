@@ -1,3 +1,92 @@
 <resources>
-    <string name="app_name">ShintaikanJetpack</string>
+    <string name="app_name" translatable="false">Shintaikan</string>
+    <string name="nach_so_fe_1">
+        Normalerweise müssen wir nach den Sommerferien einen neuen Trainingsplan erstellen.\n\n
+        Dafür benötigen wir ca. 2 Wochen Zeit.\n\n
+        Das bedeutet:\n
+        In der ersten 2 Wochen nach den Sommerferien findet das Training\n
+        für alle zu den gewohnten Zeiten (alter Trainingsplan) statt.\n
+        In diesem Zeitraum erscheint der neue Trainingsplan.\n
+        Der neue Trainingsplan gilt ab der 3. Woche nach den Sommerferien!\n
+        Grundsätzlich: Alle fortgeschrittenen Kinder können nach dem Erscheinen des neuen Trainingsplans gerne 2 mal wöchentlich kommen – das gilt auch für diejenigen, die ihre Prüfung verpasst haben oder noch nicht teilnehmen konnten!\n
+        Alle Karaminis, die eingeschult werden kommen bitte in das Kinder A Training, Karaminis, die schulisch eingeschult werden könnten aber zurückgestellt werden besprechen bitte mit dem Trainer welches Training besucht werden soll/kann.
+    </string>
+    <string name="nach_so_fe_2">
+        Die Nachprüfungen für diejenigen, die ihre Prüfung verpasst haben oder noch nicht teilnehmen konnten werden gesondert angekündigt – sie ordnen sich so den Gruppen zu, als ob sie die Prüfung gemacht und bestanden hätten.
+    </string>
+    <string name="club_1">
+        Seit 1992 gibt es den Karate Club Shintaikan. Nach kleinen Anfängen hat sich das Dojo inzwischen zu einer Kampfkunstschule mit ca. 140 Aktiven entwickelt, die überwiegend aus dem Bereich des Freiburger Westens stammen.\n\n
+        Mädchen und Jungen können bei uns ab dem Alter von ca. 3 Jahren ("windelfrei") trainieren. In der Gruppe der Karaminis liegt ein Schwerpunkt im spielerischen Erlernen motorischer Grundfertigkeiten.\n\n
+        Ziel ist es vielfältige Bewegungsmöglichkeiten anzubieten, bei denen die Kleinsten spielerisch grundkoordinative Fähigkeiten entwickeln können. Spielen, Krabbeln vorwärts, rückwärts, durch Tunnel, über Hindernisse, Laufen und Rennen für die Älteren, seitliches Rollen, Springen und Hüpfen mit Hilfsmitteln wie Matten, Bällen, Luftballons, Hütchen und einfach nur Freude an der Bewegung haben…\n\n
+        Das Training wird von 2 Trainern im „Team Teaching“ geleitet wird. Dies ermöglicht es den Trainern auf die individuellen Bedürfnisse unserer jüngsten Karatekas einzugehen.\n\n
+        Ab Einschulung bieten wir verschiedene Trainingsmöglichkeiten für Kinder und Jugendgruppen an. Die Einteilung nach Alter und Leistungsstand ermöglicht eine optimale sportliche Förderung.\n\n
+        Auch gibt es zusätzlich für Kinder und Jugendliche ein spezielles Selbstverteidigungstraining.\n
+        Die Jugendlichen und Erwachsenen können bei uns Karate trainieren.\n
+        Im Shotokan Karate steht das Erlernen waffenloser Verteidigungs- und Angriffstechniken im Vordergrund. Die Arbeitsschwerpunkte liegen in den Bereichen Distanz und Schnelligkeit, Effektivität in der Bewegung. Gelegentlich trainieren wir auch Elemente aus dem Okinawa Karate. Das Okinawa-Karate zeichnet sich durch eine große Technikvielfalt und Kreativität aus. Tritt- und Schlagtechniken werden ebenso trainiert wie z.B. Hebel- und Wurftechniken.\n\n
+        …und wenn sie uns mal „in Action“ sehen möchten schauen sie sich doch einfach unsere Kurzfilmchen auf unserer Homepage an…
+    </string>
+    <string name="club_2">
+        Der Karate Club Shintaikan befindet sich in der Linnéstr. 14\n\n
+        im Freiburger Westen in der Nähe des Seeparks gegenüber dem Fernmeldeamt (Funkturm) und neben der Kegelbahngaststätte "Holzfäller".\n\n\n\n
+        ÖPNV- Verbindungen:\n\n
+        Straßenbahn Linie 1 - Haltestelle Paduaallee, Moosgrund oder\n\n
+        Betzenhauser Torplatz. (3-5 min. Fußweg)\n\n
+        Bus Linie 10  - Haltestelle Paduaallee oder Hofackerstraße.\n\n
+        Das Dojo ist ca. 180qm groß, davon entfallen allein 80qm auf die Mattenfläche. Selbstverständlich gibt es auch einen kleinen Aufenthaltsbereich mit Kindereckchen, 2 Umkleiden…
+    </string>
+    <string name="about_1">
+        Alter: Ab "Windelfrei" bis zur Einschulung.
+        Das Training wird von 2 Trainern im Team Teaching geleitet.
+        Teilnehmerzahl ca. 8-12 Kinder pro Training.
+    </string>
+    <string name="about_2">ul</string>
+    <string name="about_3">
+        Alle Gruppen die voll belegt sind, werden im Stundenplan vermerkt!\n
+        In diesem Fall können sie uns ebenfalls gerne eine E-Mail (shintaikan@web.de) schreiben.
+    </string>
+    <string name="about_4">
+        Kinder ab Einschulung bis ca 10 Jahre; wir versuchen die Gruppen eher altersgemäß zu belegen.
+        Es handelt sich um reine Anfängergruppen.\n\n
+        Kommen Sie bitte einfach zu einem Probetraining vorbei.</string>
+    <string name="about_5">
+        Anfänger und Fortgeschrittene gehen zusammen in diese Gruppe.
+        Alter: Ab ca. 11 Jahre.\n\n
+        Dies handhaben wir etwas flexibler, damit der individuelle sportliche Leistungsstand berücksichtigt werden kann.
+    </string>
+    <string name="about_6">
+        Alter: Ab ca. 15 Jahre.\n\n
+        Bitte einfach zu einem Probetraining vorbeikommen."
+    </string>
+    <string name="about_7">
+        Karaminis und Kinder Anfänger wählen bitte ein Trainingsangebot in der Woche aus.\n\n
+        Fortgeschrittene Kinder dürfen gerne zweimal kommen.\n\n
+
+        Jugendliche kommen bitte in alle angebotenen Jugendtrainingseinheiten, ältere Jugendliche können zusätzlich gerne einmal wöchentlich ins Erwachsenentraining kommen.\n\n
+
+        Erwachsene können alle angebotenen Trainingseinheiten nutzen.\n\n\n\n
+        Beiträge:\n\n
+
+        monatl.          € 36.-pro Monat\n\n
+
+        1/4 jährlich     € 34.-pro Monat\n\n
+
+        1/2 jährl.       € 32.- pro Monat\n\n
+
+        jährl.           € 31.-pro Monat\n\n
+
+        Die Abbuchungen sind bei monatlicher Zahlweise am jeweiligen Monatsanfang, bei vierteljährlicher Zahlweise zu Anfang des jeweiligen Quartals, bei halbjährlicher Zahlweise Anfang Januar und Anfang Juli und bei jährlicher Zahlweise Anfang Januar.\n\n
+        Die Vertragsdauer richtet sich nach der Zahlweise.\n\n
+        Der Vertrag verlängert sich stillschweigend jeweils um die bei der Zahlweise angegebene Dauer, wenn nicht 6 Wochen vor Vertragsdauerende schriftlich gekündigt wurde.\n\n
+        Die Vertragsdauer kann nach Wunsch auch nach Vertragsabschluss nach Absprache geändert werden.\n\n
+        Der Betrag ist jeweils im Voraus zu entrichten.\n\n
+        Die Grundbeiträge können ermäßt werden!\n\n
+        Kinder, Jugendliche, Studenten/Azubis und weitere Familienmitglieder erhalten eine Ermäßigung!\n\n
+        Diese wird hinfällig, sobald der Grund der Ermäßigung wegfällt!\n\n
+        Nach dem Wegfall des Ermäßigungsgrundes sind die regulären Beiträge (obige Tabelle) relevant.\n\n
+        Ermäßigungen pro Monat:\n
+        Kinder bis 11 Jahre:                    € 4.-\n
+        Jugendliche 12-15 Jahre:                € 2.-\n
+        Studenten/Azubis:                       € 2.-\n
+        jedes zusätzliche Familienmitglied:     € 2,-\n
+    </string>
 </resources>

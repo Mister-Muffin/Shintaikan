@@ -13,8 +13,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import de.schweininchen.shintaikan.shintaikan.jetpack.pages.Home
-import de.schweininchen.shintaikan.shintaikan.jetpack.pages.Trplan
+import de.schweininchen.shintaikan.shintaikan.jetpack.pages.*
 import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.ShintaikanJetpackTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -25,11 +24,16 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
-            fun navDrawerClickie(route: String, scope: CoroutineScope, scaffoldState: ScaffoldState) {
-                navController.navigate(route) {popUpTo("Home")
+            fun navDrawerClickie(
+                route: String,
+                scope: CoroutineScope,
+                scaffoldState: ScaffoldState
+            ) {
+                navController.navigate(route) {
+                    popUpTo("Home")
                     launchSingleTop = true;
                 }
-                scope.launch { scaffoldState.drawerState.close()}
+                scope.launch { scaffoldState.drawerState.close() }
             }
             ShintaikanJetpackTheme {
                 Bob(onClick = ::navDrawerClickie, navHostController = navController)
@@ -40,12 +44,10 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Composable
-private fun Bob(onClick: (String, CoroutineScope, ScaffoldState) -> Unit, navHostController: NavHostController) {
+private fun Bob(
+    onClick: (String, CoroutineScope, ScaffoldState) -> Unit,
+    navHostController: NavHostController
+) {
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
     Scaffold(
@@ -60,18 +62,22 @@ private fun Bob(onClick: (String, CoroutineScope, ScaffoldState) -> Unit, navHos
                     }
                 },
                 actions = {
-                    // RowScope here, so these icons will be placed horizontally
                     IconButton(onClick = { /* doSomething() */ }) {
                         Icon(Icons.Filled.Favorite, contentDescription = "Localized description")
                     }
                 }
             )
         },
-        drawerContent = drawerContent({onClick(it, scope, scaffoldState)})
+        drawerContent = drawerContent { onClick(it, scope, scaffoldState) }
     ) {
         NavHost(navController = navHostController, startDestination = "Home") {
             composable("Home") { Home() }
             composable("Trplan") { Trplan() }
+            composable("Pruefungen") { Pruefungen() }
+            composable("Ferien") { Ferien() }
+            composable("NachSoFe") { NachSoFe() }
+            composable("ClubWeg") { ClubWeg() }
+            composable("Anfaenger") { Anfaenger() }
         }
     }
 }
