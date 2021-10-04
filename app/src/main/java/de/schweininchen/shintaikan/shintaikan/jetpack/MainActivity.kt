@@ -78,6 +78,8 @@ private fun Bob(
             composable("NachSoFe") { NachSoFe() }
             composable("ClubWeg") { ClubWeg() }
             composable("Anfaenger") { Anfaenger() }
+            composable("Vorfuehrungen") { Vorfuehrungen() }
+            composable("Lehrgaenge") { Lehrgaenge() }
         }
     }
 }

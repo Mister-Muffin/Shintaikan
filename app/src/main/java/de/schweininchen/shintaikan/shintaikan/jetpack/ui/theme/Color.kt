@@ -10,3 +10,5 @@ val Teal200 = Color(0xFF03DAC5)
 val LightBlue800 = Color(0xFF0277bd)
 val PrimaryDark = Color(0xFF004c8c)
 val Yellow700 = Color(0xFFfbc02d)
+
+val Dark_PrimaryDark = Color(0xFF121212)

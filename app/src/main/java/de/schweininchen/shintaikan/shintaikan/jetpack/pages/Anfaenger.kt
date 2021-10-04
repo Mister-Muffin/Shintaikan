@@ -59,7 +59,7 @@ fun Anfaenger() {
 }
 
 @Composable
-private fun Bambus() {
+fun Bambus() {
     Image(
         painter = painterResource(id = R.drawable.bambus),
         contentDescription = null,
