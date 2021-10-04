@@ -1,13 +1,15 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -18,12 +20,31 @@ import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.ShintaikanJetpack
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-
+const val TAG = "MainActivity.kt"
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             val navController = rememberNavController()
+            val url = "https://shintaikan.de/?rest_route=/wp/v2/posts"
+            val scope = rememberCoroutineScope()
+            //
+            val wordpressList = remember {
+                mutableStateListOf<Array<String>>()
+            }
+            scope.launch {
+                getHttpJson(url, cacheDir) {
+                    for (i in 0..it.length() - 1) {
+                        Log.d(TAG, "onCreate: ")
+                        wordpressList.add(arrayOf(
+                            it.getJSONObject(i).getJSONObject("title").getString("rendered"),
+                            it.getJSONObject(i).getJSONObject("content").getString("rendered")
+                        ))
+                    }
+                }
+            }
+
             fun navDrawerClickie(
                 route: String,
                 scope: CoroutineScope,
@@ -36,7 +57,11 @@ class MainActivity : ComponentActivity() {
                 scope.launch { scaffoldState.drawerState.close() }
             }
             ShintaikanJetpackTheme {
-                Bob(onClick = ::navDrawerClickie, navHostController = navController)
+                Bob(
+                    onClick = ::navDrawerClickie,
+                    navHostController = navController,
+                    wordpressList, scope
+                )
             }
         }
     }
@@ -46,10 +71,11 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun Bob(
     onClick: (String, CoroutineScope, ScaffoldState) -> Unit,
-    navHostController: NavHostController
+    navHostController: NavHostController,
+    wordpressList: List<Array<String>>,
+    scope: CoroutineScope
 ) {
     val scaffoldState = rememberScaffoldState()
-    val scope = rememberCoroutineScope()
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
@@ -62,16 +88,16 @@ private fun Bob(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /* doSomething() */ }) {
+                    /*IconButton(onClick = { *//* doSomething() *//* }) {
                         Icon(Icons.Filled.Favorite, contentDescription = "Localized description")
-                    }
+                    }*/
                 }
             )
         },
         drawerContent = drawerContent { onClick(it, scope, scaffoldState) }
     ) {
         NavHost(navController = navHostController, startDestination = "Home") {
-            composable("Home") { Home() }
+            composable("Home") { Home(wordpressList) }
             composable("Trplan") { Trplan() }
             composable("Pruefungen") { Pruefungen() }
             composable("Ferien") { Ferien() }
@@ -83,4 +109,3 @@ private fun Bob(
         }
     }
 }
-
