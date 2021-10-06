@@ -8,6 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -100,6 +101,7 @@ private fun Bob(
         },
         drawerContent = drawerContent { onClick(it, scope, scaffoldState) }
     ) {
+        val viewModel: MyViewModel = viewModel()
         val firestoreData = remember {
             mutableStateOf(mapOf<String, MutableMap<String, Any>>())
         }
@@ -116,6 +118,19 @@ private fun Bob(
         )
         imageList.shuffle()
 
+        val refreshScope = rememberCoroutineScope()
+        fun refresh() {
+            refreshScope.launch {
+                viewModel.setRefresh(true)
+                getFirestoreData {
+                    firestoreData.value = it
+                    refreshScope.launch {
+                        viewModel.setRefresh(false)
+                    }
+                }
+            }
+        }
+
         NavHost(navController = navHostController, startDestination = "Home") {
             composable("Home") {
                 Home(wordpressList)
@@ -129,7 +144,9 @@ private fun Bob(
                 FirebaseDataPage(
                     title = "Gürtelprüfungen",
                     firestoreData = firestoreData.value["pruefungen"],
-                    imageResource = imageList[0]
+                    imageResource = imageList[0],
+                    vm = viewModel,
+                    onRefresh = ::refresh
                 )
                 appBarTitle.value = "Gürtelprüfungen"
             }
@@ -137,7 +154,9 @@ private fun Bob(
                 FirebaseDataPage(
                     title = "Ferientraining",
                     firestoreData = firestoreData.value["ferientraining"],
-                    imageResource = imageList[1]
+                    imageResource = imageList[1],
+                    vm = viewModel,
+                    onRefresh = ::refresh
                 )
                 appBarTitle.value = "Ferientraining"
             }
@@ -157,7 +176,9 @@ private fun Bob(
                 FirebaseDataPage(
                     title = "Vorführungen",
                     firestoreData = firestoreData.value["vorfuehrungen"],
-                    imageResource = imageList[2]
+                    imageResource = imageList[2],
+                    vm = viewModel,
+                    onRefresh = ::refresh
                 )
                 appBarTitle.value = "Vorführungen"
             }
@@ -165,7 +186,9 @@ private fun Bob(
                 FirebaseDataPage(
                     title = "Lehrgänge + Turniere",
                     firestoreData = firestoreData.value["turniere"],
-                    imageResource = imageList[3]
+                    imageResource = imageList[3],
+                    vm = viewModel,
+                    onRefresh = ::refresh
                 ) {
                     Text(text = "Die Ausschreibungen hängen auch im Dojo!", style = Typography.h3)
                 }
