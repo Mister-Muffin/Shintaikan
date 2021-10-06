@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
             }
             scope.launch {
                 getHttpJson(url, cacheDir) {
-                    for (i in 0..it.length() - 1) {
+                    for (i in 0 until it.length()) {
                         Log.d(TAG, "onCreate: ")
                         wordpressList.add(
                             arrayOf(
@@ -53,7 +53,7 @@ class MainActivity : ComponentActivity() {
             ) {
                 navController.navigate(route) {
                     popUpTo("Home")
-                    launchSingleTop = true;
+                    launchSingleTop = true
                 }
                 scope.launch { scaffoldState.drawerState.close() }
             }
@@ -78,7 +78,7 @@ private fun Bob(
 ) {
     val scaffoldState = rememberScaffoldState()
     val appBarTitle = remember {
-        mutableStateOf<String>("Shintaikan")
+        mutableStateOf("Shintaikan")
     }
     Scaffold(
         scaffoldState = scaffoldState,
@@ -103,10 +103,19 @@ private fun Bob(
         val firestoreData = remember {
             mutableStateOf(mapOf<String, MutableMap<String, Any>>())
         }
-
-        getFirestoreData() {
-            firestoreData.value = it
+        if (firestoreData.value.isEmpty()) {
+            getFirestoreData {
+                firestoreData.value = it
+            }
         }
+        val imageList: IntArray = intArrayOf(
+            R.drawable.bonsai,
+            R.drawable.sakura,
+            R.drawable.seerose1,
+            R.drawable.bonsai
+        )
+        imageList.shuffle()
+
         NavHost(navController = navHostController, startDestination = "Home") {
             composable("Home") {
                 Home(wordpressList)
@@ -119,14 +128,16 @@ private fun Bob(
             composable("Pruefungen") {
                 FirebaseDataPage(
                     title = "Gürtelprüfungen",
-                    firestoreData = firestoreData.value["pruefungen"]
+                    firestoreData = firestoreData.value["pruefungen"],
+                    imageResource = imageList[0]
                 )
                 appBarTitle.value = "Gürtelprüfungen"
             }
             composable("Ferien") {
                 FirebaseDataPage(
                     title = "Ferientraining",
-                    firestoreData = firestoreData.value["ferientraining"]
+                    firestoreData = firestoreData.value["ferientraining"],
+                    imageResource = imageList[1]
                 )
                 appBarTitle.value = "Ferientraining"
             }
@@ -145,14 +156,16 @@ private fun Bob(
             composable("Vorfuehrungen") {
                 FirebaseDataPage(
                     title = "Vorführungen",
-                    firestoreData = firestoreData.value["vorfuehrungen"]
+                    firestoreData = firestoreData.value["vorfuehrungen"],
+                    imageResource = imageList[2]
                 )
                 appBarTitle.value = "Vorführungen"
             }
             composable("Lehrgaenge") {
                 FirebaseDataPage(
                     title = "Lehrgänge + Turniere",
-                    firestoreData = firestoreData.value["turniere"]
+                    firestoreData = firestoreData.value["turniere"],
+                    imageResource = imageList[3]
                 ) {
                     Text(text = "Die Ausschreibungen hängen auch im Dojo!", style = Typography.h3)
                 }

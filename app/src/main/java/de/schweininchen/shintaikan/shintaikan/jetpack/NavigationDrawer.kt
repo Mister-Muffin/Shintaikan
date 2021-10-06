@@ -3,6 +3,8 @@ package de.schweininchen.shintaikan.shintaikan.jetpack
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -17,13 +19,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun drawerContent(onClick: (String) -> Unit): @Composable() (ColumnScope.() -> Unit) =
+fun drawerContent(onClick: (String) -> Unit): @Composable (ColumnScope.() -> Unit) =
     {
         Column(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp)
+                .verticalScroll(rememberScrollState())
         ) {
             Image(
                 painter = painterResource(id = R.drawable.pelli),
@@ -34,35 +37,35 @@ fun drawerContent(onClick: (String) -> Unit): @Composable() (ColumnScope.() -> U
                     .size(120.dp)
             )
             Divider()
-                Column {
-                    DrawerItem("Start", Icons.Outlined.Info) { onClick("Home") }
-                    DrawerItem("Trainingsplan", Icons.Outlined.DateRange) { onClick("Trplan") }
-                    DrawerItem(
-                        "Gürtelprüfungen",
-                        Icons.Outlined.NorthEast
-                    ) { onClick("Pruefungen") }
-                    DrawerItem("Ferientraining", Icons.Outlined.BeachAccess) { onClick("Ferien") }
-                    DrawerItem(
-                        "Nach den Sommerferien",
-                        Icons.Outlined.WbSunny
-                    ) { onClick("NachSoFe") }
-                    DrawerItem(
-                        "Der Club / Wegbeschreibung",
-                        Icons.Outlined.Home
-                    ) { onClick("ClubWeg") }
-                    DrawerItem(
-                        "Anfänger / Interressenten",
-                        Icons.Outlined.DirectionsWalk
-                    ) { onClick("Anfaenger") }
-                    DrawerItem(
-                        "Vorführungen",
-                        Icons.Outlined.RemoveRedEye
-                    ) { onClick("Vorfuehrungen") }
-                    DrawerItem(
-                        "Lehrgänge + Turniere",
-                        Icons.Outlined.People
-                    ) { onClick("Lehrgaenge") }
-                }
+            Column {
+                DrawerItem("Start", Icons.Outlined.Info) { onClick("Home") }
+                DrawerItem("Trainingsplan", Icons.Outlined.DateRange) { onClick("Trplan") }
+                DrawerItem(
+                    "Gürtelprüfungen",
+                    Icons.Outlined.NorthEast
+                ) { onClick("Pruefungen") }
+                DrawerItem("Ferientraining", Icons.Outlined.BeachAccess) { onClick("Ferien") }
+                DrawerItem(
+                    "Nach den Sommerferien",
+                    Icons.Outlined.WbSunny
+                ) { onClick("NachSoFe") }
+                DrawerItem(
+                    "Der Club / Wegbeschreibung",
+                    Icons.Outlined.Home
+                ) { onClick("ClubWeg") }
+                DrawerItem(
+                    "Anfänger / Interressenten",
+                    Icons.Outlined.DirectionsWalk
+                ) { onClick("Anfaenger") }
+                DrawerItem(
+                    "Vorführungen",
+                    Icons.Outlined.RemoveRedEye
+                ) { onClick("Vorfuehrungen") }
+                DrawerItem(
+                    "Lehrgänge + Turniere",
+                    Icons.Outlined.People
+                ) { onClick("Lehrgaenge") }
+            }
         }
         Divider()
     }

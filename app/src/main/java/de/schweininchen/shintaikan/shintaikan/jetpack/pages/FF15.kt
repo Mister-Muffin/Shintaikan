@@ -21,6 +21,7 @@ import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.Typography
 fun FirebaseDataPage(
     title: String,
     firestoreData: Map<String, Any>?,
+    imageResource: Int,
     extraComposable: @Composable () -> Unit = {}
 ) {
 
@@ -50,7 +51,7 @@ fun FirebaseDataPage(
         extraComposable()
 
         Image(
-            painter = painterResource(id = R.drawable.bonsai),
+            painter = painterResource(id = imageResource),
             contentDescription = "Bonsai",
             Modifier
                 .size(250.dp)
