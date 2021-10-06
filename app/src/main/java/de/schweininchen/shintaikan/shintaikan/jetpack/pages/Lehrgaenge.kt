@@ -1,50 +1,24 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.pages
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-import de.schweininchen.shintaikan.shintaikan.jetpack.R
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import de.schweininchen.shintaikan.shintaikan.jetpack.getFirestoreData
 import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.Typography
 
 @Composable
 fun Lehrgaenge() {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .verticalScroll(rememberScrollState())
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.kaempfer_app),
-            contentDescription = "Shintaikan logo",
-            Modifier
-                .size(100.dp)
-                .align(Alignment.End)
-        )
-        Text(text = "Karate Club\nShintaikan e.V.", style = Typography.h1)
-        Text(text = "Lehrgaenge & Turniere", style = Typography.h2)
 
-        Text(text = "Firebase", style = Typography.body2)
+    val firestoreData = remember {
+        mutableStateOf(mapOf<String, Any>())
+    }
 
+    getFirestoreData() {
+        firestoreData.value = it
+    }
+
+    FirebaseDataPage("Lehrgänge & Turniere", firestoreData = firestoreData.value) {
         Text(text = "Die Ausschreibungen hängen auch im Dojo!", style = Typography.h3)
-
-        Image(
-            painter = painterResource(id = R.drawable.bonsai),
-            contentDescription = "Bonsai",
-            Modifier
-                .size(250.dp)
-        )
-
     }
 }

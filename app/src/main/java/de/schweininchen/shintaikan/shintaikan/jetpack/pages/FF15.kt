@@ -10,26 +10,19 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
-import de.schweininchen.shintaikan.shintaikan.jetpack.getFirestoreData
 import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.Typography
 
 @Composable
-fun Vorfuehrungen() {
-
-    val firestoreData = remember {
-        mutableStateOf(mapOf<String, Any>())
-    }
-
-    getFirestoreData() {
-        firestoreData.value = it
-    }
+fun FirebaseDataPage(
+    title: String,
+    firestoreData: Map<String, Any>?,
+    extraComposable: @Composable () -> Unit = {}
+) {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -45,16 +38,23 @@ fun Vorfuehrungen() {
                 .size(100.dp)
                 .align(Alignment.End)
         )
-        Text(text = "Karate Club\nShintaikan e.V.", style = Typography.h1)
-        Text(text = "Vorführungen", style = Typography.h2)
 
-        if (firestoreData.value.isEmpty()) {
+        Text(text = title, style = Typography.h1)
+
+        if (firestoreData == null || firestoreData.isEmpty()) {
             CircularProgressIndicator()
         } else {
-            Html(text = firestoreData.value["html"].toString())
+            Html(text = firestoreData["html"].toString())
         }
 
-        Bambus()
+        extraComposable()
+
+        Image(
+            painter = painterResource(id = R.drawable.bonsai),
+            contentDescription = "Bonsai",
+            Modifier
+                .size(250.dp)
+        )
 
     }
 }

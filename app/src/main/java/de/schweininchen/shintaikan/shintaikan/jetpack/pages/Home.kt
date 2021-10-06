@@ -95,7 +95,7 @@ fun Home(postsList: List<Array<String>>) {
 }
 
 @Composable
-private fun Html(text: String) {
+fun Html(text: String) {
     AndroidView(factory = { context ->
         TextView(context).apply {
             this.setTextColor(

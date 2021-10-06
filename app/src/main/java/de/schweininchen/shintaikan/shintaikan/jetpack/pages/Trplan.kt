@@ -18,25 +18,32 @@ import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.Typography
 
 @Composable
 fun Trplan() {
+
     val imageSize = 100.dp
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Image(
             painter = painterResource(id = R.drawable.kaempfer_app),
             contentDescription = "Shintaikan logo",
-            Modifier.size(100.dp).align(Alignment.End)
+            Modifier
+                .size(100.dp)
+                .align(Alignment.End)
         )
         Text(text = "Trainingsplan", style = Typography.h2)
 
         Image(
             painter = painterResource(id = R.drawable.bambus),
             contentDescription = null,
-            modifier = Modifier.fillMaxWidth().height(50.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp)
         )
         Text("***FIREBASE***")
         Image(
             painter = painterResource(id = R.drawable.bambus),
             contentDescription = null,
-            modifier = Modifier.fillMaxWidth().height(50.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp)
         )
 
     }

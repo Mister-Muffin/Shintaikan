@@ -7,20 +7,19 @@ import androidx.activity.compose.setContent
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import de.schweininchen.shintaikan.shintaikan.jetpack.pages.*
 import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.ShintaikanJetpackTheme
+import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.Typography
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-const val TAG = "MainActivity.kt"
+private const val TAG = "MainActivity.kt"
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,10 +36,12 @@ class MainActivity : ComponentActivity() {
                 getHttpJson(url, cacheDir) {
                     for (i in 0..it.length() - 1) {
                         Log.d(TAG, "onCreate: ")
-                        wordpressList.add(arrayOf(
-                            it.getJSONObject(i).getJSONObject("title").getString("rendered"),
-                            it.getJSONObject(i).getJSONObject("content").getString("rendered")
-                        ))
+                        wordpressList.add(
+                            arrayOf(
+                                it.getJSONObject(i).getJSONObject("title").getString("rendered"),
+                                it.getJSONObject(i).getJSONObject("content").getString("rendered")
+                            )
+                        )
                     }
                 }
             }
@@ -76,11 +77,14 @@ private fun Bob(
     scope: CoroutineScope
 ) {
     val scaffoldState = rememberScaffoldState()
+    val appBarTitle = remember {
+        mutableStateOf<String>("Shintaikan")
+    }
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
             TopAppBar(
-                title = { Text("Shintaikan") },
+                title = { Text(appBarTitle.value) },
                 navigationIcon = {
                     IconButton(onClick = { scope.launch { scaffoldState.drawerState.open() } }
                     ) {
@@ -96,16 +100,64 @@ private fun Bob(
         },
         drawerContent = drawerContent { onClick(it, scope, scaffoldState) }
     ) {
+        val firestoreData = remember {
+            mutableStateOf(mapOf<String, MutableMap<String, Any>>())
+        }
+
+        getFirestoreData() {
+            firestoreData.value = it
+        }
         NavHost(navController = navHostController, startDestination = "Home") {
-            composable("Home") { Home(wordpressList) }
-            composable("Trplan") { Trplan() }
-            composable("Pruefungen") { Pruefungen() }
-            composable("Ferien") { Ferien() }
-            composable("NachSoFe") { NachSoFe() }
-            composable("ClubWeg") { ClubWeg() }
-            composable("Anfaenger") { Anfaenger() }
-            composable("Vorfuehrungen") { Vorfuehrungen() }
-            composable("Lehrgaenge") { Lehrgaenge() }
+            composable("Home") {
+                Home(wordpressList)
+                appBarTitle.value = "Shintaikan"
+            }
+            composable("Trplan") {
+                Trplan()
+                appBarTitle.value = "Trainingsplan"
+            }
+            composable("Pruefungen") {
+                FirebaseDataPage(
+                    title = "Gürtelprüfungen",
+                    firestoreData = firestoreData.value["pruefungen"]
+                )
+                appBarTitle.value = "Gürtelprüfungen"
+            }
+            composable("Ferien") {
+                FirebaseDataPage(
+                    title = "Ferientraining",
+                    firestoreData = firestoreData.value["ferientraining"]
+                )
+                appBarTitle.value = "Ferientraining"
+            }
+            composable("NachSoFe") {
+                NachSoFe()
+                appBarTitle.value = "Nach den Sommerferien"
+            }
+            composable("ClubWeg") {
+                ClubWeg()
+                appBarTitle.value = "Der Club"
+            }
+            composable("Anfaenger") {
+                Anfaenger()
+                appBarTitle.value = "Anfänger / Interressenten"
+            }
+            composable("Vorfuehrungen") {
+                FirebaseDataPage(
+                    title = "Vorführungen",
+                    firestoreData = firestoreData.value["vorfuehrungen"]
+                )
+                appBarTitle.value = "Vorführungen"
+            }
+            composable("Lehrgaenge") {
+                FirebaseDataPage(
+                    title = "Lehrgänge + Turniere",
+                    firestoreData = firestoreData.value["turniere"]
+                ) {
+                    Text(text = "Die Ausschreibungen hängen auch im Dojo!", style = Typography.h3)
+                }
+                appBarTitle.value = "Lehrgänge + Turniere"
+            }
         }
     }
 }
