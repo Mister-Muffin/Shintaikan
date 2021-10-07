@@ -16,6 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -84,7 +86,8 @@ private fun DrawerItem(
         Text(
             modifier = Modifier
                 .padding(start = 20.dp)
-                .fillMaxWidth(), text = name
+                .fillMaxWidth(), text = name,
+            style = TextStyle(fontWeight = FontWeight.Bold)
         )
     }
 }
