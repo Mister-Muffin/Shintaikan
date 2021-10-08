@@ -1,4 +1,4 @@
-package de.schweininchen.shintaikan.shintaikan.jetpack;
+package de.schweininchen.shintaikan.shintaikan.jetpack
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
