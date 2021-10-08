@@ -45,7 +45,7 @@ fun drawerContent(onClick: (String) -> Unit): @Composable (ColumnScope.() -> Uni
         val openDialog = remember { mutableStateOf(false) }
         val openCustomDialog = remember { mutableStateOf(false) }
 
-        if (openDialog.value) AboutAlertDialog(onDissmiss = { openDialog.value = false })
+        if (openDialog.value) AboutAlertDialog { openDialog.value = false }
         if (openCustomDialog.value) CustomAlertDialog(
             title = "",
             text = "Was Rüdiger noch sagen wollte:\nTiefer stehen, schneller schlagen! :)"
@@ -155,14 +155,14 @@ fun drawerContent(onClick: (String) -> Unit): @Composable (ColumnScope.() -> Uni
             }
             if (showDebugInfo.value) {
                 item {
-                    debugInfo()
+                    DebugInfo()
                 }
             }
         }
     }
 
 @Composable
-fun debugInfo() {
+fun DebugInfo() {
     Text(
         text = BuildConfig.VERSION_CODE.toString(),
         style = TextStyle(fontWeight = FontWeight.Bold),
@@ -200,13 +200,12 @@ private fun DrawerItem(
         }
     }
 
-
 }
 
 @Composable
 fun CustomAlertDialog(title: String, text: String, onDissmiss: () -> Unit) {
     AlertDialog(
-        onDismissRequest = { onDissmiss },
+        onDismissRequest = onDissmiss,
         title = { if (title.isNotEmpty()) Text(text = title) },
         text = {
             Text(
@@ -231,15 +230,13 @@ fun CustomAlertDialog(title: String, text: String, onDissmiss: () -> Unit) {
 }
 
 @Composable
-fun AboutAlertDialog(text: String = "Shintaikan", onDissmiss: () -> Unit) {
+fun AboutAlertDialog(onDissmiss: () -> Unit) {
     val context = LocalContext.current
 
     AlertDialog(
-        onDismissRequest = {
-            onDissmiss
-        },
+        onDismissRequest = onDissmiss,
         title = {
-            Row() {
+            Row {
                 Image(
                     painter = painterResource(id = R.drawable.pelli),
                     contentDescription = "Shintaikan logo",
@@ -248,14 +245,14 @@ fun AboutAlertDialog(text: String = "Shintaikan", onDissmiss: () -> Unit) {
                         .padding(end = 8.dp),
                     alignment = Alignment.Center
                 )
-                Column() {
+                Column {
                     Text(text = "Shintaikan")
                     Text(text = "Version ${BuildConfig.VERSION_CODE}")
                 }
             }
         },
         text = {
-            Column() {
+            Column {
                 Button(
                     onClick = {
                         linkToWebpage(
