@@ -53,7 +53,6 @@ fun drawerContent(onClick: (String) -> Unit): @Composable (ColumnScope.() -> Uni
             openCustomDialog.value = false
         }
 
-
         LazyColumn(
             state = listState,
             verticalArrangement = Arrangement.spacedBy(8.dp),

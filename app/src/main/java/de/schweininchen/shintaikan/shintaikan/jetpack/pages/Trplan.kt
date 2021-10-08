@@ -7,30 +7,22 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import de.schweininchen.shintaikan.shintaikan.jetpack.MyViewModel
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
-import de.schweininchen.shintaikan.shintaikan.jetpack.getFirestoreTrplan
 import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.Typography
 
 @Composable
-fun Trplan() {
+fun Trplan(vm: MyViewModel) {
+    val firestoreData = vm.trplanData.value
     val days = arrayOf("Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag")
+    if (firestoreData.isEmpty()) vm.updateTrplan()
 
-    val firestoreData = remember {
-        mutableStateOf(mapOf<String, MutableMap<String, Any>>())
-    }
-    if (firestoreData.value.toString().length == 2) {
-        getFirestoreTrplan {
-            firestoreData.value = it
-        }
-    }
-    Log.d("TAG", "TTrplan: ${firestoreData.value}")
-    
+    //Log.d("TAG", "TTrplan: ${firestoreData}")
+
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth(),
@@ -58,36 +50,36 @@ fun Trplan() {
             )
         }
         item {
-            if (firestoreData.value.isEmpty()) {
+            if (firestoreData.isEmpty()) {
                 CircularProgressIndicator()
             } else {
-                Log.d("TAG2", "Trplan: ${firestoreData.value}")
+                Log.d("TAG2", "Trplan: ${firestoreData}")
                 for (i in days) {
                     Text(text = i, style = Typography.h2)
-                    Log.d("TAG", "Keys: ${firestoreData.value.keys}")
-                    for (j in firestoreData.value.keys) {
-                        Log.d("TAG", "Keys: ${firestoreData.value[j]}")
+                    Log.d("TAG", "Keys: ${firestoreData.keys}")
+                    for (j in firestoreData.keys) {
+                        Log.d("TAG", "Keys: ${firestoreData[j]}")
                         Log.d("TAG", "Index: ${days.indexOf(i).inc()}")
-                        if (!firestoreData.value[j].isNullOrEmpty() &&
-                            firestoreData.value[j]?.get("key").toString()
+                        if (!firestoreData[j].isNullOrEmpty() &&
+                            firestoreData[j]?.get("key").toString()
                                 .startsWith(days.indexOf(i).inc().toString()) &&
-                            firestoreData.value[j]?.get("start")
+                            firestoreData[j]?.get("start")
                                 .toString().isNotEmpty()
                         ) {
-                            if (firestoreData.value[j]?.get("group")
+                            if (firestoreData[j]?.get("group")
                                     .toString() == "Benutzerdefiniert"
                             ) {
                                 Text(
-                                    text = "${firestoreData.value[j]?.get("start").toString()} - " +
-                                            "${firestoreData.value[j]?.get("end").toString()}: " +
-                                            firestoreData.value[j]?.get("customText").toString(),
+                                    text = "${firestoreData[j]?.get("start").toString()} - " +
+                                            "${firestoreData[j]?.get("end").toString()}: " +
+                                            firestoreData[j]?.get("customText").toString(),
                                     style = Typography.body2
                                 )
                             } else {
                                 Text(
-                                    text = "${firestoreData.value[j]?.get("start").toString()} - " +
-                                            "${firestoreData.value[j]?.get("end").toString()}: " +
-                                            firestoreData.value[j]?.get("group").toString(),
+                                    text = "${firestoreData[j]?.get("start").toString()} - " +
+                                            "${firestoreData[j]?.get("end").toString()}: " +
+                                            firestoreData[j]?.get("group").toString(),
                                     style = Typography.body2
                                 )
                             }

@@ -17,16 +17,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import de.schweininchen.shintaikan.shintaikan.jetpack.MyViewModel
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
 import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.Typography
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
 @Composable
 fun FirebaseDataPage(
@@ -91,19 +88,4 @@ fun FirebaseDataPage(
 
         }
     }
-}
-
-class MyViewModel : ViewModel() {
-    private val _isRefreshing = MutableStateFlow(false)
-
-    val isRefreshing: StateFlow<Boolean> get() = _isRefreshing.asStateFlow()
-
-    suspend fun switchRefresh() {
-        _isRefreshing.emit(!isRefreshing.value)
-    }
-
-    suspend fun setRefresh(refreshing: Boolean) {
-        _isRefreshing.emit(refreshing)
-    }
-
 }
