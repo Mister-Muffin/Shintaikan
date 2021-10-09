@@ -110,21 +110,21 @@ fun drawerContent(
                     Divider()
                     DrawerItem(
                         "Infofilmchen",
-                        Icons.Outlined.Movie
-                    ) { onClick("Lehrgaenge") }
+                        Icons.Outlined.Movie, externalLink = false, disabled = true
+                    ) { }
                     DrawerItem(
                         "Seefest 2019",
-                        Icons.Outlined.Movie
-                    ) { onClick("Lehrgaenge") }
+                        Icons.Outlined.Movie, externalLink = false, disabled = true
+                    ) { }
                     DrawerItem(
                         "Mixfilm 2019",
-                        Icons.Outlined.Movie
-                    ) { onClick("Lehrgaenge") }
+                        Icons.Outlined.Movie, externalLink = false, disabled = true
+                    ) { }
                     Divider()
                     DrawerItem(
                         "Kontakt und Feedback",
-                        Icons.Outlined.Mail,
-                    ) { onClick("Lehrgaenge") }
+                        Icons.Outlined.Mail, externalLink = false, disabled = true
+                    ) { }
                     DrawerItem(
                         "Impressum",
                         Icons.Outlined.AttachFile, true
@@ -202,7 +202,11 @@ fun DebugInfo(vm: MyViewModel) {
 
 @Composable
 private fun DrawerItem(
-    name: String, icon: ImageVector, externalLink: Boolean = false, onClick: () -> Unit
+    name: String,
+    icon: ImageVector,
+    externalLink: Boolean = false,
+    disabled: Boolean = false,
+    onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -210,20 +214,39 @@ private fun DrawerItem(
             .padding(top = customPadding, bottom = customPadding, start = 20.dp, end = 20.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(imageVector = icon, "Drawer item", tint = Color(0xFF898989))
-        Text(
-            modifier = Modifier
-                .padding(start = 20.dp)
-                .weight(1f), text = name,
-            style = TextStyle(fontWeight = FontWeight.Bold)
-        )
-        if (externalLink) {
-            Box(contentAlignment = Alignment.CenterEnd) {
-                Icon(
-                    imageVector = Icons.Outlined.ExitToApp,
-                    "",
-                    tint = Color(0xFF898989)
-                )
+        if (disabled) {
+            Icon(imageVector = icon, "Drawer item", tint = Color(0xFFC9C9C9))
+            Text(
+                modifier = Modifier
+                    .padding(start = 20.dp)
+                    .weight(1f), text = name,
+                style = TextStyle(fontWeight = FontWeight.Bold, color = Color(0xFFC9C9C9))
+            )
+            if (externalLink) {
+                Box(contentAlignment = Alignment.CenterEnd) {
+                    Icon(
+                        imageVector = Icons.Outlined.ExitToApp,
+                        "",
+                        tint = Color(0xFFC9C9C9)
+                    )
+                }
+            }
+        } else {
+            Icon(imageVector = icon, "Drawer item", tint = Color(0xFF898989))
+            Text(
+                modifier = Modifier
+                    .padding(start = 20.dp)
+                    .weight(1f), text = name,
+                style = TextStyle(fontWeight = FontWeight.Bold)
+            )
+            if (externalLink) {
+                Box(contentAlignment = Alignment.CenterEnd) {
+                    Icon(
+                        imageVector = Icons.Outlined.ExitToApp,
+                        "",
+                        tint = Color(0xFF898989)
+                    )
+                }
             }
         }
     }

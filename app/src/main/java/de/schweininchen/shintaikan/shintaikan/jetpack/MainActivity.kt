@@ -7,10 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -85,11 +82,31 @@ private fun Bob(
     val appBarTitle = remember {
         mutableStateOf("Shintaikan")
     }
+
+    /* if (viewModel.exoPlayer == null) {
+
+     }
+
+     val uri =
+         "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+     val context = LocalContext.current
+
+     if (appBarTitle.value.contains("film")) {
+         exoPlayer.play()
+     } else if (!appBarTitle.value.contains("Film") && exoPlayer.isPlaying) {
+         exoPlayer.stop()
+     }
+     exoPlayer.stop()*/
+
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
             TopAppBar(
-                title = { Text(appBarTitle.value) },
+                title = {
+                    Text(
+                        appBarTitle.value
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = { scope.launch { scaffoldState.drawerState.open() } }
                     ) {
@@ -192,6 +209,14 @@ private fun Bob(
                 }
                 appBarTitle.value = "Lehrgänge + Turniere"
             }
+            /* composable("Movie1") {
+
+                 ExoVideoPlayer(
+                     exoPlayer = exoPlayer
+                 )
+                 appBarTitle.value = "Infofilmchen"
+                 exoPlayer.play()
+             }*/
         }
     }
 }
