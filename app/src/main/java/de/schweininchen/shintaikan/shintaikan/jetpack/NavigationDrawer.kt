@@ -8,6 +8,7 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -21,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -37,12 +39,13 @@ import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.LightBlue800
 import kotlinx.coroutines.launch
 
 
-val customPadding = 15.dp
+val customPadding = 12.dp
 
 @Composable
 fun drawerContent(
     vm: MyViewModel,
-    onClick: (String) -> Unit
+    selectedMain: NavigationDrawerRoutes,
+    onClickMain: (NavigationDrawerRoutes?) -> Unit
 ): @Composable (ColumnScope.() -> Unit) =
     {
         val context = LocalContext.current
@@ -78,35 +81,71 @@ fun drawerContent(
                         .fillMaxWidth()
                         .size(120.dp)
                 )
-                Divider()
+                Divider(modifier = Modifier.padding(bottom = 4.dp))
                 Column {
-                    DrawerItem("Start", Icons.Outlined.Info) { onClick("Home") }
-                    DrawerItem("Trainingsplan", Icons.Outlined.DateRange) { onClick("Trplan") }
+                    DrawerItem(
+                        "Start",
+                        Icons.Outlined.Info,
+                        selected = selectedMain,
+                        route = NavigationDrawerRoutes.HOME,
+                        onClick = onClickMain,
+                    )
+                    DrawerItem(
+                        "Trainingsplan",
+                        Icons.Outlined.DateRange,
+                        selected = selectedMain,
+                        route = NavigationDrawerRoutes.TRPLAN,
+                        onClick = onClickMain,
+                    )
                     DrawerItem(
                         "Gürtelprüfungen",
-                        Icons.Outlined.NorthEast
-                    ) { onClick("Pruefungen") }
-                    DrawerItem("Ferientraining", Icons.Outlined.BeachAccess) { onClick("Ferien") }
+                        Icons.Outlined.NorthEast,
+                        selected = selectedMain,
+                        route = NavigationDrawerRoutes.PRUEFUNGEN,
+                        onClick = onClickMain,
+                    )
+                    DrawerItem(
+                        "Ferientraining",
+                        Icons.Outlined.BeachAccess,
+                        selected = selectedMain,
+                        route = NavigationDrawerRoutes.FERIEN,
+                        onClick = onClickMain,
+                    )
                     DrawerItem(
                         "Nach den Sommerferien",
-                        Icons.Outlined.WbSunny
-                    ) { onClick("NachSoFe") }
+                        Icons.Outlined.WbSunny,
+                        selected = selectedMain,
+                        route = NavigationDrawerRoutes.NACHSOFE,
+                        onClick = onClickMain,
+                    )
                     DrawerItem(
                         "Der Club / Wegbeschreibung",
-                        Icons.Outlined.Home
-                    ) { onClick("ClubWeg") }
+                        Icons.Outlined.Home,
+                        selected = selectedMain,
+                        route = NavigationDrawerRoutes.CLUBWEG,
+                        onClick = onClickMain,
+                    )
                     DrawerItem(
                         "Anfänger / Interressenten",
-                        Icons.Outlined.DirectionsWalk
-                    ) { onClick("Anfaenger") }
+                        Icons.Outlined.DirectionsWalk,
+                        selected = selectedMain,
+                        route = NavigationDrawerRoutes.ANFAENGER,
+                        onClick = onClickMain,
+                    )
                     DrawerItem(
                         "Vorführungen",
-                        Icons.Outlined.RemoveRedEye
-                    ) { onClick("Vorfuehrungen") }
+                        Icons.Outlined.RemoveRedEye,
+                        selected = selectedMain,
+                        route = NavigationDrawerRoutes.VORFUEHRUNGEN,
+                        onClick = onClickMain,
+                    )
                     DrawerItem(
                         "Lehrgänge + Turniere",
-                        Icons.Outlined.People
-                    ) { onClick("Lehrgaenge") }
+                        Icons.Outlined.People,
+                        selected = selectedMain,
+                        route = NavigationDrawerRoutes.LEHRGAENGE,
+                        onClick = onClickMain,
+                    )
                     Divider()
                     DrawerItem(
                         "Infofilmchen",
@@ -140,7 +179,7 @@ fun drawerContent(
                     //
                     DrawerItem(
                         "Über",
-                        Icons.Outlined.Info
+                        Icons.Outlined.Info,
                     ) {
                         openDialog.value = true
                     }
@@ -206,12 +245,21 @@ private fun DrawerItem(
     icon: ImageVector,
     externalLink: Boolean = false,
     disabled: Boolean = false,
-    onClick: () -> Unit
+    selected: NavigationDrawerRoutes? = null,
+    route: NavigationDrawerRoutes = NavigationDrawerRoutes.NONE,
+    onClick: (NavigationDrawerRoutes?) -> Unit
 ) {
+
+    val color =
+        if (selected == route && !disabled) MaterialTheme.colors.primary else Color(0xFF898989)
+
     Row(
         modifier = Modifier
-            .clickable(onClick = onClick)
-            .padding(top = customPadding, bottom = customPadding, start = 20.dp, end = 20.dp),
+            .padding(top = 4.dp, bottom = 4.dp, start = 8.dp, end = 8.dp)
+            .clickable(onClick = { onClick(route) })
+            .clip(MaterialTheme.shapes.medium)
+            .background(color = if (selected == route) MaterialTheme.colors.primary.copy(alpha = .15f) else Color.Transparent)
+            .padding(top = customPadding, bottom = customPadding, start = 12.dp, end = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (disabled) {
@@ -232,19 +280,22 @@ private fun DrawerItem(
                 }
             }
         } else {
-            Icon(imageVector = icon, "Drawer item", tint = Color(0xFF898989))
+            Icon(imageVector = icon, "Drawer item", tint = color)
             Text(
                 modifier = Modifier
                     .padding(start = 20.dp)
                     .weight(1f), text = name,
-                style = TextStyle(fontWeight = FontWeight.Bold)
+                style = TextStyle(
+                    fontWeight = FontWeight.Bold,
+                    color = if (selected == route) MaterialTheme.colors.primary else Color.Black
+                )
             )
             if (externalLink) {
                 Box(contentAlignment = Alignment.CenterEnd) {
                     Icon(
                         imageVector = Icons.Outlined.ExitToApp,
                         "",
-                        tint = Color(0xFF898989)
+                        tint = color
                     )
                 }
             }

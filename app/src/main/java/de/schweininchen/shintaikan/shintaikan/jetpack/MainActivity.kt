@@ -33,6 +33,10 @@ class MainActivity : ComponentActivity() {
             val url = "https://shintaikan.de/?rest_route=/wp/v2/posts"
             val scope = rememberCoroutineScope()
 
+            val selectedDrawerItem = remember {
+                mutableStateOf(NavigationDrawerRoutes.HOME)
+            }
+
             if (viewModel.wordpressList.isEmpty()) viewModel.updateHomeData(url, cacheDir)
             FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
                 if (!task.isSuccessful) {
@@ -49,21 +53,27 @@ class MainActivity : ComponentActivity() {
             })
 
             fun navDrawerClickie(
-                route: String,
+                route: NavigationDrawerRoutes?,
                 scope: CoroutineScope,
                 scaffoldState: ScaffoldState
             ) {
-                navController.navigate(route) {
-                    popUpTo("Home")
-                    launchSingleTop = true
+                if (route !== null) {
+                    navController.navigate(route.toString()) {
+                        popUpTo(NavigationDrawerRoutes.HOME.toString())
+                        launchSingleTop = true
+                    }
+                    selectedDrawerItem.value = route
+                    scope.launch { scaffoldState.drawerState.close() }
                 }
-                scope.launch { scaffoldState.drawerState.close() }
             }
             ShintaikanJetpackTheme {
                 Bob(
                     onClick = ::navDrawerClickie,
                     navHostController = navController,
-                    viewModel.wordpressList, scope, viewModel = viewModel
+                    viewModel.wordpressList,
+                    scope = scope,
+                    selectedDrawerItem = selectedDrawerItem.value,
+                    viewModel = viewModel
                 )
             }
         }
@@ -73,9 +83,10 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 private fun Bob(
-    onClick: (String, CoroutineScope, ScaffoldState) -> Unit,
+    onClick: (NavigationDrawerRoutes?, CoroutineScope, ScaffoldState) -> Unit,
     navHostController: NavHostController,
     wordpressList: List<Array<String>>,
+    selectedDrawerItem: NavigationDrawerRoutes,
     scope: CoroutineScope, viewModel: MyViewModel
 ) {
     val scaffoldState = rememberScaffoldState()
@@ -120,7 +131,13 @@ private fun Bob(
                 }
             )
         },
-        drawerContent = drawerContent(viewModel) { onClick(it, scope, scaffoldState) }
+        drawerContent = drawerContent(viewModel, selectedDrawerItem) {
+            onClick(
+                it,
+                scope,
+                scaffoldState
+            )
+        }
     ) {
         val firestoreData = viewModel.firestoreData.value
         if (firestoreData.isEmpty()) {
@@ -146,16 +163,19 @@ private fun Bob(
             }
         }
 
-        NavHost(navController = navHostController, startDestination = "Home") {
-            composable("Home") {
+        NavHost(
+            navController = navHostController,
+            startDestination = NavigationDrawerRoutes.HOME.toString()
+        ) {
+            composable(NavigationDrawerRoutes.HOME.toString()) {
                 Home(wordpressList)
                 appBarTitle.value = "Shintaikan"
             }
-            composable("Trplan") {
+            composable(NavigationDrawerRoutes.TRPLAN.toString()) {
                 Trplan(viewModel)
                 appBarTitle.value = "Trainingsplan"
             }
-            composable("Pruefungen") {
+            composable(NavigationDrawerRoutes.PRUEFUNGEN.toString()) {
                 FirebaseDataPage(
                     title = "Gürtelprüfungen",
                     firestoreData = firestoreData["pruefungen"],
@@ -165,7 +185,7 @@ private fun Bob(
                 )
                 appBarTitle.value = "Gürtelprüfungen"
             }
-            composable("Ferien") {
+            composable(NavigationDrawerRoutes.FERIEN.toString()) {
                 FirebaseDataPage(
                     title = "Ferientraining",
                     firestoreData = firestoreData["ferientraining"],
@@ -175,19 +195,19 @@ private fun Bob(
                 )
                 appBarTitle.value = "Ferientraining"
             }
-            composable("NachSoFe") {
+            composable(NavigationDrawerRoutes.NACHSOFE.toString()) {
                 NachSoFe()
                 appBarTitle.value = "Nach den Sommerferien"
             }
-            composable("ClubWeg") {
+            composable(NavigationDrawerRoutes.CLUBWEG.toString()) {
                 ClubWeg()
                 appBarTitle.value = "Der Club"
             }
-            composable("Anfaenger") {
+            composable(NavigationDrawerRoutes.ANFAENGER.toString()) {
                 Anfaenger()
                 appBarTitle.value = "Anfänger / Interressenten"
             }
-            composable("Vorfuehrungen") {
+            composable(NavigationDrawerRoutes.VORFUEHRUNGEN.toString()) {
                 FirebaseDataPage(
                     title = "Vorführungen",
                     firestoreData = firestoreData["vorfuehrungen"],
@@ -197,7 +217,7 @@ private fun Bob(
                 )
                 appBarTitle.value = "Vorführungen"
             }
-            composable("Lehrgaenge") {
+            composable(NavigationDrawerRoutes.LEHRGAENGE.toString()) {
                 FirebaseDataPage(
                     title = "Lehrgänge + Turniere",
                     firestoreData = firestoreData["turniere"],
