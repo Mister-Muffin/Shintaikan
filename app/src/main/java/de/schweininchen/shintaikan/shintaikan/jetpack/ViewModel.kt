@@ -61,4 +61,10 @@ class MyViewModel : ViewModel() {
     }
     //</editor-fold>
 
+    val firebaseMessagingToken = mutableStateOf("NO_TOKEN")
+
+    fun updatefirebaseMessagingToken(token: String) {
+        firebaseMessagingToken.value = token
+    }
+
 }

@@ -1,8 +1,11 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -26,15 +29,21 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.ContextCompat.startActivity
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.LightBlue800
 import kotlinx.coroutines.launch
 
+
 val customPadding = 15.dp
 
 @Composable
-fun drawerContent(onClick: (String) -> Unit): @Composable (ColumnScope.() -> Unit) =
+fun drawerContent(
+    vm: MyViewModel,
+    onClick: (String) -> Unit
+): @Composable (ColumnScope.() -> Unit) =
     {
         val context = LocalContext.current
 
@@ -154,20 +163,40 @@ fun drawerContent(onClick: (String) -> Unit): @Composable (ColumnScope.() -> Uni
             }
             if (showDebugInfo.value) {
                 item {
-                    DebugInfo()
+                    DebugInfo(vm = vm)
                 }
             }
         }
     }
 
 @Composable
-fun DebugInfo() {
-    Text(
-        text = BuildConfig.VERSION_CODE.toString(),
-        style = TextStyle(fontWeight = FontWeight.Bold),
-        modifier = Modifier.fillMaxWidth(),
-        textAlign = TextAlign.Center
-    )
+fun DebugInfo(vm: MyViewModel) {
+    Column {
+        val context = LocalContext.current
+        Text(
+            text = BuildConfig.VERSION_CODE.toString(),
+            style = TextStyle(fontWeight = FontWeight.Bold),
+            modifier = Modifier.fillMaxWidth(),
+            textAlign = TextAlign.Center
+        )
+        Text(
+            text = vm.firebaseMessagingToken.value,
+            style = TextStyle(fontWeight = FontWeight.Normal, fontSize = 10.sp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    val clip = ClipData.newPlainText("token", vm.firebaseMessagingToken.value)
+                    getSystemService(
+                        context,
+                        ClipboardManager::class.java
+                    )?.setPrimaryClip(clip)
+                    Toast
+                        .makeText(context, "copied!", Toast.LENGTH_LONG)
+                        .show()
+                },
+            textAlign = TextAlign.Center
+        )
+    }
 }
 
 

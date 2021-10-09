@@ -1,6 +1,7 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.*
@@ -15,6 +16,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
 import de.schweininchen.shintaikan.shintaikan.jetpack.pages.*
 import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.ShintaikanJetpackTheme
 import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.Typography
@@ -34,6 +37,19 @@ class MainActivity : ComponentActivity() {
             val scope = rememberCoroutineScope()
 
             if (viewModel.wordpressList.isEmpty()) viewModel.updateHomeData(url, cacheDir)
+            FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                    return@OnCompleteListener
+                }
+
+                // Get new FCM registration token
+                val token = task.result
+                if (token != null) {
+                    viewModel.updatefirebaseMessagingToken(token = token)
+                }
+
+            })
 
             fun navDrawerClickie(
                 route: String,
@@ -87,7 +103,7 @@ private fun Bob(
                 }
             )
         },
-        drawerContent = drawerContent { onClick(it, scope, scaffoldState) }
+        drawerContent = drawerContent(viewModel) { onClick(it, scope, scaffoldState) }
     ) {
         val firestoreData = viewModel.firestoreData.value
         if (firestoreData.isEmpty()) {
