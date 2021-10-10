@@ -349,7 +349,7 @@ fun AboutAlertDialog(onDissmiss: () -> Unit) {
                 )
                 Column {
                     Text(text = "Shintaikan")
-                    Text(text = "Version ${BuildConfig.VERSION_CODE}")
+                    Text(text = "Version ${BuildConfig.VERSION_NAME}")
                 }
             }
         },
