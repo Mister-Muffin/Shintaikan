@@ -12,8 +12,8 @@ android {
         applicationId "de.schweininchen.shintaikan.shintaikan.new"
         minSdk 23
         targetSdk 31
-        versionCode 35
-        versionName "4.0.0"
+        versionCode 37
+        versionName "4.0.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
