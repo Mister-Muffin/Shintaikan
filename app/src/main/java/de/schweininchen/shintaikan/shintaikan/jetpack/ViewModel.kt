@@ -51,6 +51,12 @@ class MyViewModel : ViewModel() {
         }
     }
 
+    val isConnected = mutableStateOf(true)
+
+    fun updateConnectifityStatus(isConnected: Boolean) {
+        this.isConnected.value = isConnected
+    }
+
     val exoPlayer: SimpleExoPlayer
         get() {
             return exoPlayer
