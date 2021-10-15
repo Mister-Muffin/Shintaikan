@@ -256,8 +256,8 @@ private fun DrawerItem(
     Row(
         modifier = Modifier
             .padding(top = 4.dp, bottom = 4.dp, start = 8.dp, end = 8.dp)
-            .clickable(onClick = { onClick(route) })
             .clip(MaterialTheme.shapes.medium)
+            .clickable(onClick = { onClick(route) })
             .background(color = if (selected == route) MaterialTheme.colors.primary.copy(alpha = .15f) else Color.Transparent)
             .padding(top = customPadding, bottom = customPadding, start = 12.dp, end = 12.dp),
         verticalAlignment = Alignment.CenterVertically
