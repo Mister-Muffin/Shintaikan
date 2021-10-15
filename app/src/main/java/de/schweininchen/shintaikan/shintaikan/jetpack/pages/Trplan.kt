@@ -53,7 +53,7 @@ fun Trplan(vm: MyViewModel) {
             if (firestoreData.isEmpty()) {
                 CircularProgressIndicator()
             } else {
-                Log.d("TAG2", "Trplan: ${firestoreData}")
+                Log.d("TAG2", "Trplan: $firestoreData")
                 for (i in days) {
                     Text(text = i, style = Typography.h2)
                     Log.d("TAG", "Keys: ${firestoreData.keys}")

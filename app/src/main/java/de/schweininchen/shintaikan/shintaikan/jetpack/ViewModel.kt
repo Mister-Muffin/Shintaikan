@@ -4,7 +4,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.exoplayer2.SimpleExoPlayer
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -39,6 +38,7 @@ class MyViewModel : ViewModel() {
     fun updateHomeData(url: String, cacheDir: File) {
         viewModelScope.launch {
             getHttpJson(url, cacheDir) {
+                wordpressList.clear()
                 for (i in 0 until it.length()) {
                     wordpressList.add(
                         arrayOf(
@@ -51,10 +51,16 @@ class MyViewModel : ViewModel() {
         }
     }
 
-    val exoPlayer: SimpleExoPlayer
+    val isConnected = mutableStateOf(true)
+
+    fun updateConnectifityStatus(isConnected: Boolean) {
+        this.isConnected.value = isConnected
+    }
+
+    /*val exoPlayer: SimpleExoPlayer
         get() {
             return exoPlayer
-        }
+        }*/
 
     //</editor-fold>
 

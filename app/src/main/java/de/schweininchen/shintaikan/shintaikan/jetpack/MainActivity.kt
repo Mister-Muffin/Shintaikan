@@ -4,10 +4,18 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.outlined.CloudOff
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -24,6 +32,7 @@ import kotlinx.coroutines.launch
 private const val TAG = "MainActivity.kt"
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -35,6 +44,10 @@ class MainActivity : ComponentActivity() {
 
             val selectedDrawerItem = remember {
                 mutableStateOf(NavigationDrawerRoutes.HOME)
+            }
+
+            scope.launch {
+                abc(baseContext, viewModel)
             }
 
             if (viewModel.wordpressList.isEmpty()) viewModel.updateHomeData(url, cacheDir)
@@ -51,6 +64,8 @@ class MainActivity : ComponentActivity() {
                 }
 
             })
+
+            if (viewModel.firestoreData.value.isEmpty()) viewModel.updateTrplan()
 
             fun navDrawerClickie(
                 route: NavigationDrawerRoutes?,
@@ -162,13 +177,32 @@ private fun Bob(
                 }
             }
         }
-
+        if (!viewModel.isConnected.value) Row(
+            Modifier
+                .fillMaxWidth()
+                .height(30.dp)
+                .background(Color.Red),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.CloudOff,
+                tint = Color.White,
+                contentDescription = "Offline icon",
+                modifier = Modifier.padding(end = 8.dp)
+            )
+            Text(
+                text = "OFFLINE!",
+                style = TextStyle(color = Color.White),
+            )
+        }
         NavHost(
             navController = navHostController,
-            startDestination = NavigationDrawerRoutes.HOME.toString()
+            startDestination = NavigationDrawerRoutes.HOME.toString(),
+            modifier = Modifier.padding(top = if (viewModel.isConnected.value) 0.dp else 30.dp)
         ) {
             composable(NavigationDrawerRoutes.HOME.toString()) {
-                Home(wordpressList)
+                Home(wordpressList, viewModel = viewModel)
                 appBarTitle.value = "Shintaikan"
             }
             composable(NavigationDrawerRoutes.TRPLAN.toString()) {
