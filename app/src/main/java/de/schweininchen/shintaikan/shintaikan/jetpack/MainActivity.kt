@@ -65,6 +65,8 @@ class MainActivity : ComponentActivity() {
 
             })
 
+            if (viewModel.firestoreData.value.isEmpty()) viewModel.updateTrplan()
+
             fun navDrawerClickie(
                 route: NavigationDrawerRoutes?,
                 scope: CoroutineScope,
