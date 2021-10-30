@@ -2,7 +2,6 @@ package de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme
 
 import android.os.Build
 import androidx.compose.material3.ColorScheme
-import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
@@ -10,7 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
-private val DarkColorPalette = darkColorScheme(
+/*private val DarkColorPalette = darkColorScheme(
     primary = LightBlue800,
     secondary = Yellow700,
 
@@ -20,7 +19,7 @@ private val DarkColorPalette = darkColorScheme(
     //onSecondary = Color.Black,
     //onBackground = Color.White,
     onSurface = Color.Black,
-)
+)*/
 
 private val LightColorPalette = lightColorScheme(
     primary = LightBlue800,
