@@ -1,4 +1,4 @@
-package de.schweininchen.shintaikan.shintaikan.jetpack.components
+package de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text

@@ -1,4 +1,4 @@
-package de.schweininchen.shintaikan.shintaikan.jetpack.components
+package de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu

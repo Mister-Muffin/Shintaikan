@@ -21,8 +21,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
-import de.schweininchen.shintaikan.shintaikan.jetpack.components.MainNavHost
-import de.schweininchen.shintaikan.shintaikan.jetpack.components.ShintaikanAppBar
+import de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity.MainNavHost
+import de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity.ShintaikanAppBar
 import de.schweininchen.shintaikan.shintaikan.jetpack.pages.*
 import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.ShintaikanJetpackTheme
 import kotlinx.coroutines.CoroutineScope
