@@ -1,7 +1,6 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme
 
 import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -38,7 +37,7 @@ private val LightColorPalette = lightColorScheme(
 
 @Composable
 fun ShintaikanJetpackTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    //darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
     val colorScheme: ColorScheme = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {

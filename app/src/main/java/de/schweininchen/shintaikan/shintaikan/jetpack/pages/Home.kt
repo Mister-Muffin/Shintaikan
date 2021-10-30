@@ -82,7 +82,7 @@ fun Home(postsList: List<Array<String>>, viewModel: MyViewModel) {
         } else {
             items(postsList) { post ->
                 Card(elevation = 2.dp) {
-                    Column() {
+                    Column(Modifier.padding(8.dp)) {
                         Text(
                             style = Typography.h3,
                             fontSize = 20.sp,
