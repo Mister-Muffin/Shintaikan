@@ -175,7 +175,7 @@ private fun Today(viewModel: MyViewModel) {
     )
     val day = LocalDate.now().dayOfWeek.value
 
-    if (!targetInZone && day > 5) { // return if in between times
+    if (!targetInZone || day > 5) { // return if in between times
         return
     }
 
