@@ -48,7 +48,8 @@ fun ShintaikanJetpackTheme(
     }
     val systemUiController = rememberSystemUiController()
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        systemUiController.setSystemBarsColor(Color.White)
+        systemUiController.setStatusBarColor(Color.White)
+        systemUiController.setNavigationBarColor(Color.White)
     } else {
         systemUiController.setSystemBarsColor(colorScheme.primary)
     }

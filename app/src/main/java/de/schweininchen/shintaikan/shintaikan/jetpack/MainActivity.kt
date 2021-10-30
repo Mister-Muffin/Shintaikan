@@ -1,42 +1,38 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.CloudOff
-import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
+import de.schweininchen.shintaikan.shintaikan.jetpack.components.MainNavHost
+import de.schweininchen.shintaikan.shintaikan.jetpack.components.ShintaikanAppBar
 import de.schweininchen.shintaikan.shintaikan.jetpack.pages.*
 import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.ShintaikanJetpackTheme
-import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.Typography
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 private const val TAG = "MainActivity.kt"
 
+@ExperimentalMaterial3Api
 class MainActivity : AppCompatActivity() {
 
-    @SuppressLint("CoroutineCreationDuringComposition")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -50,11 +46,12 @@ class MainActivity : AppCompatActivity() {
                 mutableStateOf(NavigationDrawerRoutes.HOME)
             }
 
-            scope.launch {
+            LaunchedEffect(true) {
                 abc(baseContext, viewModel)
             }
 
             if (viewModel.wordpressList.isEmpty()) viewModel.updateHomeData(url, cacheDir)
+
             FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
                 if (!task.isSuccessful) {
                     Log.w(TAG, "Fetching FCM registration token failed", task.exception)
@@ -100,6 +97,7 @@ class MainActivity : AppCompatActivity() {
 
 }
 
+@ExperimentalMaterial3Api
 @Composable
 private fun Bob(
     onClick: (NavigationDrawerRoutes?, CoroutineScope, ScaffoldState) -> Unit,
@@ -112,7 +110,6 @@ private fun Bob(
     val appBarTitle = remember {
         mutableStateOf("Shintaikan")
     }
-
     /* if (viewModel.exoPlayer == null) {
 
      }
@@ -127,36 +124,26 @@ private fun Bob(
          exoPlayer.stop()
      }
      exoPlayer.stop()*/
-
+    /*val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior() }
+    val backgroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors()
+    val backgroundColor = backgroundColors.containerColor(
+        scrollFraction = scrollBehavior.scrollFraction
+    ).value
+    val foregroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+        containerColor = Color.Transparent,
+        scrolledContainerColor = Color.Transparent
+    )*/
     Scaffold(
         scaffoldState = scaffoldState,
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        appBarTitle.value, fontSize = 20.sp
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = { scope.launch { scaffoldState.drawerState.open() } }
-                    ) {
-                        Icon(Icons.Filled.Menu, contentDescription = null)
-                    }
-                },
-                actions = {
-                    /*IconButton(onClick = { *//* doSomething() *//* }) {
-                        Icon(Icons.Filled.Favorite, contentDescription = "Localized description")
-                    }*/
-                }
-            )
-        },
+        topBar = { ShintaikanAppBar(appBarTitle, scope, scaffoldState) },
+        drawerShape = RoundedCornerShape(0),
         drawerContent = drawerContent(viewModel, selectedDrawerItem) {
             onClick(
                 it,
                 scope,
                 scaffoldState
             )
-        }
+        },
     ) {
         val firestoreData = viewModel.firestoreData.value
         if (firestoreData.isEmpty()) {
@@ -170,17 +157,6 @@ private fun Bob(
         )
         imageList.shuffle()
 
-        val refreshScope = rememberCoroutineScope()
-        fun refresh() {
-            refreshScope.launch {
-                viewModel.setRefresh(true)
-                getFirestoreData {
-                    refreshScope.launch {
-                        viewModel.setRefresh(false)
-                    }
-                }
-            }
-        }
         if (!viewModel.isConnected.value) Row(
             Modifier
                 .fillMaxWidth()
@@ -200,81 +176,13 @@ private fun Bob(
                 style = TextStyle(color = Color.White),
             )
         }
-        NavHost(
-            navController = navHostController,
-            startDestination = NavigationDrawerRoutes.HOME.toString(),
-            modifier = Modifier.padding(top = if (viewModel.isConnected.value) 0.dp else 30.dp)
-        ) {
-            composable(NavigationDrawerRoutes.HOME.toString()) {
-                Home(wordpressList, viewModel = viewModel)
-                appBarTitle.value = "Shintaikan"
-            }
-            composable(NavigationDrawerRoutes.TRPLAN.toString()) {
-                Trplan(viewModel)
-                appBarTitle.value = "Trainingsplan"
-            }
-            composable(NavigationDrawerRoutes.PRUEFUNGEN.toString()) {
-                FirebaseDataPage(
-                    title = "Gürtelprüfungen",
-                    firestoreData = firestoreData["pruefungen"],
-                    imageResource = imageList[0],
-                    vm = viewModel,
-                    onRefresh = ::refresh
-                )
-                appBarTitle.value = "Gürtelprüfungen"
-            }
-            composable(NavigationDrawerRoutes.FERIEN.toString()) {
-                FirebaseDataPage(
-                    title = "Ferientraining",
-                    firestoreData = firestoreData["ferientraining"],
-                    imageResource = imageList[1],
-                    vm = viewModel,
-                    onRefresh = ::refresh
-                )
-                appBarTitle.value = "Ferientraining"
-            }
-            composable(NavigationDrawerRoutes.NACHSOFE.toString()) {
-                NachSoFe()
-                appBarTitle.value = "Nach den Sommerferien"
-            }
-            composable(NavigationDrawerRoutes.CLUBWEG.toString()) {
-                ClubWeg()
-                appBarTitle.value = "Der Club"
-            }
-            composable(NavigationDrawerRoutes.ANFAENGER.toString()) {
-                Anfaenger()
-                appBarTitle.value = "Anfänger / Interressenten"
-            }
-            composable(NavigationDrawerRoutes.VORFUEHRUNGEN.toString()) {
-                FirebaseDataPage(
-                    title = "Vorführungen",
-                    firestoreData = firestoreData["vorfuehrungen"],
-                    imageResource = imageList[2],
-                    vm = viewModel,
-                    onRefresh = ::refresh
-                )
-                appBarTitle.value = "Vorführungen"
-            }
-            composable(NavigationDrawerRoutes.LEHRGAENGE.toString()) {
-                FirebaseDataPage(
-                    title = "Lehrgänge + Turniere",
-                    firestoreData = firestoreData["turniere"],
-                    imageResource = imageList[3],
-                    vm = viewModel,
-                    onRefresh = ::refresh
-                ) {
-                    Text(text = "Die Ausschreibungen hängen auch im Dojo!", style = Typography.h3)
-                }
-                appBarTitle.value = "Lehrgänge + Turniere"
-            }
-            /* composable("Movie1") {
-
-                 ExoVideoPlayer(
-                     exoPlayer = exoPlayer
-                 )
-                 appBarTitle.value = "Infofilmchen"
-                 exoPlayer.play()
-             }*/
-        }
+        MainNavHost(
+            navHostController,
+            viewModel,
+            wordpressList,
+            appBarTitle,
+            firestoreData,
+            imageList
+        )
     }
 }

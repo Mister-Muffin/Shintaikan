@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,11 +36,11 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.ContextCompat.startActivity
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
-import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.LightBlue800
 import kotlinx.coroutines.launch
 
 val customPadding = 12.dp
 
+@ExperimentalMaterial3Api
 @Composable
 fun drawerContent(
     vm: MyViewModel,
@@ -63,12 +64,12 @@ fun drawerContent(
         ) {
             openCustomDialog.value = false
         }
+
         LazyColumn(
             state = listState,
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp, bottom = 8.dp)
         ) {
             item {
                 Image(
@@ -78,8 +79,9 @@ fun drawerContent(
                         .align(Alignment.CenterHorizontally)
                         .fillMaxWidth()
                         .size(120.dp)
+                        .padding(top = 8.dp)
                 )
-                Divider(modifier = Modifier.padding(bottom = 4.dp))
+                Divider(modifier = Modifier.padding(top = 4.dp, bottom = 4.dp))
                 Column {
                     DrawerItem(
                         "Start",
@@ -196,11 +198,13 @@ fun drawerContent(
                                 }
                             }
                     )
+                    Box(modifier = Modifier.size(8.dp))
                 }
             }
             if (showDebugInfo.value) {
                 item {
                     DebugInfo(vm = vm)
+                    Box(modifier = Modifier.size(8.dp))
                 }
             }
         }
@@ -247,12 +251,10 @@ private fun DrawerItem(
     route: NavigationDrawerRoutes = NavigationDrawerRoutes.NONE,
     onClick: (NavigationDrawerRoutes?) -> Unit
 ) {
-
     val color =
         if (selected == route && !disabled) androidx.compose.material3.MaterialTheme.colorScheme.primary else Color(
             0xFF898989
         )
-
     Row(
         modifier = Modifier
             .padding(top = 4.dp, bottom = 4.dp, start = 8.dp, end = 8.dp)
@@ -386,8 +388,11 @@ fun AboutAlertDialog(onDissmiss: () -> Unit) {
                     modifier = Modifier
                         .weight(1f)
                         .padding(4.dp),
-                    border = BorderStroke(1.dp, LightBlue800),
-                    colors = ButtonDefaults.outlinedButtonColors(contentColor = LightBlue800),
+                    border = BorderStroke(
+                        1.dp,
+                        androidx.compose.material3.MaterialTheme.colorScheme.primaryContainer
+                    ),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = androidx.compose.material3.MaterialTheme.colorScheme.primaryContainer),
                     onClick = {
                         context.startActivity(
                             Intent(
