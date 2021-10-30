@@ -38,7 +38,6 @@ import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.LightBlue800
 import kotlinx.coroutines.launch
 
-
 val customPadding = 12.dp
 
 @Composable
@@ -64,7 +63,6 @@ fun drawerContent(
         ) {
             openCustomDialog.value = false
         }
-
         LazyColumn(
             state = listState,
             verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -251,14 +249,20 @@ private fun DrawerItem(
 ) {
 
     val color =
-        if (selected == route && !disabled) MaterialTheme.colors.primary else Color(0xFF898989)
+        if (selected == route && !disabled) androidx.compose.material3.MaterialTheme.colorScheme.primary else Color(
+            0xFF898989
+        )
 
     Row(
         modifier = Modifier
             .padding(top = 4.dp, bottom = 4.dp, start = 8.dp, end = 8.dp)
             .clip(MaterialTheme.shapes.medium)
             .clickable(onClick = { onClick(route) })
-            .background(color = if (selected == route) MaterialTheme.colors.primary.copy(alpha = .15f) else Color.Transparent)
+            .background(
+                color = if (selected == route) androidx.compose.material3.MaterialTheme.colorScheme.primary.copy(
+                    alpha = .15f
+                ) else Color.Transparent
+            )
             .padding(top = customPadding, bottom = customPadding, start = 12.dp, end = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -287,7 +291,7 @@ private fun DrawerItem(
                     .weight(1f), text = name,
                 style = TextStyle(
                     fontWeight = FontWeight.Bold,
-                    color = if (selected == route) MaterialTheme.colors.primary else Color.Black
+                    color = if (selected == route) androidx.compose.material3.MaterialTheme.colorScheme.primary else Color.Black
                 )
             )
             if (externalLink) {

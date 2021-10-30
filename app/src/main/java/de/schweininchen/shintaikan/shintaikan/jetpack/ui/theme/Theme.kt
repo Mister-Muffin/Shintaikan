@@ -1,16 +1,18 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme
 
+import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.darkColors
-import androidx.compose.material.lightColors
+import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
-private val DarkColorPalette = darkColors(
+private val DarkColorPalette = darkColorScheme(
     primary = LightBlue800,
-    primaryVariant = Dark_PrimaryDark,
     secondary = Yellow700,
 
     background = Color.White,
@@ -21,14 +23,13 @@ private val DarkColorPalette = darkColors(
     onSurface = Color.Black,
 )
 
-private val LightColorPalette = lightColors(
+private val LightColorPalette = lightColorScheme(
     primary = LightBlue800,
-    primaryVariant = PrimaryDark,
-    secondary = Yellow700,
+    onPrimary = Color.White,
 
+    secondary = Yellow700,
     background = Color.White,
     surface = Color.White,
-    onPrimary = Color.White,
     onSecondary = Color.Black,
     onBackground = Color.Black,
     onSurface = Color.Black,
@@ -40,17 +41,20 @@ fun ShintaikanJetpackTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colors = if (false) {
-        DarkColorPalette
+    val colorScheme: ColorScheme = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        val context = LocalContext.current
+        dynamicLightColorScheme(context)
     } else {
         LightColorPalette
     }
     val systemUiController = rememberSystemUiController()
-    systemUiController.setSystemBarsColor(colors.primaryVariant)
-    MaterialTheme(
-        colors = colors,
-        typography = Typography,
-        shapes = Shapes,
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        systemUiController.setSystemBarsColor(Color.White)
+    } else {
+        systemUiController.setSystemBarsColor(colorScheme.primary)
+    }
+    androidx.compose.material3.MaterialTheme(
+        colorScheme = colorScheme,
         content = content
     )
 }
