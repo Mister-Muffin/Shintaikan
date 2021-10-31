@@ -12,6 +12,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -78,7 +79,7 @@ fun Home(postsList: List<Array<String>>, viewModel: MyViewModel) {
                 )
             }
         } else if (postsList.isEmpty()) {
-            item { CircularProgressIndicator() }
+            item { CircularProgressIndicator(color = MaterialTheme.colorScheme.primary) }
         } else {
             items(postsList) { post ->
                 Card(elevation = 2.dp) {
@@ -99,7 +100,7 @@ fun Home(postsList: List<Array<String>>, viewModel: MyViewModel) {
 
         }
         item {
-            Row {
+            Row(Modifier.padding(top = 16.dp, bottom = 8.dp)) {
                 Image(
                     painter = painterResource(id = R.drawable.icon_karate),
                     contentDescription = null,
