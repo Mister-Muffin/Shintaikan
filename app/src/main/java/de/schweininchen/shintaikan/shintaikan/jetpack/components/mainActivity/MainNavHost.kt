@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navDeepLink
 import de.schweininchen.shintaikan.shintaikan.jetpack.MyViewModel
 import de.schweininchen.shintaikan.shintaikan.jetpack.NavigationDrawerRoutes
 import de.schweininchen.shintaikan.shintaikan.jetpack.getFirestoreData
@@ -107,6 +108,19 @@ fun MainNavHost(
             }
             appBarTitle.value = "Lehrgänge + Turniere"
         }
+        composable(
+            "?page_id={id}",
+            deepLinks = listOf(navDeepLink { uriPattern = "shintaikan.de/?page_id={id}" }) // 18
+        ) { backStackEntry ->
+            if (backStackEntry.arguments?.getString("id") == "18") {
+                Trplan(viewModel)
+                appBarTitle.value = "Trainingsplan"
+            } else {
+                Home(wordpressList, viewModel = viewModel)
+                appBarTitle.value = "Shintaikan"
+            }
+        }
+
         /* composable("Movie1") {
 
                  ExoVideoPlayer(
