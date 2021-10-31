@@ -82,7 +82,7 @@ fun Home(postsList: List<Array<String>>, viewModel: MyViewModel) {
             item { CircularProgressIndicator(color = MaterialTheme.colorScheme.primary) }
         } else {
             items(postsList) { post ->
-                Card(elevation = 2.dp) {
+                Card(elevation = 2.dp, modifier = Modifier.fillMaxWidth()) {
                     Column(Modifier.padding(8.dp)) {
                         Text(
                             style = Typography.h3,
