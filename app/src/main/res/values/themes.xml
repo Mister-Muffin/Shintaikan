@@ -1,6 +1,14 @@
 <resources>
 
-    <style name="AppTheme" parent="Theme.Material3.Light.NoActionBar">
+    <!-- Allows us to override platform level specific attributes in their
+             respective values-vXX folder. -->
+    <style name="Platform.Theme.Shintaikan" parent="Theme.Material3.DayNight">
+        <item name="android:statusBarColor">@color/md_theme_light_primary</item>
+    </style>
+
+    <!-- The actual theme we use. This varies for light theme (here),
+        and values-night for dark theme. -->
+    <style name="Theme.Shintaikan" parent="Platform.Theme.Shintaikan">
         <item name="colorPrimary">@color/md_theme_light_primary</item>
         <item name="colorOnPrimary">@color/md_theme_light_onPrimary</item>
         <item name="colorPrimaryContainer">@color/md_theme_light_primaryContainer</item>
@@ -28,4 +36,14 @@
         <item name="colorSurfaceInverse">@color/md_theme_light_inverseSurface</item>
         <item name="colorPrimaryInverse">@color/md_theme_light_primaryInverse</item>
     </style>
+
+    <style name="Theme.Shintaikan.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.Shintaikan.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" />
+
+    <style name="Theme.Shintaikan.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
+
 </resources>

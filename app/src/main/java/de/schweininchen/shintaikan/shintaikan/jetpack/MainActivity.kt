@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudOff
@@ -16,9 +17,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.insets.ProvideWindowInsets
+import com.google.accompanist.insets.statusBarsPadding
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity.MainNavHost
@@ -36,60 +40,64 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         setContent {
-            val viewModel: MyViewModel = viewModel()
-            val navController = rememberNavController()
-            val url = "https://shintaikan.de/?rest_route=/wp/v2/posts"
-            val scope = rememberCoroutineScope()
+            ProvideWindowInsets(consumeWindowInsets = false) {
+                val viewModel: MyViewModel = viewModel()
+                val navController = rememberNavController()
+                val url = "https://shintaikan.de/?rest_route=/wp/v2/posts"
+                val scope = rememberCoroutineScope()
 
-            val selectedDrawerItem = remember {
-                mutableStateOf(NavigationDrawerRoutes.HOME)
-            }
-
-            LaunchedEffect(true) {
-                abc(baseContext, viewModel)
-            }
-
-            if (viewModel.wordpressList.isEmpty()) viewModel.updateHomeData(url, cacheDir)
-
-            FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-                if (!task.isSuccessful) {
-                    Log.w(TAG, "Fetching FCM registration token failed", task.exception)
-                    return@OnCompleteListener
-                }
-                // Get new FCM registration token
-                val token = task.result
-                if (token != null) {
-                    viewModel.updatefirebaseMessagingToken(token = token)
+                val selectedDrawerItem = remember {
+                    mutableStateOf(NavigationDrawerRoutes.HOME)
                 }
 
-            })
+                LaunchedEffect(true) {
+                    abc(baseContext, viewModel)
+                }
 
-            if (viewModel.firestoreData.value.isEmpty()) viewModel.updateTrplan()
+                if (viewModel.wordpressList.isEmpty()) viewModel.updateHomeData(url, cacheDir)
 
-            fun navDrawerClickie(
-                route: NavigationDrawerRoutes?,
-                scope: CoroutineScope,
-                scaffoldState: ScaffoldState
-            ) {
-                if (route !== null) {
-                    navController.navigate(route.toString()) {
-                        popUpTo(NavigationDrawerRoutes.HOME.toString())
-                        launchSingleTop = true
+                FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+                    if (!task.isSuccessful) {
+                        Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                        return@OnCompleteListener
                     }
-                    selectedDrawerItem.value = route
-                    scope.launch { scaffoldState.drawerState.close() }
+                    // Get new FCM registration token
+                    val token = task.result
+                    if (token != null) {
+                        viewModel.updatefirebaseMessagingToken(token = token)
+                    }
+
+                })
+
+                if (viewModel.firestoreData.value.isEmpty()) viewModel.updateTrplan()
+
+                fun navDrawerClickie(
+                    route: NavigationDrawerRoutes?,
+                    scope: CoroutineScope,
+                    scaffoldState: ScaffoldState
+                ) {
+                    if (route !== null) {
+                        navController.navigate(route.toString()) {
+                            popUpTo(NavigationDrawerRoutes.HOME.toString())
+                            launchSingleTop = true
+                        }
+                        selectedDrawerItem.value = route
+                        scope.launch { scaffoldState.drawerState.close() }
+                    }
                 }
-            }
-            ShintaikanJetpackTheme {
-                Bob(
-                    onClick = ::navDrawerClickie,
-                    navHostController = navController,
-                    viewModel.wordpressList,
-                    scope = scope,
-                    selectedDrawerItem = selectedDrawerItem.value,
-                    viewModel = viewModel
-                )
+                ShintaikanJetpackTheme {
+                    Bob(
+                        onClick = ::navDrawerClickie,
+                        navHostController = navController,
+                        viewModel.wordpressList,
+                        scope = scope,
+                        selectedDrawerItem = selectedDrawerItem.value,
+                        viewModel = viewModel
+                    )
+                }
             }
         }
     }
@@ -109,6 +117,9 @@ private fun Bob(
     val appBarTitle = remember {
         mutableStateOf("Shintaikan")
     }
+
+    val lazyState = rememberLazyListState()
+
     /* if (viewModel.exoPlayer == null) {
 
      }
@@ -132,9 +143,9 @@ private fun Bob(
         containerColor = Color.Transparent,
         scrolledContainerColor = Color.Transparent
     )*/
+
     Scaffold(
         scaffoldState = scaffoldState,
-        topBar = { ShintaikanAppBar(appBarTitle, scope, scaffoldState) },
         drawerShape = RoundedCornerShape(0),
         drawerContent = drawerContent(viewModel, selectedDrawerItem) {
             onClick(
@@ -156,32 +167,45 @@ private fun Bob(
         )
         imageList.shuffle()
 
-        if (!viewModel.isConnected.value) Row(
-            Modifier
-                .fillMaxWidth()
-                .height(30.dp)
-                .background(Color.Red),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.CloudOff,
-                tint = Color.White,
-                contentDescription = "Offline icon",
-                modifier = Modifier.padding(end = 8.dp)
+        Column() {
+
+
+            ShintaikanAppBar(
+                modifier = Modifier.statusBarsPadding(),
+                appBarTitle,
+                scope,
+                scaffoldState,
+                lazyState = lazyState
             )
-            Text(
-                text = "OFFLINE!",
-                style = TextStyle(color = Color.White),
+
+            if (!viewModel.isConnected.value) Row(
+                Modifier
+                    .fillMaxWidth()
+                    .height(30.dp)
+                    .background(Color.Red),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.CloudOff,
+                    tint = Color.White,
+                    contentDescription = "Offline icon",
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+                Text(
+                    text = "OFFLINE!",
+                    style = TextStyle(color = Color.White),
+                )
+            }
+            MainNavHost(
+                navHostController,
+                viewModel,
+                wordpressList,
+                appBarTitle,
+                firestoreData,
+                imageList,
+                lazyState
             )
         }
-        MainNavHost(
-            navHostController,
-            viewModel,
-            wordpressList,
-            appBarTitle,
-            firestoreData,
-            imageList
-        )
     }
 }

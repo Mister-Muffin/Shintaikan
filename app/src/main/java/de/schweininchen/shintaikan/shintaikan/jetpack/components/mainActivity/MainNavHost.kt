@@ -1,6 +1,7 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -25,7 +26,8 @@ fun MainNavHost(
     wordpressList: List<Array<String>>,
     appBarTitle: MutableState<String>,
     firestoreData: Map<String, MutableMap<String, Any>>,
-    imageList: IntArray
+    imageList: IntArray,
+    lazyState: LazyListState
 ) {
     val refreshScope = rememberCoroutineScope()
     fun refresh() {
@@ -44,7 +46,7 @@ fun MainNavHost(
         modifier = Modifier.padding(top = if (viewModel.isConnected.value) 0.dp else 30.dp),
     ) {
         composable(NavigationDrawerRoutes.HOME.toString()) {
-            Home(wordpressList, viewModel = viewModel)
+            Home(wordpressList, viewModel = viewModel, lazyState = lazyState)
             appBarTitle.value = "Shintaikan"
         }
         composable(NavigationDrawerRoutes.TRPLAN.toString()) {
@@ -116,7 +118,7 @@ fun MainNavHost(
                 Trplan(viewModel)
                 appBarTitle.value = "Trainingsplan"
             } else {
-                Home(wordpressList, viewModel = viewModel)
+                Home(wordpressList, viewModel = viewModel, lazyState = lazyState)
                 appBarTitle.value = "Shintaikan"
             }
         }

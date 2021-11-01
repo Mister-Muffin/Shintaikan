@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
@@ -32,14 +33,20 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 @Composable
-fun Home(postsList: List<Array<String>>, viewModel: MyViewModel) {
+fun Home(
+    postsList: List<Array<String>>,
+    viewModel: MyViewModel,
+    lazyState: LazyListState
+) {
     val imageSize = 100.dp
 
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth(),
+        state = lazyState
     ) {
         item {
             Text(text = "Karate Club\nShintaikan e.V.", style = Typography.h1)
