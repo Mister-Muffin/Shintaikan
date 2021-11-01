@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity() {
                         navHostController = navController,
                         viewModel.wordpressList,
                         scope = scope,
-                        selectedDrawerItem = selectedDrawerItem.value,
+                        selectedDrawerItem = selectedDrawerItem,
                         viewModel = viewModel
                     )
                 }
@@ -111,7 +111,7 @@ private fun Bob(
     onClick: (NavigationDrawerRoutes?, CoroutineScope, ScaffoldState) -> Unit,
     navHostController: NavHostController,
     wordpressList: List<Array<String>>,
-    selectedDrawerItem: NavigationDrawerRoutes,
+    selectedDrawerItem: MutableState<NavigationDrawerRoutes>,
     scope: CoroutineScope, viewModel: MyViewModel
 ) {
     val scaffoldState = rememberScaffoldState()
@@ -148,7 +148,7 @@ private fun Bob(
     Scaffold(
         scaffoldState = scaffoldState,
         drawerShape = RoundedCornerShape(0),
-        drawerContent = drawerContent(viewModel, selectedDrawerItem) {
+        drawerContent = drawerContent(viewModel, selectedDrawerItem.value) {
             onClick(
                 it,
                 scope,
@@ -203,7 +203,8 @@ private fun Bob(
                 appBarTitle,
                 firestoreData,
                 imageList,
-                lazyState
+                lazyState,
+                selectedDrawerItem,
             )
         }
     }

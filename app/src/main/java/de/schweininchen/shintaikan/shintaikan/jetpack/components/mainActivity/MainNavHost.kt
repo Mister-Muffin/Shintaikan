@@ -27,7 +27,8 @@ fun MainNavHost(
     appBarTitle: MutableState<String>,
     firestoreData: Map<String, MutableMap<String, Any>>,
     imageList: IntArray,
-    lazyState: LazyListState
+    lazyState: LazyListState,
+    selectedDrawerItem: MutableState<NavigationDrawerRoutes>,
 ) {
     val refreshScope = rememberCoroutineScope()
     fun refresh() {
@@ -117,9 +118,19 @@ fun MainNavHost(
             if (backStackEntry.arguments?.getString("id") == "18") {
                 Trplan(viewModel)
                 appBarTitle.value = "Trainingsplan"
+                navHostController.navigate(NavigationDrawerRoutes.TRPLAN.toString()) {
+                    popUpTo(NavigationDrawerRoutes.HOME.toString())
+                    launchSingleTop = true
+                }
+                selectedDrawerItem.value = NavigationDrawerRoutes.TRPLAN
             } else {
                 Home(wordpressList, viewModel = viewModel, lazyState = lazyState)
                 appBarTitle.value = "Shintaikan"
+                navHostController.navigate(NavigationDrawerRoutes.HOME.toString()) {
+                    popUpTo(NavigationDrawerRoutes.HOME.toString())
+                    launchSingleTop = true
+                }
+                selectedDrawerItem.value = NavigationDrawerRoutes.HOME
             }
         }
 

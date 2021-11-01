@@ -24,21 +24,6 @@ fun ShintaikanAppBar(
     scaffoldState: ScaffoldState,
     lazyState: LazyListState
 ) {
-    val colorBelowS =
-        TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primary.copy(
-                alpha = .8f
-            ),
-            titleContentColor = Color.White,
-            navigationIconContentColor = Color.White,
-            actionIconContentColor = Color.White,
-
-            )
-    val colorS: TopAppBarColors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-        containerColor = TopAppBarDefaults.centerAlignedTopAppBarColors().containerColor(
-            scrollFraction = lazyState.firstVisibleItemScrollOffset.toFloat()
-        ).value
-    )
     val backgroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors()
     val backgroundColor = backgroundColors.containerColor(
         scrollFraction = lazyState.firstVisibleItemScrollOffset.toFloat()
