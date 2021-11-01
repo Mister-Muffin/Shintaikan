@@ -22,6 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.insets.ProvideWindowInsets
+import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.accompanist.insets.statusBarsPadding
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
@@ -167,9 +168,7 @@ private fun Bob(
         )
         imageList.shuffle()
 
-        Column() {
-
-
+        Column(modifier = Modifier.navigationBarsWithImePadding()) {
             ShintaikanAppBar(
                 modifier = Modifier.statusBarsPadding(),
                 appBarTitle,
