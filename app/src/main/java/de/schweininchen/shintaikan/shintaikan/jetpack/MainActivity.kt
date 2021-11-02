@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudOff
@@ -23,7 +22,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
-import com.google.accompanist.insets.statusBarsPadding
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity.MainNavHost
@@ -81,12 +79,19 @@ class MainActivity : AppCompatActivity() {
                     scaffoldState: ScaffoldState
                 ) {
                     if (route !== null) {
+                        scope.launch {
+                            if (!viewModel.lazyState.isScrollInProgress) viewModel.lazyState.scrollToItem(
+                                0
+                            )
+                        }
                         navController.navigate(route.toString()) {
                             popUpTo(NavigationDrawerRoutes.HOME.toString())
                             launchSingleTop = true
                         }
                         selectedDrawerItem.value = route
-                        scope.launch { scaffoldState.drawerState.close() }
+                        scope.launch {
+                            scaffoldState.drawerState.close()
+                        }
                     }
                 }
                 ShintaikanJetpackTheme {
@@ -119,8 +124,6 @@ private fun Bob(
         mutableStateOf("Shintaikan")
     }
 
-    val lazyState = rememberLazyListState()
-
     /* if (viewModel.exoPlayer == null) {
 
      }
@@ -135,15 +138,6 @@ private fun Bob(
          exoPlayer.stop()
      }
      exoPlayer.stop()*/
-    /*val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior() }
-    val backgroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors()
-    val backgroundColor = backgroundColors.containerColor(
-        scrollFraction = scrollBehavior.scrollFraction
-    ).value
-    val foregroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-        containerColor = Color.Transparent,
-        scrolledContainerColor = Color.Transparent
-    )*/
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -170,11 +164,10 @@ private fun Bob(
 
         Column(modifier = Modifier.navigationBarsWithImePadding()) {
             ShintaikanAppBar(
-                modifier = Modifier.statusBarsPadding(),
                 appBarTitle,
                 scope,
                 scaffoldState,
-                lazyState = lazyState
+                lazyState = viewModel.lazyState
             )
 
             if (!viewModel.isConnected.value) Row(
@@ -203,7 +196,6 @@ private fun Bob(
                 appBarTitle,
                 firestoreData,
                 imageList,
-                lazyState,
                 selectedDrawerItem,
             )
         }

@@ -27,6 +27,7 @@ fun Trplan(vm: MyViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth(),
         contentPadding = PaddingValues(8.dp),
+        state = vm.lazyState
     ) {
         item {
             Box(contentAlignment = Alignment.CenterEnd, modifier = Modifier.fillMaxWidth()) {

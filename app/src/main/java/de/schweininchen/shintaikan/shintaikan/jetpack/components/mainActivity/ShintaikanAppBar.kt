@@ -18,7 +18,6 @@ import kotlinx.coroutines.launch
 @ExperimentalMaterial3Api
 @Composable
 fun ShintaikanAppBar(
-    modifier: Modifier,
     appBarTitle: MutableState<String>,
     scope: CoroutineScope,
     scaffoldState: ScaffoldState,
@@ -26,7 +25,9 @@ fun ShintaikanAppBar(
 ) {
     val backgroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors()
     val backgroundColor = backgroundColors.containerColor(
-        scrollFraction = lazyState.firstVisibleItemScrollOffset.toFloat()
+        scrollFraction = if (lazyState.firstVisibleItemIndex == 0)
+            (lazyState.firstVisibleItemScrollOffset.toFloat() - 50f).clamp(0f, 1f)
+        else 1f
     ).value
     val foregroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors(
         containerColor = Color.Transparent,
@@ -60,3 +61,5 @@ fun ShintaikanAppBar(
         )
     }
 }
+
+fun Float.clamp(min: Float, max: Float): Float = Math.max(min, Math.min(max, this))
