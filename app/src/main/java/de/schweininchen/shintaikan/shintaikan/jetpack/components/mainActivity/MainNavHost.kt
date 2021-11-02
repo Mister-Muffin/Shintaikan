@@ -1,7 +1,6 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -27,7 +26,6 @@ fun MainNavHost(
     appBarTitle: MutableState<String>,
     firestoreData: Map<String, MutableMap<String, Any>>,
     imageList: IntArray,
-    lazyState: LazyListState,
     selectedDrawerItem: MutableState<NavigationDrawerRoutes>,
 ) {
     val refreshScope = rememberCoroutineScope()
@@ -47,7 +45,7 @@ fun MainNavHost(
         modifier = Modifier.padding(top = if (viewModel.isConnected.value) 0.dp else 30.dp),
     ) {
         composable(NavigationDrawerRoutes.HOME.toString()) {
-            Home(wordpressList, viewModel = viewModel, lazyState = lazyState)
+            Home(wordpressList, viewModel = viewModel)
             appBarTitle.value = "Shintaikan"
         }
         composable(NavigationDrawerRoutes.TRPLAN.toString()) {
@@ -75,11 +73,11 @@ fun MainNavHost(
             appBarTitle.value = "Ferientraining"
         }
         composable(NavigationDrawerRoutes.NACHSOFE.toString()) {
-            NachSoFe()
+            NachSoFe(viewModel)
             appBarTitle.value = "Nach den Sommerferien"
         }
         composable(NavigationDrawerRoutes.CLUBWEG.toString()) {
-            ClubWeg()
+            ClubWeg(viewModel)
             appBarTitle.value = "Der Club"
         }
         composable(NavigationDrawerRoutes.ANFAENGER.toString()) {
@@ -124,7 +122,7 @@ fun MainNavHost(
                 }
                 selectedDrawerItem.value = NavigationDrawerRoutes.TRPLAN
             } else {
-                Home(wordpressList, viewModel = viewModel, lazyState = lazyState)
+                Home(wordpressList, viewModel = viewModel)
                 appBarTitle.value = "Shintaikan"
                 navHostController.navigate(NavigationDrawerRoutes.HOME.toString()) {
                     popUpTo(NavigationDrawerRoutes.HOME.toString())

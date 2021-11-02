@@ -1,5 +1,6 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack
 
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -79,5 +80,8 @@ class MyViewModel : ViewModel() {
     fun updatefirebaseMessagingToken(token: String) {
         firebaseMessagingToken.value = token
     }
+
+
+    var lazyState = LazyListState()
 
 }
