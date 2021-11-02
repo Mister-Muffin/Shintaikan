@@ -1,19 +1,15 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.pages
 
-import android.util.Log
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import de.schweininchen.shintaikan.shintaikan.jetpack.MyViewModel
-import de.schweininchen.shintaikan.shintaikan.jetpack.R
-import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.Typography
+import kotlin.random.Random
 
 @Composable
 fun Trplan(vm: MyViewModel) {
@@ -29,7 +25,24 @@ fun Trplan(vm: MyViewModel) {
         contentPadding = PaddingValues(8.dp),
         state = vm.lazyState
     ) {
-        item {
+        items(10) {
+            Box(
+                modifier = Modifier
+                    .height(100.dp)
+                    .fillMaxWidth()
+                    .background(
+                        Color(
+                            android.graphics.Color.rgb(
+                                Random.nextInt(0, 255),
+                                Random.nextInt(0, 255),
+                                Random.nextInt(0, 255)
+                            )
+                        )
+                    )
+                    .padding(8.dp)
+            )
+        }
+        /*item {
             Box(contentAlignment = Alignment.CenterEnd, modifier = Modifier.fillMaxWidth()) {
                 Image(
                     painter = painterResource(id = R.drawable.kaempfer_app),
@@ -89,6 +102,6 @@ fun Trplan(vm: MyViewModel) {
                     Bambus()
                 }
             }
-        }
+        }*/
     }
 }

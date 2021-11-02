@@ -5,9 +5,9 @@ import android.util.Log
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,6 +29,7 @@ import de.schweininchen.shintaikan.shintaikan.jetpack.R
 import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.Typography
 import java.time.LocalDate
 import java.time.LocalTime
+import kotlin.random.Random
 
 @Composable
 fun Home(
@@ -46,6 +46,23 @@ fun Home(
             .fillMaxWidth(),
         state = viewModel.lazyState
     ) {
+        items(10) {
+            Box(
+                modifier = Modifier
+                    .height(100.dp)
+                    .fillMaxWidth()
+                    .background(
+                        Color(
+                            android.graphics.Color.rgb(
+                                Random.nextInt(0, 255),
+                                Random.nextInt(0, 255),
+                                Random.nextInt(0, 255)
+                            )
+                        )
+                    )
+                    .padding(8.dp)
+            )
+        }
         item {
             Text(text = "Karate Club\nShintaikan e.V.", style = Typography.h1)
         }
@@ -60,50 +77,52 @@ fun Home(
             )
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && viewModel.firestoreData.value.isNotEmpty()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O /*&& viewModel.firestoreData.value.isNotEmpty()*/) {
             item {
                 Card(
                     elevation = 2.dp, modifier = Modifier
                         .fillMaxWidth()
                 ) {
-                    Today(viewModel = viewModel)
+                    /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        Today(viewModel = viewModel)
+                    }*/
                 }
             }
         }
 
-        if (!viewModel.isConnected.value && postsList.isEmpty()) {
-            item {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_cloud_sad_24dp),
-                    contentDescription = "",
-                    tint = Color.Red, modifier = Modifier.size(100.dp)
-                )
-                Text(
-                    text = "Wolki ist traurig,\nweil keine Internetverbindung besteht :(",
-                    style = TextStyle(fontSize = 15.sp), textAlign = TextAlign.Center
-                )
-            }
-        } else if (postsList.isEmpty()) {
-            item { CircularProgressIndicator(color = MaterialTheme.colorScheme.primary) }
-        } else {
-            items(postsList) { post ->
-                Card(elevation = 2.dp, modifier = Modifier.fillMaxWidth()) {
-                    Column(Modifier.padding(8.dp)) {
-                        Text(
-                            style = Typography.h3,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.align(Alignment.CenterHorizontally),
-                            text = post[0]
-                        )
-                        Box(Modifier.padding(top = 8.dp)) {
-                            Html(text = post[1])
-                        }
+        //if (!viewModel.isConnected.value && postsList.isEmpty()) {
+        item {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_cloud_sad_24dp),
+                contentDescription = "",
+                tint = Color.Red, modifier = Modifier.size(100.dp)
+            )
+            Text(
+                text = "Wolki ist traurig,\nweil keine Internetverbindung besteht :(",
+                style = TextStyle(fontSize = 15.sp), textAlign = TextAlign.Center
+            )
+        }
+        //} else if (postsList.isEmpty()) {
+        item { CircularProgressIndicator(color = MaterialTheme.colorScheme.primary) }
+        //} else {
+        items(3) { post ->
+            /*Card(elevation = 2.dp, modifier = Modifier.fillMaxWidth()) {
+                *//*Column(Modifier.padding(8.dp)) {
+                    Text(
+                        style = Typography.h3,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        text = post[0]
+                    )
+                    Box(Modifier.padding(top = 8.dp)) {
+                        Html(text = post[1])
                     }
                 }
-            }
-
+            }*/
+            Text("hi")
         }
+        //}
         item {
             Row(Modifier.padding(top = 16.dp, bottom = 8.dp)) {
                 Image(
