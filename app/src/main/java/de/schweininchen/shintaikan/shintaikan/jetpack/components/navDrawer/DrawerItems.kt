@@ -221,16 +221,16 @@ fun DrawerItems(
                 .width(30.dp)
                 .height(30.dp)
                 .align(Alignment.CenterHorizontally)
-                .clickable {
-                    showDebugInfo.value = true
-                    coroutineScope.launch {
-                        listState.animateScrollToItem(index = listState.layoutInfo.totalItemsCount)
-                    }
-                }
                 .pointerInput(Unit) {
                     detectTapGestures(
                         onLongPress = {
                             onClickMain(NavigationDrawerRoutes.COLORS)
+                        },
+                        onTap = {
+                            showDebugInfo.value = true
+                            coroutineScope.launch {
+                                listState.animateScrollToItem(index = listState.layoutInfo.totalItemsCount)
+                            }
                         }
                     )
                 }
