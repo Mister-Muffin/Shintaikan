@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.Divider
@@ -19,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -224,6 +226,13 @@ fun DrawerItems(
                     coroutineScope.launch {
                         listState.animateScrollToItem(index = listState.layoutInfo.totalItemsCount)
                     }
+                }
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onLongPress = {
+                            onClickMain(NavigationDrawerRoutes.COLORS)
+                        }
+                    )
                 }
         )
         Box(modifier = Modifier.size(8.dp))
