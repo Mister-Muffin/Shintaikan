@@ -83,7 +83,12 @@ fun Home(
                 )
             }
         } else if (postsList.isEmpty()) {
-            item { CircularProgressIndicator(color = MaterialTheme.colorScheme.primary) }
+            item {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
+                )
+            }
         } else {
             items(postsList) { post ->
                 Card(elevation = 2.dp, modifier = Modifier.fillMaxWidth()) {
