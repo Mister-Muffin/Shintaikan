@@ -163,7 +163,7 @@ fun Html(text: String) {
         }
     },
         update = {
-            it.text = text
+            it.text = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY)
         })
 }
 
