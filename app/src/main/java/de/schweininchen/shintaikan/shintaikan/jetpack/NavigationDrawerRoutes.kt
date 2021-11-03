@@ -10,5 +10,6 @@ enum class NavigationDrawerRoutes {
     ANFAENGER,
     VORFUEHRUNGEN,
     LEHRGAENGE,
+    COLORS,
     NONE
 }
