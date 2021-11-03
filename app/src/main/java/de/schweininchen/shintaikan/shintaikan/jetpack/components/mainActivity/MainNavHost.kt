@@ -11,9 +11,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
+import de.schweininchen.shintaikan.shintaikan.jetpack.BuildConfig
 import de.schweininchen.shintaikan.shintaikan.jetpack.MyViewModel
 import de.schweininchen.shintaikan.shintaikan.jetpack.NavigationDrawerRoutes
-import de.schweininchen.shintaikan.shintaikan.jetpack.getFirestoreData
 import de.schweininchen.shintaikan.shintaikan.jetpack.pages.*
 import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.Typography
 import kotlinx.coroutines.launch
@@ -24,7 +24,6 @@ fun MainNavHost(
     viewModel: MyViewModel,
     wordpressList: List<Array<String>>,
     appBarTitle: MutableState<String>,
-    firestoreData: Map<String, MutableMap<String, Any>>,
     imageList: IntArray,
     selectedDrawerItem: MutableState<NavigationDrawerRoutes>,
 ) {
@@ -32,7 +31,7 @@ fun MainNavHost(
     fun refresh() {
         refreshScope.launch {
             viewModel.setRefresh(true)
-            getFirestoreData {
+            viewModel.updateFirestoreData {
                 refreshScope.launch {
                     viewModel.setRefresh(false)
                 }
@@ -55,7 +54,7 @@ fun MainNavHost(
         composable(NavigationDrawerRoutes.PRUEFUNGEN.toString()) {
             FirebaseDataPage(
                 title = "Gürtelprüfungen",
-                firestoreData = firestoreData["pruefungen"],
+                document = "pruefungen",
                 imageResource = imageList[0],
                 vm = viewModel,
                 onRefresh = ::refresh
@@ -65,7 +64,7 @@ fun MainNavHost(
         composable(NavigationDrawerRoutes.FERIEN.toString()) {
             FirebaseDataPage(
                 title = "Ferientraining",
-                firestoreData = firestoreData["ferientraining"],
+                document = "ferientraining",
                 imageResource = imageList[1],
                 vm = viewModel,
                 onRefresh = ::refresh
@@ -87,7 +86,7 @@ fun MainNavHost(
         composable(NavigationDrawerRoutes.VORFUEHRUNGEN.toString()) {
             FirebaseDataPage(
                 title = "Vorführungen",
-                firestoreData = firestoreData["vorfuehrungen"],
+                document = "vorfuehrungen",
                 imageResource = imageList[2],
                 vm = viewModel,
                 onRefresh = ::refresh
@@ -97,7 +96,7 @@ fun MainNavHost(
         composable(NavigationDrawerRoutes.LEHRGAENGE.toString()) {
             FirebaseDataPage(
                 title = "Lehrgänge + Turniere",
-                firestoreData = firestoreData["turniere"],
+                document = "turniere",
                 imageResource = imageList[3],
                 vm = viewModel,
                 onRefresh = ::refresh
@@ -108,6 +107,10 @@ fun MainNavHost(
                 )
             }
             appBarTitle.value = "Lehrgänge + Turniere"
+        }
+        composable(NavigationDrawerRoutes.COLORS.toString()) {
+            Colors(vm = viewModel)
+            appBarTitle.value = BuildConfig.BUILD_TYPE
         }
         composable(
             "?page_id={id}",

@@ -1,5 +1,6 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.pages
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,6 +10,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -19,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.SwipeRefreshState
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import de.schweininchen.shintaikan.shintaikan.jetpack.MyViewModel
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
 import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.Typography
@@ -27,15 +28,14 @@ import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.Typography
 @Composable
 fun FirebaseDataPage(
     title: String,
-    firestoreData: Map<String, Any>?,
+    document: String,
     imageResource: Int,
     vm: MyViewModel,
     onRefresh: () -> Unit,
     extraComposable: @Composable () -> Unit = {}
 ) {
     val isRefreshing by vm.isRefreshing.collectAsState()
-
-    val refreshState = rememberSwipeRefreshState(false)
+    val firestoreData = vm.firestoreData[document]
 
     SwipeRefresh(
         state = SwipeRefreshState(isRefreshing = isRefreshing),
@@ -48,7 +48,8 @@ fun FirebaseDataPage(
                 // Enable the scale animation
                 scale = true,
                 // Change the color and shape
-                backgroundColor = androidx.compose.material3.MaterialTheme.colorScheme.primary,
+                backgroundColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.surface
             )
         }
 
@@ -62,7 +63,7 @@ fun FirebaseDataPage(
         ) {
             Image(
                 painter = painterResource(id = R.drawable.kaempfer_app),
-                contentDescription = "Shintaikan logo",
+                contentDescription = "Decoration image",
                 Modifier
                     .size(100.dp)
                     .align(Alignment.End)
@@ -80,9 +81,10 @@ fun FirebaseDataPage(
 
             Image(
                 painter = painterResource(id = imageResource),
-                contentDescription = "Bonsai",
+                contentDescription = "Decoration image",
                 Modifier
                     .size(250.dp)
+                    .padding(top = 16.dp)
             )
 
         }

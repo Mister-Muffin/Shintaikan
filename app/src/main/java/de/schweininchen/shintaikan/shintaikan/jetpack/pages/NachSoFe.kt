@@ -23,7 +23,7 @@ fun NachSoFe(vm: MyViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth(),
         contentPadding = PaddingValues(8.dp),
-        state = vm.lazyState
+        state = vm.lazyStateSoFe
     ) {
         item {
             Image(

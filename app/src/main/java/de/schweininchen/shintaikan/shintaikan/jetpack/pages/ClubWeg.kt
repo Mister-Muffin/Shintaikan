@@ -25,7 +25,7 @@ fun ClubWeg(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth(),
         contentPadding = PaddingValues(8.dp),
-        state = viewModel.lazyState,
+        state = viewModel.lazyStateClub,
     ) {
         item {
             Text(text = "Karate Club\nShintaikan e.V.", style = Typography.h1)

@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity() {
 
                 })
 
-                if (viewModel.firestoreData.value.isEmpty()) viewModel.updateTrplan()
+                if (viewModel.firestoreData.isEmpty()) viewModel.updateTrplan()
 
                 fun navDrawerClickie(
                     route: NavigationDrawerRoutes?,
@@ -79,6 +79,9 @@ class MainActivity : AppCompatActivity() {
                     scaffoldState: ScaffoldState
                 ) {
                     if (route !== null) {
+
+                        changeLazyState(route, viewModel)
+
                         scope.launch {
                             if (!viewModel.lazyState.isScrollInProgress) viewModel.lazyState.scrollToItem(
                                 0
@@ -106,8 +109,49 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
     }
 
+    private fun changeLazyState(
+        route: NavigationDrawerRoutes,
+        viewModel: MyViewModel
+    ) {
+        when (route) {
+            NavigationDrawerRoutes.HOME -> {
+                viewModel.lazyState = viewModel.lazyStateStart
+            }
+            NavigationDrawerRoutes.TRPLAN -> {
+                viewModel.lazyState = viewModel.lazyStateTrplan
+            }
+            NavigationDrawerRoutes.PRUEFUNGEN -> {
+                viewModel.lazyState = viewModel.lazyStatePruef
+            }
+            NavigationDrawerRoutes.FERIEN -> {
+                viewModel.lazyState = viewModel.lazyStateFerien
+            }
+            NavigationDrawerRoutes.NACHSOFE -> {
+                viewModel.lazyState = viewModel.lazyStateSoFe
+            }
+            NavigationDrawerRoutes.CLUBWEG -> {
+                viewModel.lazyState = viewModel.lazyStateClub
+            }
+            NavigationDrawerRoutes.ANFAENGER -> {
+                viewModel.lazyState = viewModel.lazyStateAnf
+            }
+            NavigationDrawerRoutes.VORFUEHRUNGEN -> {
+                viewModel.lazyState = viewModel.lazyStatePres
+            }
+            NavigationDrawerRoutes.LEHRGAENGE -> {
+                viewModel.lazyState = viewModel.lazyStateTurn
+            }
+            NavigationDrawerRoutes.COLORS -> {
+                viewModel.lazyState = viewModel.lazyStateColors
+            }
+            else -> {
+                viewModel.lazyState = viewModel.lazyStateStart
+            }
+        }
+    }
 }
 
 @ExperimentalMaterial3Api
@@ -124,11 +168,7 @@ private fun Bob(
         mutableStateOf("Shintaikan")
     }
 
-    /* if (viewModel.exoPlayer == null) {
-
-     }
-
-     val uri =
+    /*val uri =
          "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
      val context = LocalContext.current
 
@@ -150,9 +190,13 @@ private fun Bob(
             )
         },
     ) {
-        val firestoreData = viewModel.firestoreData.value
+        val firestoreData = viewModel.firestoreData
         if (firestoreData.isEmpty()) {
-            viewModel.updateFirestoreData()
+            viewModel.updateFirestoreData {
+                scope.launch {
+                    viewModel.setRefresh(false)
+                }
+            }
         }
         val imageList: IntArray = intArrayOf(
             R.drawable.bonsai,
@@ -194,7 +238,6 @@ private fun Bob(
                 viewModel,
                 wordpressList,
                 appBarTitle,
-                firestoreData,
                 imageList,
                 selectedDrawerItem,
             )

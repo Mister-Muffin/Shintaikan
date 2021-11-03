@@ -1,7 +1,9 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack
 
+import android.util.Log
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -66,11 +68,14 @@ class MyViewModel : ViewModel() {
     //</editor-fold>
 
     //<editor-fold desc="Firestore Data">
-    val firestoreData = mutableStateOf(mapOf<String, MutableMap<String, Any>>())
+    val firestoreData = mutableStateMapOf<String, MutableMap<String, Any>>()
 
-    fun updateFirestoreData() {
+    fun updateFirestoreData(function: () -> Unit = {}) {
         getFirestoreData {
-            firestoreData.value = it
+            firestoreData.clear()
+            firestoreData.putAll(it)
+            Log.d("ViewModel.kt", "updateFirestoreData: $it")
+            function()
         }
     }
     //</editor-fold>
@@ -81,7 +86,19 @@ class MyViewModel : ViewModel() {
         firebaseMessagingToken.value = token
     }
 
-
+    //<editor-fold desc="List states">
     var lazyState = LazyListState()
+
+    var lazyStateStart = LazyListState()
+    var lazyStateTrplan = LazyListState()
+    var lazyStatePruef = LazyListState()
+    var lazyStateFerien = LazyListState()
+    var lazyStateSoFe = LazyListState()
+    var lazyStateClub = LazyListState()
+    var lazyStateAnf = LazyListState()
+    var lazyStatePres = LazyListState()
+    var lazyStateTurn = LazyListState()
+    var lazyStateColors = LazyListState()
+    //</editor-fold>
 
 }
