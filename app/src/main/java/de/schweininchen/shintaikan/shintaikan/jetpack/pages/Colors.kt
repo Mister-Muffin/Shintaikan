@@ -1,12 +1,12 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.pages
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -25,60 +25,10 @@ import kotlin.random.Random
 fun Colors(vm: MyViewModel) {
     val refreshState = rememberSwipeRefreshState(false)
     val colors = remember {
-        mutableStateListOf(
-            intArrayOf(
-                Random.nextInt(0, 255),
-                Random.nextInt(0, 255),
-                Random.nextInt(0, 255)
-            ),
-            intArrayOf(
-                Random.nextInt(0, 255),
-                Random.nextInt(0, 255),
-                Random.nextInt(0, 255)
-            ),
-            intArrayOf(
-                Random.nextInt(0, 255),
-                Random.nextInt(0, 255),
-                Random.nextInt(0, 255)
-            ),
-            intArrayOf(
-                Random.nextInt(0, 255),
-                Random.nextInt(0, 255),
-                Random.nextInt(0, 255)
-            ),
-            intArrayOf(
-                Random.nextInt(0, 255),
-                Random.nextInt(0, 255),
-                Random.nextInt(0, 255)
-            ),
-            intArrayOf(
-                Random.nextInt(0, 255),
-                Random.nextInt(0, 255),
-                Random.nextInt(0, 255)
-            ),
-            intArrayOf(
-                Random.nextInt(0, 255),
-                Random.nextInt(0, 255),
-                Random.nextInt(0, 255)
-            ),
-            intArrayOf(
-                Random.nextInt(0, 255),
-                Random.nextInt(0, 255),
-                Random.nextInt(0, 255)
-            ),
-            intArrayOf(
-                Random.nextInt(0, 255),
-                Random.nextInt(0, 255),
-                Random.nextInt(0, 255)
-            ),
-            intArrayOf(
-                Random.nextInt(0, 255),
-                Random.nextInt(0, 255),
-                Random.nextInt(0, 255)
-            )
-        )
+        mutableStateListOf<IntArray>()
     }
 
+    LaunchedEffect(key1 = true) { refreshColors(colors = colors) }
 
     SwipeRefresh(
         state = SwipeRefreshState(isRefreshing = refreshState.isRefreshing),
@@ -126,12 +76,14 @@ fun Colors(vm: MyViewModel) {
 }
 
 private fun refreshColors(colors: SnapshotStateList<IntArray>) {
-    Log.d("Colors.kt", "refreshColors: REFRESHING COLORS")
-    for (i in 0 until colors.size) {
-        colors[i] = intArrayOf(
-            Random.nextInt(0, 255),
-            Random.nextInt(0, 255),
-            Random.nextInt(0, 255)
+    colors.clear()
+    for (i in 0 until 10) {
+        colors.add(
+            intArrayOf(
+                Random.nextInt(0, 255),
+                Random.nextInt(0, 255),
+                Random.nextInt(0, 255)
+            )
         )
     }
 }
