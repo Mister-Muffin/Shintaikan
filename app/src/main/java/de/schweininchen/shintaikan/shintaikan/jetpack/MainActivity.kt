@@ -2,106 +2,121 @@ package de.schweininchen.shintaikan.shintaikan.jetpack
 
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.CloudOff
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.insets.ProvideWindowInsets
+import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
+import de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity.MainNavHost
+import de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity.ShintaikanAppBar
 import de.schweininchen.shintaikan.shintaikan.jetpack.pages.*
 import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.ShintaikanJetpackTheme
-import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.Typography
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 private const val TAG = "MainActivity.kt"
 
-class MainActivity : ComponentActivity() {
+@ExperimentalMaterial3Api
+class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+
         setContent {
-            val viewModel: MyViewModel = viewModel()
-            val navController = rememberNavController()
-            val url = "https://shintaikan.de/?rest_route=/wp/v2/posts"
-            val scope = rememberCoroutineScope()
+            ProvideWindowInsets(consumeWindowInsets = false) {
+                val viewModel: MyViewModel = viewModel()
+                val navController = rememberNavController()
+                val url = "https://shintaikan.de/?rest_route=/wp/v2/posts"
+                val scope = rememberCoroutineScope()
 
-            val selectedDrawerItem = remember {
-                mutableStateOf(NavigationDrawerRoutes.HOME)
-            }
-
-            scope.launch {
-                abc(baseContext, viewModel)
-            }
-
-            if (viewModel.wordpressList.isEmpty()) viewModel.updateHomeData(url, cacheDir)
-            FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-                if (!task.isSuccessful) {
-                    Log.w(TAG, "Fetching FCM registration token failed", task.exception)
-                    return@OnCompleteListener
+                val selectedDrawerItem = remember {
+                    mutableStateOf(NavigationDrawerRoutes.HOME)
                 }
 
-                // Get new FCM registration token
-                val token = task.result
-                if (token != null) {
-                    viewModel.updatefirebaseMessagingToken(token = token)
+                LaunchedEffect(true) {
+                    abc(baseContext, viewModel)
                 }
 
-            })
+                if (viewModel.wordpressList.isEmpty()) viewModel.updateHomeData(url, cacheDir)
 
-            if (viewModel.firestoreData.value.isEmpty()) viewModel.updateTrplan()
-
-            fun navDrawerClickie(
-                route: NavigationDrawerRoutes?,
-                scope: CoroutineScope,
-                scaffoldState: ScaffoldState
-            ) {
-                if (route !== null) {
-                    navController.navigate(route.toString()) {
-                        popUpTo(NavigationDrawerRoutes.HOME.toString())
-                        launchSingleTop = true
+                FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+                    if (!task.isSuccessful) {
+                        Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                        return@OnCompleteListener
                     }
-                    selectedDrawerItem.value = route
-                    scope.launch { scaffoldState.drawerState.close() }
+                    // Get new FCM registration token
+                    val token = task.result
+                    if (token != null) {
+                        viewModel.updatefirebaseMessagingToken(token = token)
+                    }
+
+                })
+
+                if (viewModel.firestoreData.value.isEmpty()) viewModel.updateTrplan()
+
+                fun navDrawerClickie(
+                    route: NavigationDrawerRoutes?,
+                    scope: CoroutineScope,
+                    scaffoldState: ScaffoldState
+                ) {
+                    if (route !== null) {
+                        scope.launch {
+                            if (!viewModel.lazyState.isScrollInProgress) viewModel.lazyState.scrollToItem(
+                                0
+                            )
+                        }
+                        navController.navigate(route.toString()) {
+                            popUpTo(NavigationDrawerRoutes.HOME.toString())
+                            launchSingleTop = true
+                        }
+                        selectedDrawerItem.value = route
+                        scope.launch {
+                            scaffoldState.drawerState.close()
+                        }
+                    }
                 }
-            }
-            ShintaikanJetpackTheme {
-                Bob(
-                    onClick = ::navDrawerClickie,
-                    navHostController = navController,
-                    viewModel.wordpressList,
-                    scope = scope,
-                    selectedDrawerItem = selectedDrawerItem.value,
-                    viewModel = viewModel
-                )
+                ShintaikanJetpackTheme {
+                    Bob(
+                        onClick = ::navDrawerClickie,
+                        navHostController = navController,
+                        viewModel.wordpressList,
+                        scope = scope,
+                        selectedDrawerItem = selectedDrawerItem,
+                        viewModel = viewModel
+                    )
+                }
             }
         }
     }
 
 }
 
+@ExperimentalMaterial3Api
 @Composable
 private fun Bob(
     onClick: (NavigationDrawerRoutes?, CoroutineScope, ScaffoldState) -> Unit,
     navHostController: NavHostController,
     wordpressList: List<Array<String>>,
-    selectedDrawerItem: NavigationDrawerRoutes,
+    selectedDrawerItem: MutableState<NavigationDrawerRoutes>,
     scope: CoroutineScope, viewModel: MyViewModel
 ) {
     val scaffoldState = rememberScaffoldState()
@@ -126,33 +141,14 @@ private fun Bob(
 
     Scaffold(
         scaffoldState = scaffoldState,
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        appBarTitle.value
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = { scope.launch { scaffoldState.drawerState.open() } }
-                    ) {
-                        Icon(Icons.Filled.Menu, contentDescription = null)
-                    }
-                },
-                actions = {
-                    /*IconButton(onClick = { *//* doSomething() *//* }) {
-                        Icon(Icons.Filled.Favorite, contentDescription = "Localized description")
-                    }*/
-                }
-            )
-        },
-        drawerContent = drawerContent(viewModel, selectedDrawerItem) {
+        drawerShape = RoundedCornerShape(0),
+        drawerContent = drawerContent(viewModel, selectedDrawerItem.value) {
             onClick(
                 it,
                 scope,
                 scaffoldState
             )
-        }
+        },
     ) {
         val firestoreData = viewModel.firestoreData.value
         if (firestoreData.isEmpty()) {
@@ -166,111 +162,42 @@ private fun Bob(
         )
         imageList.shuffle()
 
-        val refreshScope = rememberCoroutineScope()
-        fun refresh() {
-            refreshScope.launch {
-                viewModel.setRefresh(true)
-                getFirestoreData {
-                    refreshScope.launch {
-                        viewModel.setRefresh(false)
-                    }
-                }
-            }
-        }
-        if (!viewModel.isConnected.value) Row(
-            Modifier
-                .fillMaxWidth()
-                .height(30.dp)
-                .background(Color.Red),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.CloudOff,
-                tint = Color.White,
-                contentDescription = "Offline icon",
-                modifier = Modifier.padding(end = 8.dp)
+        Column(modifier = Modifier.navigationBarsWithImePadding()) {
+            ShintaikanAppBar(
+                appBarTitle,
+                scope,
+                scaffoldState,
+                lazyState = viewModel.lazyState
             )
-            Text(
-                text = "OFFLINE!",
-                style = TextStyle(color = Color.White),
-            )
-        }
-        NavHost(
-            navController = navHostController,
-            startDestination = NavigationDrawerRoutes.HOME.toString(),
-            modifier = Modifier.padding(top = if (viewModel.isConnected.value) 0.dp else 30.dp)
-        ) {
-            composable(NavigationDrawerRoutes.HOME.toString()) {
-                Home(wordpressList, viewModel = viewModel)
-                appBarTitle.value = "Shintaikan"
-            }
-            composable(NavigationDrawerRoutes.TRPLAN.toString()) {
-                Trplan(viewModel)
-                appBarTitle.value = "Trainingsplan"
-            }
-            composable(NavigationDrawerRoutes.PRUEFUNGEN.toString()) {
-                FirebaseDataPage(
-                    title = "Gürtelprüfungen",
-                    firestoreData = firestoreData["pruefungen"],
-                    imageResource = imageList[0],
-                    vm = viewModel,
-                    onRefresh = ::refresh
-                )
-                appBarTitle.value = "Gürtelprüfungen"
-            }
-            composable(NavigationDrawerRoutes.FERIEN.toString()) {
-                FirebaseDataPage(
-                    title = "Ferientraining",
-                    firestoreData = firestoreData["ferientraining"],
-                    imageResource = imageList[1],
-                    vm = viewModel,
-                    onRefresh = ::refresh
-                )
-                appBarTitle.value = "Ferientraining"
-            }
-            composable(NavigationDrawerRoutes.NACHSOFE.toString()) {
-                NachSoFe()
-                appBarTitle.value = "Nach den Sommerferien"
-            }
-            composable(NavigationDrawerRoutes.CLUBWEG.toString()) {
-                ClubWeg()
-                appBarTitle.value = "Der Club"
-            }
-            composable(NavigationDrawerRoutes.ANFAENGER.toString()) {
-                Anfaenger()
-                appBarTitle.value = "Anfänger / Interressenten"
-            }
-            composable(NavigationDrawerRoutes.VORFUEHRUNGEN.toString()) {
-                FirebaseDataPage(
-                    title = "Vorführungen",
-                    firestoreData = firestoreData["vorfuehrungen"],
-                    imageResource = imageList[2],
-                    vm = viewModel,
-                    onRefresh = ::refresh
-                )
-                appBarTitle.value = "Vorführungen"
-            }
-            composable(NavigationDrawerRoutes.LEHRGAENGE.toString()) {
-                FirebaseDataPage(
-                    title = "Lehrgänge + Turniere",
-                    firestoreData = firestoreData["turniere"],
-                    imageResource = imageList[3],
-                    vm = viewModel,
-                    onRefresh = ::refresh
-                ) {
-                    Text(text = "Die Ausschreibungen hängen auch im Dojo!", style = Typography.h3)
-                }
-                appBarTitle.value = "Lehrgänge + Turniere"
-            }
-            /* composable("Movie1") {
 
-                 ExoVideoPlayer(
-                     exoPlayer = exoPlayer
-                 )
-                 appBarTitle.value = "Infofilmchen"
-                 exoPlayer.play()
-             }*/
+            if (!viewModel.isConnected.value) Row(
+                Modifier
+                    .fillMaxWidth()
+                    .height(30.dp)
+                    .background(Color.Red),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.CloudOff,
+                    tint = Color.White,
+                    contentDescription = "Offline icon",
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+                Text(
+                    text = "OFFLINE!",
+                    style = TextStyle(color = Color.White),
+                )
+            }
+            MainNavHost(
+                navHostController,
+                viewModel,
+                wordpressList,
+                appBarTitle,
+                firestoreData,
+                imageList,
+                selectedDrawerItem,
+            )
         }
     }
 }
