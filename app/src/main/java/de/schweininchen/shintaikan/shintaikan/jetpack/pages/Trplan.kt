@@ -1,6 +1,5 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.pages
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -54,13 +53,13 @@ fun Trplan(vm: MyViewModel) {
             if (firestoreData.isEmpty()) {
                 CircularProgressIndicator()
             } else {
-                Log.d("TAG2", "Trplan: $firestoreData")
+                //Log.d("TAG2", "Trplan: $firestoreData")
                 for (i in days) {
                     Text(text = i, style = Typography.h2)
-                    Log.d("TAG", "Keys: ${firestoreData.keys}")
+                    //Log.d("TAG", "Keys: ${firestoreData.keys}")
                     for (j in firestoreData.keys) {
-                        Log.d("TAG", "Keys: ${firestoreData[j]}")
-                        Log.d("TAG", "Index: ${days.indexOf(i).inc()}")
+                        //Log.d("TAG", "Keys: ${firestoreData[j]}")
+                        //Log.d("TAG", "Index: ${days.indexOf(i).inc()}")
                         if (!firestoreData[j].isNullOrEmpty() &&
                             firestoreData[j]?.get("key").toString()
                                 .startsWith(days.indexOf(i).inc().toString()) &&

@@ -1,7 +1,6 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.pages
 
 import android.os.Build
-import android.util.Log
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
@@ -197,7 +196,7 @@ private fun Today(viewModel: MyViewModel) {
         )
 
         for (j in firestoreData.keys) {
-            Log.d("TAG", "Today: $j")
+            //Log.d("TAG", "Today: $j")
             if (!firestoreData[j].isNullOrEmpty() &&
                 firestoreData[j]?.get("start")
                     .toString().isNotEmpty() &&

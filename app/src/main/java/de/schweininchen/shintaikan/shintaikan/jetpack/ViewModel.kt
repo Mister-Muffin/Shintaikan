@@ -1,6 +1,5 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack
 
-import android.util.Log
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
@@ -74,7 +73,6 @@ class MyViewModel : ViewModel() {
         getFirestoreData {
             firestoreData.clear()
             firestoreData.putAll(it)
-            Log.d("ViewModel.kt", "updateFirestoreData: $it")
             function()
         }
     }
