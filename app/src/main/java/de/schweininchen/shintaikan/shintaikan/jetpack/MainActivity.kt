@@ -73,6 +73,8 @@ class MainActivity : AppCompatActivity() {
 
                 if (viewModel.firestoreData.isEmpty()) viewModel.updateTrplan()
 
+                viewModel.lazyState = viewModel.lazyStateStart
+
                 fun navDrawerClickie(
                     route: NavigationDrawerRoutes?,
                     scope: CoroutineScope,
