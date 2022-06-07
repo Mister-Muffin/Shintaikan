@@ -19,6 +19,7 @@ import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.Typography
 
 @Composable
 fun Anfaenger() {
+    // TODO: Change to LazyList
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier

@@ -11,7 +11,7 @@ fun abc(context: Context, _viewModel: MyViewModel) {
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
         cm.registerDefaultNetworkCallback(mNetworkCallback(_viewModel, context = context))
-        _viewModel.isConnected.value = cm.activeNetwork !== null
+        _viewModel.isConnected = cm.activeNetwork !== null
     }
     
 }
@@ -22,7 +22,7 @@ private fun mNetworkCallback(
 ): ConnectivityManager.NetworkCallback {
     return object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
-            viewModel.updateConnectifityStatus(true)
+            viewModel.isConnected = true
             if (viewModel.wordpressList.isEmpty()) {
                 viewModel.updateHomeData(
                     "https://shintaikan.de/?rest_route=/wp/v2/posts",
@@ -32,7 +32,7 @@ private fun mNetworkCallback(
         }
 
         override fun onLost(network: Network) {
-            viewModel.updateConnectifityStatus(false)
+            viewModel.isConnected = false
         }
     }
 }

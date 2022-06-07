@@ -33,6 +33,8 @@ private const val TAG = "MainActivity.kt"
 @ExperimentalMaterial3Api
 class MainActivity : AppCompatActivity() {
 
+    var tryCloseNavigationDrawer: () -> Boolean = { false }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -44,7 +46,7 @@ class MainActivity : AppCompatActivity() {
             val url = "https://shintaikan.de/?rest_route=/wp/v2/posts"
             val scope = rememberCoroutineScope()
 
-            val selectedDrawerItem = remember {
+            var selectedDrawerItem by remember {
                 mutableStateOf(NavigationDrawerRoutes.HOME)
             }
 
@@ -69,7 +71,7 @@ class MainActivity : AppCompatActivity() {
 
             if (viewModel.firestoreData.isEmpty()) viewModel.updateTrplan()
 
-            viewModel.lazyState = viewModel.lazyStateStart
+            viewModel.setLazyListState(NavigationDrawerRoutes.HOME)
 
             fun navDrawerClickie(
                 route: NavigationDrawerRoutes?,
@@ -78,23 +80,34 @@ class MainActivity : AppCompatActivity() {
             ) {
                 if (route !== null) {
 
-                    changeLazyState(route, viewModel)
+                    viewModel.setLazyListState(route)
 
+                    /* Why
                     scope.launch {
-                        if (!viewModel.lazyState.isScrollInProgress) viewModel.lazyState.scrollToItem(
+                        if (!viewModel.lazyListState.isScrollInProgress) viewModel.lazyListState.scrollToItem(
                             0
                         )
-                    }
+                    }*/
                     navController.navigate(route.toString()) {
                         popUpTo(NavigationDrawerRoutes.HOME.toString())
                         launchSingleTop = true
                     }
-                    selectedDrawerItem.value = route
+                    selectedDrawerItem = route
                     scope.launch {
                         scaffoldState.drawerState.close()
                     }
                 }
             }
+
+            val scaffoldState = rememberScaffoldState()
+            val coroutineScope = rememberCoroutineScope()
+            tryCloseNavigationDrawer = {
+                coroutineScope.launch {
+                    scaffoldState.drawerState.close()
+                }
+                scaffoldState.drawerState.isOpen
+            }
+
             ShintaikanJetpackTheme {
                 Bob(
                     onClick = ::navDrawerClickie,
@@ -102,52 +115,17 @@ class MainActivity : AppCompatActivity() {
                     viewModel.wordpressList,
                     scope = scope,
                     selectedDrawerItem = selectedDrawerItem,
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    scaffoldState = scaffoldState
                 )
             }
         }
 
     }
 
-    private fun changeLazyState(
-        route: NavigationDrawerRoutes,
-        viewModel: MyViewModel
-    ) {
-        when (route) {
-            NavigationDrawerRoutes.HOME -> {
-                viewModel.lazyState = viewModel.lazyStateStart
-            }
-            NavigationDrawerRoutes.TRPLAN -> {
-                viewModel.lazyState = viewModel.lazyStateTrplan
-            }
-            NavigationDrawerRoutes.PRUEFUNGEN -> {
-                viewModel.lazyState = viewModel.lazyStatePruef
-            }
-            NavigationDrawerRoutes.FERIEN -> {
-                viewModel.lazyState = viewModel.lazyStateFerien
-            }
-            NavigationDrawerRoutes.NACHSOFE -> {
-                viewModel.lazyState = viewModel.lazyStateSoFe
-            }
-            NavigationDrawerRoutes.CLUBWEG -> {
-                viewModel.lazyState = viewModel.lazyStateClub
-            }
-            NavigationDrawerRoutes.ANFAENGER -> {
-                viewModel.lazyState = viewModel.lazyStateAnf
-            }
-            NavigationDrawerRoutes.VORFUEHRUNGEN -> {
-                viewModel.lazyState = viewModel.lazyStatePres
-            }
-            NavigationDrawerRoutes.LEHRGAENGE -> {
-                viewModel.lazyState = viewModel.lazyStateTurn
-            }
-            NavigationDrawerRoutes.COLORS -> {
-                viewModel.lazyState = viewModel.lazyStateColors
-            }
-            else -> {
-                viewModel.lazyState = viewModel.lazyStateStart
-            }
-        }
+    override fun onBackPressed() {
+        if (!tryCloseNavigationDrawer())
+            super.onBackPressed()
     }
 }
 
@@ -157,10 +135,11 @@ private fun Bob(
     onClick: (NavigationDrawerRoutes?, CoroutineScope, ScaffoldState) -> Unit,
     navHostController: NavHostController,
     wordpressList: List<Array<String>>,
-    selectedDrawerItem: MutableState<NavigationDrawerRoutes>,
-    scope: CoroutineScope, viewModel: MyViewModel
+    selectedDrawerItem: NavigationDrawerRoutes,
+    scope: CoroutineScope,
+    viewModel: MyViewModel,
+    scaffoldState: ScaffoldState
 ) {
-    val scaffoldState = rememberScaffoldState()
     val appBarTitle = remember {
         mutableStateOf("Shintaikan")
     }
@@ -180,7 +159,7 @@ private fun Bob(
         scaffoldState = scaffoldState,
         drawerShape = RoundedCornerShape(0),
         drawerContent = {
-            DrawerContent(viewModel, selectedDrawerItem.value) {
+            DrawerContent(viewModel, selectedDrawerItem) {
                 onClick(
                     it,
                     scope,
@@ -205,15 +184,19 @@ private fun Bob(
         )
         imageList.shuffle()
 
-        Column(modifier = Modifier.navigationBarsPadding().imePadding()) {
+        Column(
+            modifier = Modifier
+                .navigationBarsPadding()
+                .imePadding()
+        ) {
             ShintaikanAppBar(
                 appBarTitle,
                 scope,
                 scaffoldState,
-                lazyState = viewModel.lazyState
+                lazyState = viewModel.lazyListState
             )
 
-            if (!viewModel.isConnected.value) Row(
+            if (!viewModel.isConnected) Row(
                 Modifier
                     .fillMaxWidth()
                     .height(30.dp)

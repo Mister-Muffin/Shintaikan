@@ -3,6 +3,7 @@ package de.schweininchen.shintaikan.shintaikan.jetpack.pages
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -22,7 +23,7 @@ import de.schweininchen.shintaikan.shintaikan.jetpack.MyViewModel
 import kotlin.random.Random
 
 @Composable
-fun Colors(vm: MyViewModel) {
+fun Colors(lazyListState: LazyListState) {
     val refreshState = rememberSwipeRefreshState(false)
     val colors = remember {
         mutableStateListOf<IntArray>()
@@ -52,7 +53,7 @@ fun Colors(vm: MyViewModel) {
             modifier = Modifier.fillMaxWidth(),
             contentPadding = PaddingValues(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
-            state = vm.lazyStateColors,
+            state = lazyListState,
         ) {
             itemsIndexed(colors) { index: Int, _ ->
                 Box(

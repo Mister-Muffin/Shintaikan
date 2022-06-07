@@ -1,9 +1,7 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack
 
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,11 +23,11 @@ class MyViewModel : ViewModel() {
     //</editor-fold>
 
     //<editor-fold desc="Trplan">
-    val trplanData = mutableStateOf(mapOf<String, MutableMap<String, Any>>())
+    var trplanData by mutableStateOf(mapOf<String, MutableMap<String, Any>>())
 
     fun updateTrplan() {
         getFirestoreTrplan {
-            trplanData.value = it
+            trplanData = it
         }
     }
     //</editor-fold>
@@ -53,11 +51,7 @@ class MyViewModel : ViewModel() {
         }
     }
 
-    val isConnected = mutableStateOf(true)
-
-    fun updateConnectifityStatus(isConnected: Boolean) {
-        this.isConnected.value = isConnected
-    }
+    var isConnected by mutableStateOf(true)
 
     /*val exoPlayer: SimpleExoPlayer
         get() {
@@ -85,18 +79,17 @@ class MyViewModel : ViewModel() {
     }
 
     //<editor-fold desc="List states">
-    var lazyState = LazyListState()
+    // Let's go functional programming!
+    val lazyListStates = NavigationDrawerRoutes.values().associateWith { LazyListState() }
 
-    var lazyStateStart = LazyListState()
-    var lazyStateTrplan = LazyListState()
-    var lazyStatePruef = LazyListState()
-    var lazyStateFerien = LazyListState()
-    var lazyStateSoFe = LazyListState()
-    var lazyStateClub = LazyListState()
-    var lazyStateAnf = LazyListState()
-    var lazyStatePres = LazyListState()
-    var lazyStateTurn = LazyListState()
-    var lazyStateColors = LazyListState()
+    var lazyListState = lazyListStates[NavigationDrawerRoutes.HOME]!!
+        private set
+
+    fun setLazyListState(
+        route: NavigationDrawerRoutes
+    ) {
+        lazyListState = lazyListStates[route] ?: lazyListStates[NavigationDrawerRoutes.HOME]!!
+    }
     //</editor-fold>
 
 }

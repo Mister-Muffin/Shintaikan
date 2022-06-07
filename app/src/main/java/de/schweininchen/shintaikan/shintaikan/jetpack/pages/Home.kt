@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
@@ -33,7 +34,10 @@ import java.time.LocalTime
 @Composable
 fun Home(
     postsList: List<Array<String>>,
-    viewModel: MyViewModel,
+    lazyListState: LazyListState,
+    firestoreDataNotEmpty: Boolean,
+    trplanData: Map<String, MutableMap<String, Any>>,
+    isConnected: Boolean
 ) {
     val imageSize = 100.dp
 
@@ -43,7 +47,7 @@ fun Home(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier
             .fillMaxWidth(),
-        state = viewModel.lazyStateStart
+        state = lazyListState
     ) {
         item {
             Text(text = "Karate Club\nShintaikan e.V.", style = Typography.h1)
@@ -59,18 +63,18 @@ fun Home(
             )
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && viewModel.firestoreData.isNotEmpty()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && firestoreDataNotEmpty) {
             item {
                 Card(
                     elevation = 2.dp, modifier = Modifier
                         .fillMaxWidth()
                 ) {
-                    Today(viewModel = viewModel)
+                    Today(trplanData)
                 }
             }
         }
 
-        if (!viewModel.isConnected.value && postsList.isEmpty()) {
+        if (!isConnected && postsList.isEmpty()) {
             item {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_cloud_sad_24dp),
@@ -174,8 +178,7 @@ fun Html(text: String) {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-private fun Today(viewModel: MyViewModel) {
-    val firestoreData = viewModel.trplanData.value
+private fun Today(trplanData: Map<String, MutableMap<String, Any>>) {
 
     val target: LocalTime = LocalTime.now()
     val targetInZone = (target.isBefore(LocalTime.parse("20:00:00"))
@@ -200,28 +203,28 @@ private fun Today(viewModel: MyViewModel) {
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
-        for (j in firestoreData.keys) {
+        for (j in trplanData.keys) {
             //Log.d("TAG", "Today: $j")
-            if (!firestoreData[j].isNullOrEmpty() &&
-                firestoreData[j]?.get("start")
+            if (!trplanData[j].isNullOrEmpty() &&
+                trplanData[j]?.get("start")
                     .toString().isNotEmpty() &&
-                firestoreData[j]?.get("key").toString()
+                trplanData[j]?.get("key").toString()
                     .startsWith(day.toString())
             ) {
-                if (firestoreData[j]?.get("group")
+                if (trplanData[j]?.get("group")
                         .toString() == "Benutzerdefiniert"
                 ) {
                     Text(
-                        text = "${firestoreData[j]?.get("start").toString()} - " +
-                                "${firestoreData[j]?.get("end").toString()}: " +
-                                firestoreData[j]?.get("customText").toString(),
+                        text = "${trplanData[j]?.get("start").toString()} - " +
+                                "${trplanData[j]?.get("end").toString()}: " +
+                                trplanData[j]?.get("customText").toString(),
                         style = Typography.body2
                     )
                 } else {
                     Text(
-                        text = "${firestoreData[j]?.get("start").toString()} - " +
-                                "${firestoreData[j]?.get("end").toString()}: " +
-                                firestoreData[j]?.get("group").toString(),
+                        text = "${trplanData[j]?.get("start").toString()} - " +
+                                "${trplanData[j]?.get("end").toString()}: " +
+                                trplanData[j]?.get("group").toString(),
                         style = Typography.body2
                     )
                 }

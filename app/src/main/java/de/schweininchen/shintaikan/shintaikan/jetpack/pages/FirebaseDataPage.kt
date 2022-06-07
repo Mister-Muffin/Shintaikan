@@ -27,14 +27,12 @@ import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.Typography
 @Composable
 fun FirebaseDataPage(
     title: String,
-    document: String,
     imageResource: Int,
-    vm: MyViewModel,
+    firestoreData: MutableMap<String, Any>?,
+    isRefreshing: Boolean,
     onRefresh: () -> Unit,
     extraComposable: @Composable () -> Unit = {}
 ) {
-    val isRefreshing by vm.isRefreshing.collectAsState()
-    val firestoreData = vm.firestoreData[document]
 
     SwipeRefresh(
         state = SwipeRefreshState(isRefreshing = isRefreshing),
