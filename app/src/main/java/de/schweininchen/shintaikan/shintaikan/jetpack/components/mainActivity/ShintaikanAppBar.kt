@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 @ExperimentalMaterial3Api
 @Composable
 fun ShintaikanAppBar(
-    appBarTitle: MutableState<String>,
+    appBarTitle: String,
     scope: CoroutineScope,
     scaffoldState: ScaffoldState,
     lazyState: LazyListState
@@ -42,7 +42,7 @@ fun ShintaikanAppBar(
             modifier = Modifier.statusBarsPadding(),
             title = {
                 Text(
-                    appBarTitle.value, fontSize = 20.sp
+                    appBarTitle, fontSize = 20.sp
                 )
             },
 

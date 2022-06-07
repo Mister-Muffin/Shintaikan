@@ -24,7 +24,6 @@ fun MainNavHost(
     navHostController: NavHostController,
     viewModel: MyViewModel,
     wordpressList: List<Array<String>>,
-    appBarTitle: MutableState<String>,
     imageList: IntArray,
     selectedDrawerItem: NavigationDrawerRoutes,
 ) {
@@ -41,18 +40,18 @@ fun MainNavHost(
     }
     NavHost(
         navController = navHostController,
-        startDestination = NavigationDrawerRoutes.HOME.toString(),
+        startDestination = NavigationDrawerRoutes.HOME.id,
         modifier = Modifier.padding(top = if (viewModel.isConnected) 0.dp else 30.dp),
     ) {
-        composable(NavigationDrawerRoutes.HOME.toString()) {
+        composable(NavigationDrawerRoutes.HOME.id) {
             Home(wordpressList, lazyListState = viewModel.lazyListStates[NavigationDrawerRoutes.HOME]!!, firestoreDataNotEmpty = viewModel.firestoreData.isNotEmpty(), trplanData = viewModel.trplanData, isConnected = viewModel.isConnected)
-            appBarTitle.value = "Shintaikan"
+            //setAppBarTitle(NavigationDrawerRoutes.HOME.id)
         }
-        composable(NavigationDrawerRoutes.TRPLAN.toString()) {
+        composable(NavigationDrawerRoutes.TRPLAN.id) {
             Trplan(viewModel.lazyListStates[NavigationDrawerRoutes.TRPLAN]!!, viewModel.trplanData, viewModel::updateTrplan)
-            appBarTitle.value = "Trainingsplan"
+            //appBarTitle.value = "Trainingsplan"
         }
-        composable(NavigationDrawerRoutes.PRUEFUNGEN.toString()) {
+        composable(NavigationDrawerRoutes.PRUEFUNGEN.id) {
             FirebaseDataPage(
                 title = "Gürtelprüfungen",
                 firestoreData = viewModel.firestoreData["pruefungen"],
@@ -60,9 +59,9 @@ fun MainNavHost(
                 isRefreshing = viewModel.isRefreshing.collectAsState().value,
                 onRefresh = ::refresh
             )
-            appBarTitle.value = "Gürtelprüfungen"
+            //appBarTitle.value = "Gürtelprüfungen"
         }
-        composable(NavigationDrawerRoutes.FERIEN.toString()) {
+        composable(NavigationDrawerRoutes.FERIEN.id) {
             FirebaseDataPage(
                 title = "Ferientraining",
                 firestoreData = viewModel.firestoreData["ferientraining"],
@@ -70,21 +69,21 @@ fun MainNavHost(
                 isRefreshing = viewModel.isRefreshing.collectAsState().value,
                 onRefresh = ::refresh
             )
-            appBarTitle.value = "Ferientraining"
+            //appBarTitle.value = "Ferientraining"
         }
-        composable(NavigationDrawerRoutes.NACHSOFE.toString()) {
+        composable(NavigationDrawerRoutes.NACHSOFE.id) {
             NachSoFe(viewModel.lazyListStates[NavigationDrawerRoutes.NACHSOFE]!!)
-            appBarTitle.value = "Nach den Sommerferien"
+            //appBarTitle.value = "Nach den Sommerferien"
         }
-        composable(NavigationDrawerRoutes.CLUBWEG.toString()) {
+        composable(NavigationDrawerRoutes.CLUBWEG.id) {
             ClubWeg(viewModel.lazyListStates[NavigationDrawerRoutes.CLUBWEG]!!)
-            appBarTitle.value = "Der Club"
+            //appBarTitle.value = "Der Club"
         }
-        composable(NavigationDrawerRoutes.ANFAENGER.toString()) {
+        composable(NavigationDrawerRoutes.ANFAENGER.id) {
             Anfaenger()
-            appBarTitle.value = "Anfänger / Interressenten"
+            //appBarTitle.value = "Anfänger / Interressenten"
         }
-        composable(NavigationDrawerRoutes.VORFUEHRUNGEN.toString()) {
+        composable(NavigationDrawerRoutes.VORFUEHRUNGEN.id) {
             FirebaseDataPage(
                 title = "Vorführungen",
                 firestoreData = viewModel.firestoreData["vorfuehrungen"],
@@ -92,9 +91,9 @@ fun MainNavHost(
                 isRefreshing = viewModel.isRefreshing.collectAsState().value,
                 onRefresh = ::refresh
             )
-            appBarTitle.value = "Vorführungen"
+            //appBarTitle.value = "Vorführungen"
         }
-        composable(NavigationDrawerRoutes.LEHRGAENGE.toString()) {
+        composable(NavigationDrawerRoutes.LEHRGAENGE.id) {
             FirebaseDataPage(
                 title = "Lehrgänge + Turniere",
                 firestoreData = viewModel.firestoreData["turniere"],
@@ -107,11 +106,11 @@ fun MainNavHost(
                     style = Typography.h3
                 )
             }
-            appBarTitle.value = "Lehrgänge + Turniere"
+            //appBarTitle.value = "Lehrgänge + Turniere"
         }
-        composable(NavigationDrawerRoutes.COLORS.toString()) {
+        composable(NavigationDrawerRoutes.COLORS.id) {
             Colors(viewModel.lazyListStates[NavigationDrawerRoutes.COLORS]!!)
-            appBarTitle.value = BuildConfig.BUILD_TYPE
+            //setAppBarTitle = BuildConfig.BUILD_TYPE
         }
         composable(
             "?page_id={id}",

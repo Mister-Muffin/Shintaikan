@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
@@ -88,8 +89,8 @@ class MainActivity : AppCompatActivity() {
                             0
                         )
                     }*/
-                    navController.navigate(route.toString()) {
-                        popUpTo(NavigationDrawerRoutes.HOME.toString())
+                    navController.navigate(route.id) {
+                        popUpTo(NavigationDrawerRoutes.HOME.id)
                         launchSingleTop = true
                     }
                     selectedDrawerItem = route
@@ -140,9 +141,7 @@ private fun Bob(
     viewModel: MyViewModel,
     scaffoldState: ScaffoldState
 ) {
-    val appBarTitle = remember {
-        mutableStateOf("Shintaikan")
-    }
+    val appBarTitle = NavigationDrawerRoutes.values().find{it.id == navHostController.currentBackStackEntryAsState().value?.destination?.route}?.toString() ?: "Missing"
 
     /*val uri =
          "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
@@ -157,7 +156,7 @@ private fun Bob(
 
     Scaffold(
         scaffoldState = scaffoldState,
-        drawerShape = RoundedCornerShape(0),
+        drawerShape = RoundedCornerShape(topStart = 0.dp, topEnd = 16.dp, bottomStart =  16.dp, bottomEnd = 16.dp),
         drawerContent = {
             DrawerContent(viewModel, selectedDrawerItem) {
                 onClick(
@@ -219,7 +218,6 @@ private fun Bob(
                 navHostController,
                 viewModel,
                 wordpressList,
-                appBarTitle,
                 imageList,
                 selectedDrawerItem,
             )
