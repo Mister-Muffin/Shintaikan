@@ -4,6 +4,7 @@ import android.os.Build
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -13,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -150,7 +152,8 @@ fun Home(
         }
         item {
             Text("Kontakt:")
-            Text("shintaikan@web.de")
+            val uriHandler = LocalUriHandler.current
+            Text("shintaikan@web.de", modifier = Modifier.clickable { uriHandler.openUri("mailto:shintaikan@web.de") })
         }
 
     }
