@@ -34,8 +34,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.ContextCompat.startActivity
-import com.google.accompanist.insets.navigationBarsWithImePadding
-import com.google.accompanist.insets.statusBarsPadding
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import de.schweininchen.shintaikan.shintaikan.jetpack.components.navDrawer.DrawerItems
 
@@ -70,7 +68,7 @@ fun ColumnScope.DrawerContent(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
                 .statusBarsPadding()
-                .navigationBarsWithImePadding()
+                .navigationBarsPadding().imePadding()
                 .fillMaxWidth()
         ) {
             item {
