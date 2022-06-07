@@ -43,12 +43,11 @@ val customPadding = 12.dp
 
 @ExperimentalMaterial3Api
 @Composable
-fun drawerContent(
+fun ColumnScope.DrawerContent(
     vm: MyViewModel,
     selectedMain: NavigationDrawerRoutes,
     onClickMain: (NavigationDrawerRoutes?) -> Unit
-): @Composable (ColumnScope.() -> Unit) =
-    {
+) {
         val context = LocalContext.current
 
         val showDebugInfo = remember { mutableStateOf(false) }

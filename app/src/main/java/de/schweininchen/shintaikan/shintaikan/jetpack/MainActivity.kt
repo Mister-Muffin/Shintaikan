@@ -184,12 +184,14 @@ private fun Bob(
     Scaffold(
         scaffoldState = scaffoldState,
         drawerShape = RoundedCornerShape(0),
-        drawerContent = drawerContent(viewModel, selectedDrawerItem.value) {
-            onClick(
-                it,
-                scope,
-                scaffoldState
-            )
+        drawerContent = {
+            DrawerContent(viewModel, selectedDrawerItem.value) {
+                onClick(
+                    it,
+                    scope,
+                    scaffoldState
+                )
+            }
         },
     ) {
         val firestoreData = viewModel.firestoreData
