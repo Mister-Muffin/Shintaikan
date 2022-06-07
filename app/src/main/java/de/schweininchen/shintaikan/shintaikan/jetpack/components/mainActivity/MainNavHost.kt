@@ -1,6 +1,7 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -19,6 +20,7 @@ import de.schweininchen.shintaikan.shintaikan.jetpack.pages.*
 import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.Typography
 import kotlinx.coroutines.launch
 
+@ExperimentalMaterial3Api
 @Composable
 fun MainNavHost(
     navHostController: NavHostController,

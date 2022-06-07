@@ -8,11 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,8 +27,9 @@ import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.Typography
 import java.time.LocalDate
 import java.time.LocalTime
 
-// TODO: Change content to material3 (Card and CircularProgressIndicator); Fix terrible Font
+// TODO: Fix terrible Font
 
+@ExperimentalMaterial3Api
 @Composable
 fun Home(
     postsList: List<Array<String>>,
@@ -67,8 +64,8 @@ fun Home(
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && firestoreDataNotEmpty) {
             item {
-                Card(
-                    elevation = 2.dp, modifier = Modifier
+                ElevatedCard(
+                    modifier = Modifier
                         .fillMaxWidth()
                 ) {
                     Today(trplanData)
@@ -97,7 +94,7 @@ fun Home(
             }
         } else {
             items(postsList) { post ->
-                Card(elevation = 2.dp, modifier = Modifier.fillMaxWidth()) {
+                ElevatedCard(modifier = Modifier.fillMaxWidth()) {
                     Column(Modifier.padding(8.dp)) {
                         Text(
                             style = Typography.h3,

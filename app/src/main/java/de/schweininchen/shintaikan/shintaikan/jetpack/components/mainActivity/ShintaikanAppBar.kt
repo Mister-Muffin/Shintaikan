@@ -7,10 +7,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
@@ -22,32 +19,24 @@ import kotlinx.coroutines.launch
 fun ShintaikanAppBar(
     appBarTitle: String,
     scope: CoroutineScope,
-    scaffoldState: ScaffoldState,
-    lazyState: LazyListState
+    drawerState: DrawerState,
+    scrollBehavior: TopAppBarScrollBehavior
 ) {
-    val backgroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors()
-    val backgroundColor = backgroundColors.containerColor(
-        scrollFraction = if (lazyState.firstVisibleItemIndex == 0)
-            (lazyState.firstVisibleItemScrollOffset.toFloat() - 50f).clamp(0f, 1f)
-        else 1f
-    ).value
-    val foregroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-        containerColor = Color.Transparent,
-        scrolledContainerColor = Color.Transparent
-    )
+    val appBarContainerColor by TopAppBarDefaults.centerAlignedTopAppBarColors().containerColor(scrollBehavior.scrollFraction)
+
     Box(
-        modifier = Modifier.background(backgroundColor)
+        modifier = Modifier.background(appBarContainerColor)
     ) {
         CenterAlignedTopAppBar(
             modifier = Modifier.statusBarsPadding(),
             title = {
                 Text(
-                    appBarTitle, fontSize = 20.sp
+                    appBarTitle
                 )
             },
 
             navigationIcon = {
-                IconButton(onClick = { scope.launch { scaffoldState.drawerState.open() } }
+                IconButton(onClick = { scope.launch { drawerState.open() } }
                 ) {
                     Icon(Icons.Filled.Menu, contentDescription = null)
                 }
@@ -57,7 +46,7 @@ fun ShintaikanAppBar(
                          Icon(Icons.Filled.Favorite, contentDescription = "Localized description")
                      }*/
             },
-            colors = foregroundColors
+            scrollBehavior = scrollBehavior
             /* if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) colorBelowS
              else colorS*/
         )

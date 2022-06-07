@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudOff
 import androidx.compose.material3.*
@@ -14,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
             fun navDrawerClickie(
                 route: NavigationDrawerRoutes?,
                 scope: CoroutineScope,
-                scaffoldState: ScaffoldState
+                drawerState: DrawerState
             ) {
                 if (route !== null) {
 
@@ -95,18 +95,18 @@ class MainActivity : AppCompatActivity() {
                     }
                     selectedDrawerItem = route
                     scope.launch {
-                        scaffoldState.drawerState.close()
+                        drawerState.close()
                     }
                 }
             }
 
-            val scaffoldState = rememberScaffoldState()
+            val drawerState = rememberDrawerState(DrawerValue.Closed)
             val coroutineScope = rememberCoroutineScope()
             tryCloseNavigationDrawer = {
                 coroutineScope.launch {
-                    scaffoldState.drawerState.close()
+                    drawerState.close()
                 }
-                scaffoldState.drawerState.isOpen
+                drawerState.isOpen
             }
 
             ShintaikanJetpackTheme {
@@ -117,7 +117,7 @@ class MainActivity : AppCompatActivity() {
                     scope = scope,
                     selectedDrawerItem = selectedDrawerItem,
                     viewModel = viewModel,
-                    scaffoldState = scaffoldState
+                    drawerState = drawerState
                 )
             }
         }
@@ -133,15 +133,17 @@ class MainActivity : AppCompatActivity() {
 @ExperimentalMaterial3Api
 @Composable
 private fun Bob(
-    onClick: (NavigationDrawerRoutes?, CoroutineScope, ScaffoldState) -> Unit,
+    onClick: (NavigationDrawerRoutes?, CoroutineScope, DrawerState) -> Unit,
     navHostController: NavHostController,
     wordpressList: List<Array<String>>,
     selectedDrawerItem: NavigationDrawerRoutes,
     scope: CoroutineScope,
     viewModel: MyViewModel,
-    scaffoldState: ScaffoldState
+    drawerState: DrawerState
 ) {
-    val appBarTitle = NavigationDrawerRoutes.values().find{it.id == navHostController.currentBackStackEntryAsState().value?.destination?.route}?.toString() ?: "Missing"
+    val appBarTitle = NavigationDrawerRoutes.values()
+        .find { it.id == navHostController.currentBackStackEntryAsState().value?.destination?.route }
+        ?.toString() ?: "Missing"
 
     /*val uri =
          "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
@@ -154,73 +156,76 @@ private fun Bob(
      }
      exoPlayer.stop()*/
 
-    Scaffold(
-        scaffoldState = scaffoldState,
-        drawerShape = RoundedCornerShape(topStart = 0.dp, topEnd = 16.dp, bottomStart =  16.dp, bottomEnd = 16.dp),
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarScrollState())
+
+    ModalNavigationDrawer(
+        drawerState = drawerState,
         drawerContent = {
             DrawerContent(viewModel, selectedDrawerItem) {
                 onClick(
                     it,
                     scope,
-                    scaffoldState
+                    drawerState
                 )
             }
-        },
-    ) {
-        val firestoreData = viewModel.firestoreData
-        if (firestoreData.isEmpty()) {
-            viewModel.updateFirestoreData {
-                scope.launch {
-                    viewModel.setRefresh(false)
-                }
-            }
-        }
-        val imageList: IntArray = intArrayOf(
-            R.drawable.bonsai,
-            R.drawable.sakura,
-            R.drawable.seerose1,
-            R.drawable.bonsai
-        )
-        imageList.shuffle()
-
-        Column(
-            modifier = Modifier
-                .navigationBarsPadding()
-                .imePadding()
-        ) {
+        }) {
+        Scaffold(topBar = {
             ShintaikanAppBar(
                 appBarTitle,
                 scope,
-                scaffoldState,
-                lazyState = viewModel.lazyListState
+                drawerState,
+                scrollBehavior
             )
+        }, modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)) { contentPadding ->
+            val firestoreData = viewModel.firestoreData
+            if (firestoreData.isEmpty()) {
+                viewModel.updateFirestoreData {
+                    scope.launch {
+                        viewModel.setRefresh(false)
+                    }
+                }
+            }
+            val imageList: IntArray = intArrayOf(
+                R.drawable.bonsai,
+                R.drawable.sakura,
+                R.drawable.seerose1,
+                R.drawable.bonsai
+            )
+            imageList.shuffle()
 
-            if (!viewModel.isConnected) Row(
-                Modifier
-                    .fillMaxWidth()
-                    .height(30.dp)
-                    .background(Color.Red),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
+            Column(
+                modifier = Modifier
+                    .padding(contentPadding)
+                    .imePadding()
             ) {
-                Icon(
-                    imageVector = Icons.Outlined.CloudOff,
-                    tint = Color.White,
-                    contentDescription = "Offline icon",
-                    modifier = Modifier.padding(end = 8.dp)
-                )
-                Text(
-                    text = "OFFLINE!",
-                    style = TextStyle(color = Color.White),
+
+                if (!viewModel.isConnected) Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(30.dp)
+                        .background(Color.Red),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.CloudOff,
+                        tint = Color.White,
+                        contentDescription = "Offline icon",
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                    Text(
+                        text = "OFFLINE!",
+                        style = TextStyle(color = Color.White),
+                    )
+                }
+                MainNavHost(
+                    navHostController,
+                    viewModel,
+                    wordpressList,
+                    imageList,
+                    selectedDrawerItem,
                 )
             }
-            MainNavHost(
-                navHostController,
-                viewModel,
-                wordpressList,
-                imageList,
-                selectedDrawerItem,
-            )
         }
     }
 }
