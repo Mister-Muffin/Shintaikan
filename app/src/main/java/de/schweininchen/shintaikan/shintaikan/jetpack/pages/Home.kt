@@ -156,13 +156,13 @@ fun Home(
 fun Html(text: String) {
     AndroidView(factory = { context ->
         TextView(context).apply {
-            /*this.setTextColor(
+            this.setTextColor(
                 android.graphics.Color.rgb(
                     (MaterialTheme.typography.headlineSmall.color.red * 255).toInt(),
                     (MaterialTheme.typography.headlineSmall.color.green * 255).toInt(),
                     (MaterialTheme.typography.headlineSmall.color.blue * 255).toInt()
                 )
-            )*/
+            )
             setText(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY))
         }
     },
