@@ -1,5 +1,6 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
@@ -17,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -38,6 +40,15 @@ class MainActivity : AppCompatActivity() {
 
     var tryCloseNavigationDrawer: () -> Boolean = { false }
 
+    override fun onNewIntent(intent: Intent?) {
+        Log.d(TAG, "hi")
+        if (intent?.dataString != null) intent.data = intent.dataString!!.replace("?", "\$").toUri()
+        Log.d(TAG, "onNewIntent: ${navHostController.handleDeepLink(intent)}")
+        super.onNewIntent(intent)
+    }
+
+    private lateinit var navHostController: NavHostController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -45,7 +56,7 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             val viewModel: MyViewModel = viewModel()
-            val navController = rememberNavController()
+            navHostController = rememberNavController()
             val url = "https://shintaikan.de/?rest_route=/wp/v2/posts"
             val scope = rememberCoroutineScope()
 
@@ -85,7 +96,7 @@ class MainActivity : AppCompatActivity() {
 
             ShintaikanJetpackTheme {
                 Bob(
-                    navHostController = navController,
+                    navHostController = navHostController,
                     wordpressList = viewModel.wordpressList,
                     scope = scope,
                     viewModel = viewModel,
@@ -136,7 +147,7 @@ private fun Bob(
             DrawerContent(
                 currentSelection = currentDestination,
                 navigate = navHostController::navigate,
-                closeDrawer = {scope.launch { drawerState.close() }},
+                closeDrawer = { scope.launch { drawerState.close() } },
                 firebaseMessagingToken = viewModel.firebaseMessagingToken
             )
         }) {
