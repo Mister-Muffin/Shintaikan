@@ -72,24 +72,14 @@ class MyViewModel : ViewModel() {
     }
     //</editor-fold>
 
-    val firebaseMessagingToken = mutableStateOf("NO_TOKEN")
-
-    fun updatefirebaseMessagingToken(token: String) {
-        firebaseMessagingToken.value = token
-    }
-
-    //<editor-fold desc="List states">
-    // Let's go functional programming!
-    val lazyListStates = NavigationDrawerRoutes.values().associateWith { LazyListState() }
-
-    var lazyListState = lazyListStates[NavigationDrawerRoutes.HOME]!!
+    var firebaseMessagingToken by mutableStateOf("NO_TOKEN")
         private set
 
-    fun setLazyListState(
-        route: NavigationDrawerRoutes
-    ) {
-        lazyListState = lazyListStates[route] ?: lazyListStates[NavigationDrawerRoutes.HOME]!!
+    fun updatefirebaseMessagingToken(token: String) {
+        firebaseMessagingToken = token
     }
-    //</editor-fold>
+
+    // Let's go functional programming!
+    val lazyListStates = Destinations.values().associateWith { LazyListState() }
 
 }

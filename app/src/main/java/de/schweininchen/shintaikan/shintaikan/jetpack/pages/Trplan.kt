@@ -4,15 +4,15 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Text
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
-import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.Typography
 
 @Composable
 fun Trplan(lazyListState: LazyListState, trplanData: Map<String, MutableMap<String, Any>>, updateTrplan: () -> Unit) {
@@ -27,7 +27,7 @@ fun Trplan(lazyListState: LazyListState, trplanData: Map<String, MutableMap<Stri
         contentPadding = PaddingValues(8.dp),
         state = lazyListState
     ) {
-        item {
+        /*item {
             Box(contentAlignment = Alignment.CenterEnd, modifier = Modifier.fillMaxWidth()) {
                 Image(
                     painter = painterResource(id = R.drawable.kaempfer_app),
@@ -38,7 +38,7 @@ fun Trplan(lazyListState: LazyListState, trplanData: Map<String, MutableMap<Stri
             }
         }
         item {
-            Text(text = "Trainingsplan", style = Typography.h2)
+            Text(text = "Trainingsplan", style = MaterialTheme.typography.headlineMedium)
 
             Image(
                 painter = painterResource(id = R.drawable.bambus),
@@ -47,6 +47,23 @@ fun Trplan(lazyListState: LazyListState, trplanData: Map<String, MutableMap<Stri
                     .fillMaxWidth()
                     .height(50.dp)
             )
+        }*/
+        item {
+            Row(horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
+                Image(
+                    painter = painterResource(id = R.drawable.bambus),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .weight(0.7f)
+                    .height(50.dp)
+                )
+                Image(
+                    painter = painterResource(id = R.drawable.kaempfer_app),
+                    contentDescription = "Shintaikan logo",
+                    alignment = Alignment.CenterEnd,
+                    modifier = Modifier.weight(0.3f)//.fillMaxWidth()//.size(100.dp)
+                )
+            }
         }
         item {
             if (trplanData.isEmpty()) {
@@ -54,7 +71,7 @@ fun Trplan(lazyListState: LazyListState, trplanData: Map<String, MutableMap<Stri
             } else {
                 //Log.d("TAG2", "Trplan: $firestoreData")
                 for (i in days) {
-                    Text(text = i, style = Typography.h2)
+                    Text(text = i, style = MaterialTheme.typography.headlineMedium)
                     //Log.d("TAG", "Keys: ${firestoreData.keys}")
                     for (j in trplanData.keys) {
                         //Log.d("TAG", "Keys: ${firestoreData[j]}")
@@ -71,15 +88,13 @@ fun Trplan(lazyListState: LazyListState, trplanData: Map<String, MutableMap<Stri
                                 Text(
                                     text = "${trplanData[j]?.get("start").toString()} - " +
                                             "${trplanData[j]?.get("end").toString()}: " +
-                                            trplanData[j]?.get("customText").toString(),
-                                    style = Typography.body2
+                                            trplanData[j]?.get("customText").toString()
                                 )
                             } else {
                                 Text(
                                     text = "${trplanData[j]?.get("start").toString()} - " +
                                             "${trplanData[j]?.get("end").toString()}: " +
-                                            trplanData[j]?.get("group").toString(),
-                                    style = Typography.body2
+                                            trplanData[j]?.get("group").toString()
                                 )
                             }
                         }

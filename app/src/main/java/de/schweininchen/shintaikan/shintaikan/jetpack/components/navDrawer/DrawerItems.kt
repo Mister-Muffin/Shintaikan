@@ -7,10 +7,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.Composable
@@ -25,7 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import de.schweininchen.shintaikan.shintaikan.jetpack.NavigationDrawerRoutes
+import de.schweininchen.shintaikan.shintaikan.jetpack.Destinations
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
 import de.schweininchen.shintaikan.shintaikan.jetpack.customPadding
 import de.schweininchen.shintaikan.shintaikan.jetpack.linkToWebpage
@@ -38,9 +38,9 @@ private fun DrawerItem(
     icon: ImageVector,
     externalLink: Boolean = false,
     disabled: Boolean = false,
-    selected: NavigationDrawerRoutes? = null,
-    route: NavigationDrawerRoutes = NavigationDrawerRoutes.NONE,
-    onClick: (NavigationDrawerRoutes?) -> Unit
+    selected: Destinations? = null,
+    route: Destinations = Destinations.NONE,
+    onClick: (Destinations?) -> Unit
 ) {
     val color =
         if (selected == route && !disabled) androidx.compose.material3.MaterialTheme.colorScheme.primary else Color(
@@ -103,8 +103,8 @@ private fun DrawerItem(
 
 @Composable
 fun DrawerItems(
-    selectedMain: NavigationDrawerRoutes,
-    onClickMain: (NavigationDrawerRoutes?) -> Unit,
+    selectedMain: Destinations,
+    onClickMain: (Destinations?) -> Unit,
     context: Context,
     openCustomDialog: MutableState<Boolean>,
     openDialog: MutableState<Boolean>,
@@ -117,63 +117,63 @@ fun DrawerItems(
             "Start",
             Icons.Outlined.Info,
             selected = selectedMain,
-            route = NavigationDrawerRoutes.HOME,
+            route = Destinations.HOME,
             onClick = onClickMain,
         )
         DrawerItem(
             "Trainingsplan",
             Icons.Outlined.DateRange,
             selected = selectedMain,
-            route = NavigationDrawerRoutes.TRPLAN,
+            route = Destinations.TRPLAN,
             onClick = onClickMain,
         )
         DrawerItem(
             "Gürtelprüfungen",
             Icons.Outlined.NorthEast,
             selected = selectedMain,
-            route = NavigationDrawerRoutes.PRUEFUNGEN,
+            route = Destinations.PRUEFUNGEN,
             onClick = onClickMain,
         )
         DrawerItem(
             "Ferientraining",
             Icons.Outlined.BeachAccess,
             selected = selectedMain,
-            route = NavigationDrawerRoutes.FERIEN,
+            route = Destinations.FERIEN,
             onClick = onClickMain,
         )
         DrawerItem(
             "Nach den Sommerferien",
             Icons.Outlined.WbSunny,
             selected = selectedMain,
-            route = NavigationDrawerRoutes.NACHSOFE,
+            route = Destinations.NACHSOFE,
             onClick = onClickMain,
         )
         DrawerItem(
             "Der Club / Wegbeschreibung",
             Icons.Outlined.Home,
             selected = selectedMain,
-            route = NavigationDrawerRoutes.CLUBWEG,
+            route = Destinations.CLUBWEG,
             onClick = onClickMain,
         )
         DrawerItem(
             "Anfänger / Interressenten",
             Icons.Outlined.DirectionsWalk,
             selected = selectedMain,
-            route = NavigationDrawerRoutes.ANFAENGER,
+            route = Destinations.ANFAENGER,
             onClick = onClickMain,
         )
         DrawerItem(
             "Vorführungen",
             Icons.Outlined.RemoveRedEye,
             selected = selectedMain,
-            route = NavigationDrawerRoutes.VORFUEHRUNGEN,
+            route = Destinations.VORFUEHRUNGEN,
             onClick = onClickMain,
         )
         DrawerItem(
             "Lehrgänge + Turniere",
             Icons.Outlined.People,
             selected = selectedMain,
-            route = NavigationDrawerRoutes.LEHRGAENGE,
+            route = Destinations.LEHRGAENGE,
             onClick = onClickMain,
         )
         Divider()
@@ -224,7 +224,7 @@ fun DrawerItems(
                 .pointerInput(Unit) {
                     detectTapGestures(
                         onLongPress = {
-                            onClickMain(NavigationDrawerRoutes.COLORS)
+                            onClickMain(Destinations.COLORS)
                         },
                         onTap = {
                             showDebugInfo.value = true

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -31,6 +32,7 @@ import kotlinx.coroutines.launch
 
 private const val TAG = "MainActivity.kt"
 
+@ExperimentalFoundationApi
 @ExperimentalMaterial3Api
 class MainActivity : AppCompatActivity() {
 
@@ -48,7 +50,7 @@ class MainActivity : AppCompatActivity() {
             val scope = rememberCoroutineScope()
 
             var selectedDrawerItem by remember {
-                mutableStateOf(NavigationDrawerRoutes.HOME)
+                mutableStateOf(Destinations.HOME)
             }
 
             LaunchedEffect(true) {
@@ -72,34 +74,6 @@ class MainActivity : AppCompatActivity() {
 
             if (viewModel.firestoreData.isEmpty()) viewModel.updateTrplan()
 
-            viewModel.setLazyListState(NavigationDrawerRoutes.HOME)
-
-            fun navDrawerClickie(
-                route: NavigationDrawerRoutes?,
-                scope: CoroutineScope,
-                drawerState: DrawerState
-            ) {
-                if (route !== null) {
-
-                    viewModel.setLazyListState(route)
-
-                    /* Why
-                    scope.launch {
-                        if (!viewModel.lazyListState.isScrollInProgress) viewModel.lazyListState.scrollToItem(
-                            0
-                        )
-                    }*/
-                    navController.navigate(route.id) {
-                        popUpTo(NavigationDrawerRoutes.HOME.id)
-                        launchSingleTop = true
-                    }
-                    selectedDrawerItem = route
-                    scope.launch {
-                        drawerState.close()
-                    }
-                }
-            }
-
             val drawerState = rememberDrawerState(DrawerValue.Closed)
             val coroutineScope = rememberCoroutineScope()
             tryCloseNavigationDrawer = {
@@ -111,11 +85,9 @@ class MainActivity : AppCompatActivity() {
 
             ShintaikanJetpackTheme {
                 Bob(
-                    onClick = ::navDrawerClickie,
                     navHostController = navController,
-                    viewModel.wordpressList,
+                    wordpressList = viewModel.wordpressList,
                     scope = scope,
-                    selectedDrawerItem = selectedDrawerItem,
                     viewModel = viewModel,
                     drawerState = drawerState
                 )
@@ -130,20 +102,20 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
+@ExperimentalFoundationApi
 @ExperimentalMaterial3Api
 @Composable
 private fun Bob(
-    onClick: (NavigationDrawerRoutes?, CoroutineScope, DrawerState) -> Unit,
     navHostController: NavHostController,
     wordpressList: List<Array<String>>,
-    selectedDrawerItem: NavigationDrawerRoutes,
     scope: CoroutineScope,
     viewModel: MyViewModel,
     drawerState: DrawerState
 ) {
-    val appBarTitle = NavigationDrawerRoutes.values()
+    val currentDestination = Destinations.values()
         .find { it.id == navHostController.currentBackStackEntryAsState().value?.destination?.route }
-        ?.toString() ?: "Missing"
+        ?: Destinations.NONE
+    val appBarTitle = currentDestination.toString()
 
     /*val uri =
          "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
@@ -161,22 +133,24 @@ private fun Bob(
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            DrawerContent(viewModel, selectedDrawerItem) {
-                onClick(
-                    it,
-                    scope,
-                    drawerState
-                )
-            }
-        }) {
-        Scaffold(topBar = {
-            ShintaikanAppBar(
-                appBarTitle,
-                scope,
-                drawerState,
-                scrollBehavior
+            DrawerContent(
+                currentSelection = currentDestination,
+                navigate = navHostController::navigate,
+                closeDrawer = {scope.launch { drawerState.close() }},
+                firebaseMessagingToken = viewModel.firebaseMessagingToken
             )
-        }, modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)) { contentPadding ->
+        }) {
+        Scaffold(
+            topBar = {
+                ShintaikanAppBar(
+                    appBarTitle,
+                    scope,
+                    drawerState,
+                    scrollBehavior
+                )
+            },
+            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+        ) { contentPadding ->
             val firestoreData = viewModel.firestoreData
             if (firestoreData.isEmpty()) {
                 viewModel.updateFirestoreData {
@@ -223,7 +197,7 @@ private fun Bob(
                     viewModel,
                     wordpressList,
                     imageList,
-                    selectedDrawerItem,
+                    currentDestination,
                 )
             }
         }

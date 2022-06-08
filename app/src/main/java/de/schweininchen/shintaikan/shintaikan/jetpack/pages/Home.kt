@@ -23,13 +23,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.text.HtmlCompat
-import de.schweininchen.shintaikan.shintaikan.jetpack.MyViewModel
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
-import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.Typography
 import java.time.LocalDate
 import java.time.LocalTime
-
-// TODO: Fix terrible Font
 
 @ExperimentalMaterial3Api
 @Composable
@@ -45,16 +41,16 @@ fun Home(
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
         contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = Modifier
             .fillMaxWidth(),
         state = lazyListState
     ) {
         item {
-            Text(text = "Karate Club\nShintaikan e.V.", style = Typography.h1)
+            Text(text = "Karate Club\nShintaikan e.V.", style = MaterialTheme.typography.headlineLarge)
         }
         item {
-            Text(text = "Linnéstraße 14, Freiburg West", style = Typography.h2)
+            Text(text = "Linnéstraße 14, Freiburg West", style = MaterialTheme.typography.headlineSmall)
         }
         item {
             Image(
@@ -99,14 +95,15 @@ fun Home(
                 ElevatedCard(modifier = Modifier.fillMaxWidth()) {
                     Column(Modifier.padding(8.dp)) {
                         Text(
-                            style = Typography.h3,
-                            fontSize = 20.sp,
+                            style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.align(Alignment.CenterHorizontally),
-                            text = post[0]
+                            text = post[0],
+                            color = MaterialTheme.colorScheme.primary,
                         )
                         Box(Modifier.padding(top = 8.dp)) {
-                            Html(text = post[1])
+                            //Html(html = post[1])
+                            Text(text = HtmlCompat.fromHtml(post[1], HtmlCompat.FROM_HTML_MODE_LEGACY).toString().trim())
                         }
                     }
                 }
@@ -160,21 +157,21 @@ fun Home(
 }
 
 @Composable
-fun Html(text: String) {
+fun Html(html: String, color: Color) {
     AndroidView(factory = { context ->
         TextView(context).apply {
             this.setTextColor(
                 android.graphics.Color.rgb(
-                    (Typography.h3.color.red * 255).toInt(),
-                    (Typography.h3.color.green * 255).toInt(),
-                    (Typography.h3.color.blue * 255).toInt()
+                    (color.red * 255).toInt(),
+                    (color.green * 255).toInt(),
+                    (color.blue * 255).toInt()
                 )
             )
-            setText(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY))
+            text = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
         }
     },
         update = {
-            it.text = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY)
+            it.text = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
         })
 }
 
@@ -201,7 +198,7 @@ private fun Today(trplanData: Map<String, MutableMap<String, Any>>) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(16.dp)) {
         Text(
             text = "Heute, $dayWord",
-            style = Typography.h2,
+            style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
@@ -220,14 +217,13 @@ private fun Today(trplanData: Map<String, MutableMap<String, Any>>) {
                         text = "${trplanData[j]?.get("start").toString()} - " +
                                 "${trplanData[j]?.get("end").toString()}: " +
                                 trplanData[j]?.get("customText").toString(),
-                        style = Typography.body2
+                        style = MaterialTheme.typography.headlineMedium
                     )
                 } else {
                     Text(
                         text = "${trplanData[j]?.get("start").toString()} - " +
                                 "${trplanData[j]?.get("end").toString()}: " +
-                                trplanData[j]?.get("group").toString(),
-                        style = Typography.body2
+                                trplanData[j]?.get("group").toString()
                     )
                 }
             }

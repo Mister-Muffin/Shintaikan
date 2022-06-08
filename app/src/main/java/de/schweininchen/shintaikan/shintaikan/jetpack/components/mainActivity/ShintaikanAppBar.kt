@@ -31,7 +31,7 @@ fun ShintaikanAppBar(
             modifier = Modifier.statusBarsPadding(),
             title = {
                 Text(
-                    appBarTitle
+                    appBarTitle, color = MaterialTheme.colorScheme.onSurface
                 )
             },
 
