@@ -91,7 +91,10 @@ fun Home(
         } else {
             items(postsList) { post ->
                 Card(modifier = Modifier.fillMaxWidth()) {
-                    Column(Modifier.padding(8.dp)) {
+                    Column(
+                        Modifier
+                            .padding(8.dp)
+                            .fillMaxWidth()) {
                         Text(
                             style = MaterialTheme.typography.headlineSmall,
                             modifier = Modifier.align(Alignment.CenterHorizontally),
