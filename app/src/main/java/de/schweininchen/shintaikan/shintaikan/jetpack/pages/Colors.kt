@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,7 +24,9 @@ import de.schweininchen.shintaikan.shintaikan.jetpack.MyViewModel
 import kotlin.random.Random
 
 @Composable
-fun Colors(lazyListState: LazyListState) {
+fun Colors() {
+    val lazyListState = rememberLazyListState()
+
     val refreshState = rememberSwipeRefreshState(false)
     val colors = remember {
         mutableStateListOf<IntArray>()

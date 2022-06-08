@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
@@ -15,11 +16,13 @@ import androidx.compose.ui.unit.dp
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
 
 @Composable
-fun Trplan(lazyListState: LazyListState, trplanData: Map<String, MutableMap<String, Any>>, updateTrplan: () -> Unit) {
+fun Trplan(trplanData: Map<String, MutableMap<String, Any>>, updateTrplan: () -> Unit) {
     val days = arrayOf("Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag")
     if (trplanData.isEmpty()) updateTrplan()
 
     //Log.d("TAG", "TTrplan: ${firestoreData}")
+
+    val lazyListState = rememberLazyListState()
 
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -55,7 +58,7 @@ fun Trplan(lazyListState: LazyListState, trplanData: Map<String, MutableMap<Stri
                     contentDescription = null,
                     modifier = Modifier
                         .weight(0.7f)
-                    .height(50.dp)
+                        .height(50.dp)
                 )
                 Image(
                     painter = painterResource(id = R.drawable.kaempfer_app),

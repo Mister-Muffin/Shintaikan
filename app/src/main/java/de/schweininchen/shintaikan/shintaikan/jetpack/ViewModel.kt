@@ -79,7 +79,4 @@ class MyViewModel : ViewModel() {
         firebaseMessagingToken = token
     }
 
-    // Let's go functional programming!
-    val lazyListStates = Destinations.values().associateWith { LazyListState() }
-
 }

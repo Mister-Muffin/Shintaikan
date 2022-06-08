@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -17,7 +18,9 @@ import androidx.compose.ui.unit.dp
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
 
 @Composable
-fun Anfaenger(lazyListState: LazyListState) {
+fun Anfaenger() {
+    val lazyListState = rememberLazyListState()
+
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier

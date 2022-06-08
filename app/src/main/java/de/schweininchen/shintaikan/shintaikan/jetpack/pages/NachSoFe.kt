@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -19,7 +20,9 @@ import androidx.compose.ui.unit.dp
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
 
 @Composable
-fun NachSoFe(lazyListState: LazyListState) {
+fun NachSoFe() {
+    val lazyListState = rememberLazyListState()
+
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth(),

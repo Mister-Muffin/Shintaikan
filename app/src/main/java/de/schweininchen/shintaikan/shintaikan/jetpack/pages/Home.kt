@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,12 +32,12 @@ import java.time.LocalTime
 @Composable
 fun Home(
     postsList: List<Array<String>>,
-    lazyListState: LazyListState,
     firestoreDataNotEmpty: Boolean,
     trplanData: Map<String, MutableMap<String, Any>>,
     isConnected: Boolean
 ) {
     val imageSize = 100.dp
+    val lazyListState = rememberLazyListState()
 
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
