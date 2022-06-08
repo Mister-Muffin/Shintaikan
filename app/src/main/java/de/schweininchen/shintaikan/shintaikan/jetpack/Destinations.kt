@@ -3,17 +3,36 @@ package de.schweininchen.shintaikan.shintaikan.jetpack
 import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
+import androidx.navigation.compose.composable
+import androidx.navigation.navDeepLink
+import de.schweininchen.shintaikan.shintaikan.jetpack.pages.*
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 
 private const val TAG = "Destinations"
 
+@ExperimentalMaterial3Api
 enum class Destinations(
     val id: String,
     val icon: ImageVector? = null,
     private val displayName: String,
     val navName: String = displayName,
     val uri: String? = null,
+    private val imageIndex: Int? = null,
+    private val deepLinks: List<String> = listOf(),
+    val page: (@Composable (viewModel: MyViewModel) -> Unit)? = { viewModel ->
+        FirebaseDataPage(
+            imageResource = imageList[imageIndex ?: 0],
+            firestoreData = viewModel.firestoreData[id],
+            isRefreshing = viewModel.isRefreshing.collectAsState().value,
+            onRefresh = { refresh(viewModel) })
+    },
     val call: (navigate: ((route: String, builder: NavOptionsBuilder.() -> Unit) -> Unit)?, closeDrawer: (() -> Unit)?, handleUri: ((uri: String) -> Unit)?, openDialog: ((Destinations) -> Unit)?) -> Unit = { navigate, closeDrawer, handleUri, openDialog ->
         try {
             navigate?.invoke(id) {
@@ -24,59 +43,123 @@ enum class Destinations(
             Log.e(TAG, ": ", e)
         }
         closeDrawer?.invoke()
-        uri?.let { handleUri?.invoke(it)}
+        uri?.let { handleUri?.invoke(it) }
         openDialog?.invoke(values().find { it.id == id }!!)
     }
 ) {
-    HOME(id = "home", displayName = "Shintaikan", navName = "Start", icon = Icons.Outlined.Info),
-    TRPLAN(id = "trplan", displayName = "Trainingsplan", icon = Icons.Outlined.DateRange),
+    HOME(
+        id = "home",
+        displayName = "Shintaikan",
+        navName = "Start",
+        icon = Icons.Outlined.Info,
+        page = { viewModel ->
+            Home(
+                viewModel.wordpressList,
+                viewModel.firestoreData.isNotEmpty(),
+                viewModel.trplanData,
+                viewModel.isConnected
+            )
+        },
+        deepLinks = listOf("shintaikan.de")
+    ),
+    TRPLAN(
+        id = "trplan",
+        displayName = "Trainingsplan",
+        icon = Icons.Outlined.DateRange,
+        page = { viewModel -> Trplan(viewModel.trplanData, viewModel::updateTrplan) },
+        deepLinks = listOf("shintaikan.de/?page_id=18")
+    ),
     PRUEFUNGEN(
         id = "pruefungen",
         displayName = "Gürtelprüfungen",
-        icon = Icons.Outlined.SportsMartialArts
+        icon = Icons.Outlined.SportsMartialArts,
     ),
     FERIEN(
         id = "ferientraining",
         displayName = "Ferientraining",
-        icon = Icons.Outlined.BeachAccess
+        icon = Icons.Outlined.BeachAccess,
     ),
-    NACHSOFE(id = "nachsofe", displayName = "Nach den Sommerferien", icon = Icons.Outlined.WbSunny),
-    CLUBWEG(id = "clubweg", displayName = "Der Club / Wegbeschreibung", icon = Icons.Outlined.Home),
+    NACHSOFE(
+        id = "nachsofe",
+        displayName = "Nach den Sommerferien",
+        icon = Icons.Outlined.WbSunny,
+        page = { NachSoFe() }),
+    CLUBWEG(
+        id = "clubweg",
+        displayName = "Der Club / Wegbeschreibung",
+        icon = Icons.Outlined.Home,
+        page = { ClubWeg() }),
     ANFAENGER(
         id = "anfaenger",
         displayName = "Anfänger / Interressenten",
-        icon = Icons.Outlined.DirectionsWalk
+        icon = Icons.Outlined.DirectionsWalk,
+        page = { Anfaenger() }
     ),
     VORFUEHRUNGEN(
         id = "vorfuehrungen",
         displayName = "Vorführungen",
-        icon = Icons.Outlined.RemoveRedEye
+        icon = Icons.Outlined.RemoveRedEye,
     ),
     LEHRGAENGE(id = "turniere", displayName = "Lehrgänge & Turniere", icon = Icons.Outlined.People),
     IMPRESSUM(
         id = "impressum",
         displayName = "Impressum",
         icon = Icons.Outlined.AttachFile,
-        uri = "https://shintaikan.de/?page_id=207"
+        uri = "https://shintaikan.de/?page_id=207",
+        page = null
     ),
     PRIVACY(
         id = "privacy",
         displayName = "Datenschutz",
         icon = Icons.Outlined.Lock,
-        uri = "https://shintaikan.de/?page_id=378"
+        uri = "https://shintaikan.de/?page_id=378",
+        page = null
     ),
     MORE(
         id = "more",
         displayName = "Weiteres",
         icon = Icons.Outlined.Face,
+        page = null
     ),
     ABOUT(
         id = "about",
         displayName = "Über",
         icon = Icons.Outlined.Info,
+        page = null
     ),
-    COLORS(id = "colors", displayName = BuildConfig.BUILD_TYPE),
-    NONE(id = "", displayName = "Unknown");
+    COLORS(id = "colors", displayName = BuildConfig.BUILD_TYPE, page = { Colors() }),
+    NONE(id = "", displayName = "Unknown", page = null);
 
     override fun toString(): String = displayName
+    fun NavGraphBuilder.navigationDestination(viewModel: MyViewModel) {
+        this@Destinations.page?.let { page ->
+            composable(
+                route = this@Destinations.id,
+                deepLinks = deepLinks.map {
+                    navDeepLink {
+                        uriPattern = it.replace("?", "\$")
+                    }
+                },
+                content = { page(viewModel) })
+        }
+    }
+}
+
+private val imageList: IntArray = intArrayOf(
+    R.drawable.bonsai,
+    R.drawable.sakura,
+    R.drawable.seerose1,
+    R.drawable.bonsai
+).apply { shuffle() }
+
+val refreshScope = MainScope()
+fun refresh(viewModel: MyViewModel) {
+    refreshScope.launch {
+        viewModel.setRefresh(true)
+        viewModel.updateFirestoreData {
+            refreshScope.launch {
+                viewModel.setRefresh(false)
+            }
+        }
+    }
 }

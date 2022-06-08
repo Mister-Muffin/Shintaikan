@@ -1,6 +1,5 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack
 
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -52,11 +51,6 @@ class MyViewModel : ViewModel() {
     }
 
     var isConnected by mutableStateOf(true)
-
-    /*val exoPlayer: SimpleExoPlayer
-        get() {
-            return exoPlayer
-        }*/
 
     //</editor-fold>
 

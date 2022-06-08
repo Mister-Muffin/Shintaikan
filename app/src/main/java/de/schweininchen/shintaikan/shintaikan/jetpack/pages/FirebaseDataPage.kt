@@ -3,10 +3,7 @@ package de.schweininchen.shintaikan.shintaikan.jetpack.pages
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
@@ -22,7 +19,6 @@ import de.schweininchen.shintaikan.shintaikan.jetpack.R
 
 @Composable
 fun FirebaseDataPage(
-    title: String,
     imageResource: Int,
     firestoreData: MutableMap<String, Any>?,
     isRefreshing: Boolean,
@@ -66,8 +62,6 @@ fun FirebaseDataPage(
                     )
                 }
             }
-
-            //Text(text = title, style = Typography.h1)
 
             item {
                 if (firestoreData == null || firestoreData.isEmpty()) {

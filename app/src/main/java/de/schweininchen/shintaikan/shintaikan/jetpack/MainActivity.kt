@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudOff
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -60,10 +62,6 @@ class MainActivity : AppCompatActivity() {
             val url = "https://shintaikan.de/?rest_route=/wp/v2/posts"
             val scope = rememberCoroutineScope()
 
-            var selectedDrawerItem by remember {
-                mutableStateOf(Destinations.HOME)
-            }
-
             LaunchedEffect(true) {
                 abc(baseContext, viewModel)
             }
@@ -97,7 +95,6 @@ class MainActivity : AppCompatActivity() {
             ShintaikanJetpackTheme {
                 Bob(
                     navHostController = navHostController,
-                    wordpressList = viewModel.wordpressList,
                     scope = scope,
                     viewModel = viewModel,
                     drawerState = drawerState
@@ -118,7 +115,6 @@ class MainActivity : AppCompatActivity() {
 @Composable
 private fun Bob(
     navHostController: NavHostController,
-    wordpressList: List<Array<String>>,
     scope: CoroutineScope,
     viewModel: MyViewModel,
     drawerState: DrawerState
@@ -127,17 +123,6 @@ private fun Bob(
         .find { it.id == navHostController.currentBackStackEntryAsState().value?.destination?.route }
         ?: Destinations.NONE
     val appBarTitle = currentDestination.toString()
-
-    /*val uri =
-         "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-     val context = LocalContext.current
-
-     if (appBarTitle.value.contains("film")) {
-         exoPlayer.play()
-     } else if (!appBarTitle.value.contains("Film") && exoPlayer.isPlaying) {
-         exoPlayer.stop()
-     }
-     exoPlayer.stop()*/
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarScrollState())
 
@@ -170,13 +155,6 @@ private fun Bob(
                     }
                 }
             }
-            val imageList: IntArray = intArrayOf(
-                R.drawable.bonsai,
-                R.drawable.sakura,
-                R.drawable.seerose1,
-                R.drawable.bonsai
-            )
-            imageList.shuffle()
 
             Column(
                 modifier = Modifier
@@ -206,9 +184,6 @@ private fun Bob(
                 MainNavHost(
                     navHostController,
                     viewModel,
-                    wordpressList,
-                    imageList,
-                    currentDestination,
                 )
             }
         }

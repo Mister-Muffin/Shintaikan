@@ -7,7 +7,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.*
@@ -103,7 +102,6 @@ fun Home(
                             color = MaterialTheme.colorScheme.primary,
                         )
                         Box(Modifier.padding(top = 8.dp)) {
-                            //Html(html = post[1])
                             Text(text = HtmlCompat.fromHtml(post[1], HtmlCompat.FROM_HTML_MODE_LEGACY).toString().trim())
                         }
                     }

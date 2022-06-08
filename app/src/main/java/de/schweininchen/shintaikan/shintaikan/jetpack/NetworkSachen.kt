@@ -31,7 +31,6 @@ fun getHttpJson(getURL: String, cacheDir: File, onError: (VolleyError) -> Unit =
     val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
     StrictMode.setThreadPolicy(policy)
 
-    var returnString = ""
     val jsonObjectRequest = JsonArrayRequest(
         Request.Method.GET, getURL, null,
         { response ->

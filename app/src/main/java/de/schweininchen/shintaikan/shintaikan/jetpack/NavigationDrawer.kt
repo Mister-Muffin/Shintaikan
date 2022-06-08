@@ -39,8 +39,6 @@ import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import de.schweininchen.shintaikan.shintaikan.jetpack.Destinations.*
 import kotlinx.coroutines.launch
 
-val customPadding = 12.dp
-
 @ExperimentalFoundationApi
 @ExperimentalMaterial3Api
 @Composable
@@ -50,7 +48,6 @@ fun ColumnScope.DrawerContent(
     closeDrawer: () -> Unit,
     firebaseMessagingToken: String
 ) {
-    val context = LocalContext.current
 
     val showDebugInfo = remember { mutableStateOf(false) }
     val listState = rememberLazyListState()
@@ -223,10 +220,7 @@ fun CustomAlertDialog(title: String, text: String, onDissmiss: () -> Unit) {
             )
         },
         confirmButton = {
-            androidx.compose.material3.TextButton(
-                /*modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),*/
+            TextButton(
                 onClick = onDissmiss
 
             ) {
@@ -265,7 +259,7 @@ fun AboutAlertDialog(onDissmiss: () -> Unit) {
         },
         text = {
             Column {
-                androidx.compose.material3.Button(
+                Button(
                     onClick = {
                         linkToWebpage(
                             "https://github.com/Mister-Muffin/Shintaikan",
@@ -283,7 +277,7 @@ fun AboutAlertDialog(onDissmiss: () -> Unit) {
             }
         },
         dismissButton = {
-            androidx.compose.material3.OutlinedButton(
+            OutlinedButton(
                 onClick = onDissmiss
             ) {
                 Text("Close")
@@ -291,7 +285,7 @@ fun AboutAlertDialog(onDissmiss: () -> Unit) {
 
         },
         confirmButton = {
-            androidx.compose.material3.Button(
+            Button(
                 onClick = {
                     context.startActivity(
                         Intent(
