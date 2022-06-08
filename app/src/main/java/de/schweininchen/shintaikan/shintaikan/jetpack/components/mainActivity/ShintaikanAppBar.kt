@@ -1,6 +1,5 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.lazy.LazyListState

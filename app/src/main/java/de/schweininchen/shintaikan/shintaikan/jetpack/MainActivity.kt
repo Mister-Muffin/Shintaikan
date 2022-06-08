@@ -26,7 +26,6 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity.MainNavHost
 import de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity.ShintaikanAppBar
-import de.schweininchen.shintaikan.shintaikan.jetpack.pages.*
 import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.ShintaikanJetpackTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -80,7 +79,7 @@ class MainActivity : AppCompatActivity() {
                 fun navDrawerClickie(
                     route: NavigationDrawerRoutes?,
                     scope: CoroutineScope,
-                    drawerState: androidx.compose.material3.DrawerState
+                    drawerState: DrawerState
                 ) {
                     if (route !== null) {
 
@@ -162,14 +161,14 @@ class MainActivity : AppCompatActivity() {
 @ExperimentalMaterial3Api
 @Composable
 private fun Bob(
-    onClick: (NavigationDrawerRoutes?, CoroutineScope, androidx.compose.material3.DrawerState) -> Unit,
+    onClick: (NavigationDrawerRoutes?, CoroutineScope, DrawerState) -> Unit,
     navHostController: NavHostController,
     wordpressList: List<Array<String>>,
     selectedDrawerItem: MutableState<NavigationDrawerRoutes>,
     scope: CoroutineScope, viewModel: MyViewModel,
-    drawerState: androidx.compose.material3.DrawerState
+    drawerState: DrawerState
 ) {
-    val scaffoldState = rememberScaffoldState()
+    rememberScaffoldState()
     val appBarTitle = remember {
         mutableStateOf("Shintaikan")
     }
