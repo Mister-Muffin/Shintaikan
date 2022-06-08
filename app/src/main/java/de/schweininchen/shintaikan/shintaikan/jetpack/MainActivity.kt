@@ -57,6 +57,7 @@ class MainActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
+
             val viewModel: MyViewModel = viewModel()
             navHostController = rememberNavController()
             val url = "https://shintaikan.de/?rest_route=/wp/v2/posts"
@@ -93,6 +94,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             ShintaikanJetpackTheme {
+
                 Bob(
                     navHostController = navHostController,
                     scope = scope,
