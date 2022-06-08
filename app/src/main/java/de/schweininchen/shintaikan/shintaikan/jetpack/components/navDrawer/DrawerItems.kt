@@ -7,10 +7,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,7 +46,7 @@ private fun DrawerItem(
     onClick: (NavigationDrawerRoutes?) -> Unit
 ) {
     val color =
-        if (selected == route && !disabled) androidx.compose.material3.MaterialTheme.colorScheme.primary else Color(
+        if (selected == route && !disabled) MaterialTheme.colorScheme.primary else Color(
             0xFF898989
         )
     Row(
@@ -55,7 +55,7 @@ private fun DrawerItem(
             .clip(MaterialTheme.shapes.medium)
             .clickable(onClick = { onClick(route) })
             .background(
-                color = if (selected == route) androidx.compose.material3.MaterialTheme.colorScheme.primary.copy(
+                color = if (selected == route) MaterialTheme.colorScheme.primary.copy(
                     alpha = .15f
                 ) else Color.Transparent
             )
@@ -87,7 +87,7 @@ private fun DrawerItem(
                     .weight(1f), text = name,
                 style = TextStyle(
                     fontWeight = FontWeight.Bold,
-                    color = if (selected == route) androidx.compose.material3.MaterialTheme.colorScheme.primary else Color.Black
+                    color = if (selected == route) MaterialTheme.colorScheme.primary else Color.Black
                 )
             )
             if (externalLink) {
