@@ -6,9 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudOff
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -75,10 +75,12 @@ class MainActivity : AppCompatActivity() {
 
                 viewModel.lazyState = viewModel.lazyStateStart
 
+                val drawerState = rememberDrawerState(DrawerValue.Closed)
+
                 fun navDrawerClickie(
                     route: NavigationDrawerRoutes?,
                     scope: CoroutineScope,
-                    scaffoldState: ScaffoldState
+                    drawerState: androidx.compose.material3.DrawerState
                 ) {
                     if (route !== null) {
 
@@ -95,7 +97,7 @@ class MainActivity : AppCompatActivity() {
                         }
                         selectedDrawerItem.value = route
                         scope.launch {
-                            scaffoldState.drawerState.close()
+                            drawerState.close()
                         }
                     }
                 }
@@ -106,7 +108,8 @@ class MainActivity : AppCompatActivity() {
                         viewModel.wordpressList,
                         scope = scope,
                         selectedDrawerItem = selectedDrawerItem,
-                        viewModel = viewModel
+                        viewModel = viewModel,
+                        drawerState = drawerState
                     )
                 }
             }
@@ -159,11 +162,12 @@ class MainActivity : AppCompatActivity() {
 @ExperimentalMaterial3Api
 @Composable
 private fun Bob(
-    onClick: (NavigationDrawerRoutes?, CoroutineScope, ScaffoldState) -> Unit,
+    onClick: (NavigationDrawerRoutes?, CoroutineScope, androidx.compose.material3.DrawerState) -> Unit,
     navHostController: NavHostController,
     wordpressList: List<Array<String>>,
     selectedDrawerItem: MutableState<NavigationDrawerRoutes>,
-    scope: CoroutineScope, viewModel: MyViewModel
+    scope: CoroutineScope, viewModel: MyViewModel,
+    drawerState: androidx.compose.material3.DrawerState
 ) {
     val scaffoldState = rememberScaffoldState()
     val appBarTitle = remember {
@@ -181,68 +185,71 @@ private fun Bob(
      }
      exoPlayer.stop()*/
 
-    Scaffold(
-        scaffoldState = scaffoldState,
-        drawerShape = RoundedCornerShape(0),
+    ModalNavigationDrawer(
+        drawerState = drawerState,
         drawerContent = drawerContent(viewModel, selectedDrawerItem.value) {
-            onClick(
-                it,
-                scope,
-                scaffoldState
-            )
+            onClick(it, scope, drawerState)
         },
     ) {
-        val firestoreData = viewModel.firestoreData
-        if (firestoreData.isEmpty()) {
-            viewModel.updateFirestoreData {
-                scope.launch {
-                    viewModel.setRefresh(false)
+        Scaffold(
+            topBar = {
+                ShintaikanAppBar(
+                    appBarTitle,
+                    scope,
+                    drawerState,
+                    lazyState = viewModel.lazyState
+                )
+            }
+        ) { innerPadding ->
+            val firestoreData = viewModel.firestoreData
+            if (firestoreData.isEmpty()) {
+                viewModel.updateFirestoreData {
+                    scope.launch {
+                        viewModel.setRefresh(false)
+                    }
                 }
             }
-        }
-        val imageList: IntArray = intArrayOf(
-            R.drawable.bonsai,
-            R.drawable.sakura,
-            R.drawable.seerose1,
-            R.drawable.bonsai
-        )
-        imageList.shuffle()
-
-        Column(modifier = Modifier.navigationBarsWithImePadding()) {
-            ShintaikanAppBar(
-                appBarTitle,
-                scope,
-                scaffoldState,
-                lazyState = viewModel.lazyState
+            val imageList: IntArray = intArrayOf(
+                R.drawable.bonsai,
+                R.drawable.sakura,
+                R.drawable.seerose1,
+                R.drawable.bonsai
             )
+            imageList.shuffle()
 
-            if (!viewModel.isConnected.value) Row(
-                Modifier
-                    .fillMaxWidth()
-                    .height(30.dp)
-                    .background(Color.Red),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
+            Column(
+                modifier = Modifier
+                    .navigationBarsWithImePadding()
+                    .padding(innerPadding)
             ) {
-                Icon(
-                    imageVector = Icons.Outlined.CloudOff,
-                    tint = Color.White,
-                    contentDescription = "Offline icon",
-                    modifier = Modifier.padding(end = 8.dp)
-                )
-                Text(
-                    text = "OFFLINE!",
-                    style = TextStyle(color = Color.White),
+                if (!viewModel.isConnected.value) Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(30.dp)
+                        .background(Color.Red),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.CloudOff,
+                        tint = Color.White,
+                        contentDescription = "Offline icon",
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                    Text(
+                        text = "OFFLINE!",
+                        style = TextStyle(color = Color.White),
+                    )
+                }
+                MainNavHost(
+                    navHostController,
+                    viewModel,
+                    wordpressList,
+                    appBarTitle,
+                    imageList,
+                    selectedDrawerItem,
                 )
             }
-            MainNavHost(
-                navHostController,
-                viewModel,
-                wordpressList,
-                appBarTitle,
-                imageList,
-                selectedDrawerItem,
-            )
         }
     }
 }

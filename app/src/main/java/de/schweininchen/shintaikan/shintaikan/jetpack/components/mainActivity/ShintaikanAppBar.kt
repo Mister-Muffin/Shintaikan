@@ -1,5 +1,6 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.lazy.LazyListState
@@ -20,7 +21,7 @@ import kotlinx.coroutines.launch
 fun ShintaikanAppBar(
     appBarTitle: MutableState<String>,
     scope: CoroutineScope,
-    scaffoldState: ScaffoldState,
+    drawerState: DrawerState,
     lazyState: LazyListState
 ) {
     val backgroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors()
@@ -45,7 +46,9 @@ fun ShintaikanAppBar(
             },
 
             navigationIcon = {
-                IconButton(onClick = { scope.launch { scaffoldState.drawerState.open() } }
+                IconButton(onClick = {
+                    scope.launch { drawerState.open() }
+                }
                 ) {
                     Icon(Icons.Filled.Menu, contentDescription = null)
                 }
