@@ -14,10 +14,7 @@ val Roboto = FontFamily.Default
 
 
 @Composable
-fun Typography(colorScheme: ColorScheme): Typography {
-    val defaults = Typography()
-
-    return Typography(
+fun Typography(colorScheme: ColorScheme): Typography { return Typography(
   labelLarge = TextStyle(
       fontFamily = Roboto,
       fontWeight = FontWeight.Medium,
