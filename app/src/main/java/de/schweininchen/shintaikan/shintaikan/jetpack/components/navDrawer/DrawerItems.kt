@@ -13,6 +13,8 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
@@ -32,6 +34,7 @@ import de.schweininchen.shintaikan.shintaikan.jetpack.linkToWebpage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DrawerItem(
     name: String,
@@ -48,7 +51,7 @@ private fun DrawerItem(
         )
     Row(
         modifier = Modifier
-            .padding(top = 4.dp, bottom = 4.dp, start = 8.dp, end = 8.dp)
+            .padding(NavigationDrawerItemDefaults.ItemPadding)
             .clip(MaterialTheme.shapes.medium)
             .clickable(onClick = { onClick(route) })
             .background(
