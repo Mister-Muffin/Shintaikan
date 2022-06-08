@@ -63,10 +63,6 @@ fun ColumnScope.DrawerContent(
         )
     }
 
-    val aboutDialogOpen = remember { mutableStateOf(false) }
-
-    val moreDialogOpen = remember { mutableStateOf(false) }
-
     if (dialogsOpen[MORE] == true) CustomAlertDialog(
         title = "Weiteres",
         text = "Was Rüdiger noch sagen wollte:\nTiefer stehen, schneller schlagen! :)"
