@@ -21,7 +21,7 @@ import de.schweininchen.shintaikan.shintaikan.jetpack.R
 fun FirebaseDataPage(
     imageResource: Int,
     firestoreData: MutableMap<String, Any>?,
-    isRefreshing: Boolean,
+    swipeRefreshState: SwipeRefreshState,
     onRefresh: () -> Unit,
     extraComposable: @Composable () -> Unit = {}
 ) {
@@ -29,7 +29,7 @@ fun FirebaseDataPage(
     val lazyListState = rememberLazyListState()
 
     SwipeRefresh(
-        state = SwipeRefreshState(isRefreshing = isRefreshing),
+        state = swipeRefreshState,
         onRefresh = onRefresh,
         indicator = { state, trigger ->
             SwipeRefreshIndicator(

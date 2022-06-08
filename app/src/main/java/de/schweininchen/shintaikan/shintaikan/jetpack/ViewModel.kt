@@ -3,21 +3,17 @@ package de.schweininchen.shintaikan.shintaikan.jetpack
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import com.google.accompanist.swiperefresh.SwipeRefreshState
 import kotlinx.coroutines.launch
 import java.io.File
 
 class MyViewModel : ViewModel() {
 
     //<editor-fold desc="Pull to refresh">
-    private val _isRefreshing = MutableStateFlow(false)
+    val swipeResfreshState = SwipeRefreshState(isRefreshing = false)
 
-    val isRefreshing: StateFlow<Boolean> get() = _isRefreshing.asStateFlow()
-
-    suspend fun setRefresh(refreshing: Boolean) {
-        _isRefreshing.emit(refreshing)
+    fun setRefresh(refreshing: Boolean) {
+        swipeResfreshState.isRefreshing = refreshing
     }
     //</editor-fold>
 

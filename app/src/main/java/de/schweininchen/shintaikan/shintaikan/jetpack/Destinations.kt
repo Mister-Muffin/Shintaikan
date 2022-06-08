@@ -5,15 +5,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import de.schweininchen.shintaikan.shintaikan.jetpack.pages.*
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 
 private const val TAG = "Destinations"
 
@@ -30,7 +27,7 @@ enum class Destinations(
         FirebaseDataPage(
             imageResource = imageList[imageIndex ?: 0],
             firestoreData = viewModel.firestoreData[id],
-            isRefreshing = viewModel.isRefreshing.collectAsState().value,
+            swipeRefreshState = viewModel.swipeResfreshState,
             onRefresh = { refresh(viewModel) })
     },
     val call: (navigate: ((route: String, builder: NavOptionsBuilder.() -> Unit) -> Unit)?, closeDrawer: (() -> Unit)?, handleUri: ((uri: String) -> Unit)?, openDialog: ((Destinations) -> Unit)?) -> Unit = { navigate, closeDrawer, handleUri, openDialog ->
@@ -151,15 +148,9 @@ private val imageList: IntArray = intArrayOf(
     R.drawable.seerose1,
     R.drawable.bonsai
 ).apply { shuffle() }
-
-val refreshScope = MainScope()
 fun refresh(viewModel: MyViewModel) {
-    refreshScope.launch {
-        viewModel.setRefresh(true)
-        viewModel.updateFirestoreData {
-            refreshScope.launch {
-                viewModel.setRefresh(false)
-            }
-        }
+    viewModel.setRefresh(true)
+    viewModel.updateFirestoreData {
+        viewModel.setRefresh(false)
     }
 }
