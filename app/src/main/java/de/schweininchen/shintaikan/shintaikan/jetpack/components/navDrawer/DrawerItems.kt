@@ -153,22 +153,6 @@ fun DrawerItems(
             route = NavigationDrawerRoutes.ANFAENGER,
             onClick = onClickMain,
         )
-        DrawerItem(
-            "Vorführungen",
-            Icons.Outlined.RemoveRedEye,
-            selected = selectedMain,
-            route = NavigationDrawerRoutes.VORFUEHRUNGEN,
-            onClick = onClickMain,
-            disabled = true,
-        )
-        DrawerItem(
-            "Lehrgänge + Turniere",
-            Icons.Outlined.People,
-            selected = selectedMain,
-            route = NavigationDrawerRoutes.LEHRGAENGE,
-            onClick = onClickMain,
-            disabled = true,
-        )
         Divider()
         DrawerItem(
             "Infofilmchen",

@@ -140,12 +140,6 @@ class MainActivity : AppCompatActivity() {
             NavigationDrawerRoutes.ANFAENGER -> {
                 viewModel.lazyState = viewModel.lazyStateAnf
             }
-            NavigationDrawerRoutes.VORFUEHRUNGEN -> {
-                viewModel.lazyState = viewModel.lazyStatePres
-            }
-            NavigationDrawerRoutes.LEHRGAENGE -> {
-                viewModel.lazyState = viewModel.lazyStateTurn
-            }
             NavigationDrawerRoutes.COLORS -> {
                 viewModel.lazyState = viewModel.lazyStateColors
             }

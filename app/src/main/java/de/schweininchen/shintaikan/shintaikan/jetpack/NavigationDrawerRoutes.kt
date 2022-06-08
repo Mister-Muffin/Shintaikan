@@ -7,8 +7,6 @@ enum class NavigationDrawerRoutes {
     NACHSOFE,
     CLUBWEG,
     ANFAENGER,
-    VORFUEHRUNGEN,
-    LEHRGAENGE,
     COLORS,
     NONE
 }
