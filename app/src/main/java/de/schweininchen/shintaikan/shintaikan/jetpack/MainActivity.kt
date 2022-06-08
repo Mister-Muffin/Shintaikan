@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
@@ -184,6 +185,8 @@ private fun Bob(
      }
      exoPlayer.stop()*/
 
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarScrollState())
+
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = drawerContent(viewModel, selectedDrawerItem.value) {
@@ -196,7 +199,7 @@ private fun Bob(
                     appBarTitle,
                     scope,
                     drawerState,
-                    lazyState = viewModel.lazyState
+                    scrollBehavior= scrollBehavior
                 )
             }
         ) { innerPadding ->
@@ -220,6 +223,7 @@ private fun Bob(
                 modifier = Modifier
                     .navigationBarsWithImePadding()
                     .padding(innerPadding)
+                    .nestedScroll(scrollBehavior.nestedScrollConnection),
             ) {
                 if (!viewModel.isConnected.value) Row(
                     Modifier
