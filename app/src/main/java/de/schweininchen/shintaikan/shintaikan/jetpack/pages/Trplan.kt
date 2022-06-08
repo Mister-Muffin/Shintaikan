@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -12,7 +13,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import de.schweininchen.shintaikan.shintaikan.jetpack.MyViewModel
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
-import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.Typography
 
 @Composable
 fun Trplan(vm: MyViewModel) {
@@ -39,7 +39,7 @@ fun Trplan(vm: MyViewModel) {
             }
         }
         item {
-            Text(text = "Trainingsplan", style = Typography.h2)
+            Text(text = "Trainingsplan", style = MaterialTheme.typography.headlineMedium)
 
             Image(
                 painter = painterResource(id = R.drawable.bambus),
@@ -55,7 +55,7 @@ fun Trplan(vm: MyViewModel) {
             } else {
                 //Log.d("TAG2", "Trplan: $firestoreData")
                 for (i in days) {
-                    Text(text = i, style = Typography.h2)
+                    Text(text = i, style = MaterialTheme.typography.headlineMedium)
                     //Log.d("TAG", "Keys: ${firestoreData.keys}")
                     for (j in firestoreData.keys) {
                         //Log.d("TAG", "Keys: ${firestoreData[j]}")
@@ -73,14 +73,14 @@ fun Trplan(vm: MyViewModel) {
                                     text = "${firestoreData[j]?.get("start").toString()} - " +
                                             "${firestoreData[j]?.get("end").toString()}: " +
                                             firestoreData[j]?.get("customText").toString(),
-                                    style = Typography.body2
+                                    style = MaterialTheme.typography.bodyMedium
                                 )
                             } else {
                                 Text(
                                     text = "${firestoreData[j]?.get("start").toString()} - " +
                                             "${firestoreData[j]?.get("end").toString()}: " +
                                             firestoreData[j]?.get("group").toString(),
-                                    style = Typography.body2
+                                    style = MaterialTheme.typography.bodyMedium
                                 )
                             }
                         }

@@ -26,7 +26,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.text.HtmlCompat
 import de.schweininchen.shintaikan.shintaikan.jetpack.MyViewModel
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
-import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.Typography
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -46,10 +45,10 @@ fun Home(
         state = viewModel.lazyStateStart
     ) {
         item {
-            Text(text = "Karate Club\nShintaikan e.V.", style = Typography.h1)
+            Text(text = "Karate Club\nShintaikan e.V.", style = MaterialTheme.typography.headlineLarge)
         }
         item {
-            Text(text = "Linnéstraße 14, Freiburg West", style = Typography.h2)
+            Text(text = "Linnéstraße 14, Freiburg West", style = MaterialTheme.typography.headlineMedium)
         }
         item {
             Image(
@@ -94,7 +93,7 @@ fun Home(
                 Card(elevation = 2.dp, modifier = Modifier.fillMaxWidth()) {
                     Column(Modifier.padding(8.dp)) {
                         Text(
-                            style = Typography.h3,
+                            style = MaterialTheme.typography.headlineSmall,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -157,13 +156,13 @@ fun Home(
 fun Html(text: String) {
     AndroidView(factory = { context ->
         TextView(context).apply {
-            this.setTextColor(
+            /*this.setTextColor(
                 android.graphics.Color.rgb(
-                    (Typography.h3.color.red * 255).toInt(),
-                    (Typography.h3.color.green * 255).toInt(),
-                    (Typography.h3.color.blue * 255).toInt()
+                    (MaterialTheme.typography.headlineSmall.color.red * 255).toInt(),
+                    (MaterialTheme.typography.headlineSmall.color.green * 255).toInt(),
+                    (MaterialTheme.typography.headlineSmall.color.blue * 255).toInt()
                 )
-            )
+            )*/
             setText(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY))
         }
     },
@@ -196,7 +195,7 @@ private fun Today(viewModel: MyViewModel) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(16.dp)) {
         Text(
             text = "Heute, $dayWord",
-            style = Typography.h2,
+            style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
@@ -215,14 +214,14 @@ private fun Today(viewModel: MyViewModel) {
                         text = "${firestoreData[j]?.get("start").toString()} - " +
                                 "${firestoreData[j]?.get("end").toString()}: " +
                                 firestoreData[j]?.get("customText").toString(),
-                        style = Typography.body2
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 } else {
                     Text(
                         text = "${firestoreData[j]?.get("start").toString()} - " +
                                 "${firestoreData[j]?.get("end").toString()}: " +
                                 firestoreData[j]?.get("group").toString(),
-                        style = Typography.body2
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
             }

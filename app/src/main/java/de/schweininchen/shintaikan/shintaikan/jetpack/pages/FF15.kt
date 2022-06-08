@@ -22,7 +22,6 @@ import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import de.schweininchen.shintaikan.shintaikan.jetpack.MyViewModel
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
-import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.Typography
 
 @Composable
 fun FirebaseDataPage(
@@ -68,7 +67,7 @@ fun FirebaseDataPage(
                     .align(Alignment.End)
             )
 
-            Text(text = title, style = Typography.h1)
+            Text(text = title, style = MaterialTheme.typography.headlineLarge)
 
             if (firestoreData == null || firestoreData.isEmpty()) {
                 CircularProgressIndicator()
