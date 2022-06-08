@@ -1,7 +1,6 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.pages
 
 import android.os.Build
-import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -22,7 +21,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.text.HtmlCompat
 import de.schweininchen.shintaikan.shintaikan.jetpack.MyViewModel
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
@@ -154,21 +152,7 @@ fun Home(
 
 @Composable
 fun Html(text: String) {
-    AndroidView(factory = { context ->
-        TextView(context).apply {
-            this.setTextColor(
-                android.graphics.Color.rgb(
-                    (MaterialTheme.typography.headlineSmall.color.red * 255).toInt(),
-                    (MaterialTheme.typography.headlineSmall.color.green * 255).toInt(),
-                    (MaterialTheme.typography.headlineSmall.color.blue * 255).toInt()
-                )
-            )
-            setText(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY))
-        }
-    },
-        update = {
-            it.text = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY)
-        })
+    Text(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY).toString())
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
