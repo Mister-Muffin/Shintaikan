@@ -131,9 +131,6 @@ class MainActivity : AppCompatActivity() {
             NavigationDrawerRoutes.PRUEFUNGEN -> {
                 viewModel.lazyState = viewModel.lazyStatePruef
             }
-            NavigationDrawerRoutes.FERIEN -> {
-                viewModel.lazyState = viewModel.lazyStateFerien
-            }
             NavigationDrawerRoutes.NACHSOFE -> {
                 viewModel.lazyState = viewModel.lazyStateSoFe
             }

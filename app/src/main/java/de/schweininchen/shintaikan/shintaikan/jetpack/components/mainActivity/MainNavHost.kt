@@ -61,16 +61,6 @@ fun MainNavHost(
             )
             appBarTitle.value = "Gürtelprüfungen"
         }
-        composable(NavigationDrawerRoutes.FERIEN.toString()) {
-            FirebaseDataPage(
-                title = "Ferientraining",
-                document = "ferientraining",
-                imageResource = imageList[1],
-                vm = viewModel,
-                onRefresh = ::refresh
-            )
-            appBarTitle.value = "Ferientraining"
-        }
         composable(NavigationDrawerRoutes.NACHSOFE.toString()) {
             NachSoFe(viewModel)
             appBarTitle.value = "Nach den Sommerferien"

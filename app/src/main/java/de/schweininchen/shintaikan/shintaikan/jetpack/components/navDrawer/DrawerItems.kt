@@ -7,14 +7,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.NavigationDrawerItemDefaults
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
@@ -135,13 +130,6 @@ fun DrawerItems(
             Icons.Outlined.NorthEast,
             selected = selectedMain,
             route = NavigationDrawerRoutes.PRUEFUNGEN,
-            onClick = onClickMain,
-        )
-        DrawerItem(
-            "Ferientraining",
-            Icons.Outlined.BeachAccess,
-            selected = selectedMain,
-            route = NavigationDrawerRoutes.FERIEN,
             onClick = onClickMain,
         )
         DrawerItem(
