@@ -152,7 +152,7 @@ fun Home(
 
 @Composable
 fun Html(text: String) {
-    Text(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY).toString())
+    Text(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY).toString(), style = MaterialTheme.typography.bodyMedium)
 }
 
 @RequiresApi(Build.VERSION_CODES.O)

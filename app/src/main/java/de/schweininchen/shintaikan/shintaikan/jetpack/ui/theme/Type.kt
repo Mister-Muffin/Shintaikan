@@ -56,21 +56,20 @@ fun Typography(colorScheme: ColorScheme): Typography {
             fontWeight = FontWeight.W400,
             letterSpacing = 0.4000000059604645.sp,
             lineHeight = 16.sp,
-            fontSize = 12.sp,
-            color = colorScheme.primary,
+            fontSize = 12.sp
         ),
         headlineLarge = TextStyle(
             fontFamily = Roboto,
-            fontWeight = FontWeight.W600,
+            fontWeight = FontWeight.W700,
             letterSpacing = 0.sp,
             lineHeight = 40.sp,
-            fontSize = 32.sp,
+            fontSize = 42.sp,
             color = colorScheme.primary,
             textAlign = TextAlign.Center
         ),
         headlineMedium = TextStyle(
             fontFamily = Roboto,
-            fontWeight = FontWeight.W500,
+            fontWeight = FontWeight.W600,
             letterSpacing = 0.sp,
             lineHeight = 36.sp,
             fontSize = 28.sp,

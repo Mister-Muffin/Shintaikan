@@ -39,7 +39,7 @@ fun Trplan(vm: MyViewModel) {
             }
         }
         item {
-            Text(text = "Trainingsplan", style = MaterialTheme.typography.headlineMedium)
+            Text(text = "Trainingsplan", style = MaterialTheme.typography.headlineLarge)
 
             Image(
                 painter = painterResource(id = R.drawable.bambus),
