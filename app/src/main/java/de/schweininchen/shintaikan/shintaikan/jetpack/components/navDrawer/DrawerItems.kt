@@ -159,6 +159,7 @@ fun DrawerItems(
             selected = selectedMain,
             route = NavigationDrawerRoutes.VORFUEHRUNGEN,
             onClick = onClickMain,
+            disabled = true,
         )
         DrawerItem(
             "Lehrgänge + Turniere",
@@ -166,6 +167,7 @@ fun DrawerItems(
             selected = selectedMain,
             route = NavigationDrawerRoutes.LEHRGAENGE,
             onClick = onClickMain,
+            disabled = true,
         )
         Divider()
         DrawerItem(
