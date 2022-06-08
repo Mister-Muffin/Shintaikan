@@ -32,7 +32,6 @@ fun ShintaikanAppBar(
                     appBarTitle, color = MaterialTheme.colorScheme.onSurface
                 )
             },
-
             navigationIcon = {
                 IconButton(onClick = { scope.launch { drawerState.open() } }
                 ) {
