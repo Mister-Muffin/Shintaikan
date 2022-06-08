@@ -18,8 +18,6 @@ fun getFirestoreData(
             val firestoreData: MutableMap<String, MutableMap<String, Any>> = mutableMapOf()
             for (document in result) {
                 firestoreData[document.id] = document.data
-
-                //Log.d(TAG, "${document.id} => ${document.data}")
             }
             onSuccess(firestoreData)
         }
@@ -42,8 +40,6 @@ fun getFirestoreTrplan(
             for (document in result) {
                 firestoreData[document.id] = document.data
                 firestoreData[document.id]?.set("key", document.id)
-
-                //Log.d(TAG, "${document.id} => ${document.data}")
             }
             onSuccess(firestoreData)
         }

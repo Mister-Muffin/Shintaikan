@@ -1,35 +1,28 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack
 
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import com.google.accompanist.swiperefresh.SwipeRefreshState
 import kotlinx.coroutines.launch
 import java.io.File
 
 class MyViewModel : ViewModel() {
 
     //<editor-fold desc="Pull to refresh">
-    private val _isRefreshing = MutableStateFlow(false)
+    val swipeResfreshState = SwipeRefreshState(isRefreshing = false)
 
-    val isRefreshing: StateFlow<Boolean> get() = _isRefreshing.asStateFlow()
-
-    suspend fun setRefresh(refreshing: Boolean) {
-        _isRefreshing.emit(refreshing)
+    fun setRefresh(refreshing: Boolean) {
+        swipeResfreshState.isRefreshing = refreshing
     }
     //</editor-fold>
 
     //<editor-fold desc="Trplan">
-    val trplanData = mutableStateOf(mapOf<String, MutableMap<String, Any>>())
+    var trplanData by mutableStateOf(mapOf<String, MutableMap<String, Any>>())
 
     fun updateTrplan() {
         getFirestoreTrplan {
-            trplanData.value = it
+            trplanData = it
         }
     }
     //</editor-fold>
@@ -53,16 +46,7 @@ class MyViewModel : ViewModel() {
         }
     }
 
-    val isConnected = mutableStateOf(true)
-
-    fun updateConnectifityStatus(isConnected: Boolean) {
-        this.isConnected.value = isConnected
-    }
-
-    /*val exoPlayer: SimpleExoPlayer
-        get() {
-            return exoPlayer
-        }*/
+    var isConnected by mutableStateOf(true)
 
     //</editor-fold>
 
@@ -78,25 +62,11 @@ class MyViewModel : ViewModel() {
     }
     //</editor-fold>
 
-    val firebaseMessagingToken = mutableStateOf("NO_TOKEN")
+    var firebaseMessagingToken by mutableStateOf("NO_TOKEN")
+        private set
 
     fun updatefirebaseMessagingToken(token: String) {
-        firebaseMessagingToken.value = token
+        firebaseMessagingToken = token
     }
-
-    //<editor-fold desc="List states">
-    var lazyState = LazyListState()
-
-    var lazyStateStart = LazyListState()
-    var lazyStateTrplan = LazyListState()
-    var lazyStatePruef = LazyListState()
-    var lazyStateFerien = LazyListState()
-    var lazyStateSoFe = LazyListState()
-    var lazyStateClub = LazyListState()
-    var lazyStateAnf = LazyListState()
-    var lazyStatePres = LazyListState()
-    var lazyStateTurn = LazyListState()
-    var lazyStateColors = LazyListState()
-    //</editor-fold>
 
 }

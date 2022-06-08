@@ -2,6 +2,7 @@ package de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme
 
 import android.os.Build
 import androidx.compose.material3.ColorScheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
@@ -44,8 +45,10 @@ fun ShintaikanJetpackTheme(
     } else {
         LightColorPalette
     }
-    androidx.compose.material3.MaterialTheme(
+    val typography = getTypography(colorScheme = colorScheme)
+    MaterialTheme(
         colorScheme = colorScheme,
+        typography = typography,
         content = content
     )
 }

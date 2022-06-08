@@ -14,6 +14,8 @@ import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 
+//Hoffnungslos verloren
+
 @Composable
 fun ExoVideoPlayer(exoPlayer: SimpleExoPlayer) {
     AndroidView(
