@@ -32,6 +32,7 @@ fun ShintaikanAppBar(
     ) {
         CenterAlignedTopAppBar(
             modifier = Modifier.statusBarsPadding(),
+            scrollBehavior = scrollBehavior,
             title = {
                 Text(
                     appBarTitle.value, fontSize = 20.sp

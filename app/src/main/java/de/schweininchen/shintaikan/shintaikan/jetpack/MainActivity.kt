@@ -23,7 +23,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
-import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity.MainNavHost
@@ -191,9 +190,10 @@ private fun Bob(
                     appBarTitle,
                     scope,
                     drawerState,
-                    scrollBehavior= scrollBehavior
+                    scrollBehavior = scrollBehavior
                 )
-            }
+            },
+            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
         ) { innerPadding ->
             val firestoreData = viewModel.firestoreData
             if (firestoreData.isEmpty()) {
@@ -214,8 +214,7 @@ private fun Bob(
             Column(
                 modifier = Modifier
                     .navigationBarsWithImePadding()
-                    .padding(innerPadding)
-                    .nestedScroll(scrollBehavior.nestedScrollConnection),
+                    .padding(innerPadding),
             ) {
                 if (!viewModel.isConnected.value) Row(
                     Modifier
