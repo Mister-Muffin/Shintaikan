@@ -4,11 +4,9 @@ enum class NavigationDrawerRoutes {
     HOME,
     TRPLAN,
     PRUEFUNGEN,
-    FERIEN,
     NACHSOFE,
     CLUBWEG,
     ANFAENGER,
-    VORFUEHRUNGEN,
-    LEHRGAENGE,
+    COLORS,
     NONE
 }

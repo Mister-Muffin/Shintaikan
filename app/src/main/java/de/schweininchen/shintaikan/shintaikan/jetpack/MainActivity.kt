@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudOff
 import androidx.compose.material3.*
@@ -14,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
@@ -26,7 +26,6 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity.MainNavHost
 import de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity.ShintaikanAppBar
-import de.schweininchen.shintaikan.shintaikan.jetpack.pages.*
 import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.ShintaikanJetpackTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -71,14 +70,21 @@ class MainActivity : AppCompatActivity() {
 
                 })
 
-                if (viewModel.firestoreData.value.isEmpty()) viewModel.updateTrplan()
+                if (viewModel.firestoreData.isEmpty()) viewModel.updateTrplan()
+
+                viewModel.lazyState = viewModel.lazyStateStart
+
+                val drawerState = rememberDrawerState(DrawerValue.Closed)
 
                 fun navDrawerClickie(
                     route: NavigationDrawerRoutes?,
                     scope: CoroutineScope,
-                    scaffoldState: ScaffoldState
+                    drawerState: DrawerState
                 ) {
                     if (route !== null) {
+
+                        changeLazyState(route, viewModel)
+
                         scope.launch {
                             if (!viewModel.lazyState.isScrollInProgress) viewModel.lazyState.scrollToItem(
                                 0
@@ -90,7 +96,7 @@ class MainActivity : AppCompatActivity() {
                         }
                         selectedDrawerItem.value = route
                         scope.launch {
-                            scaffoldState.drawerState.close()
+                            drawerState.close()
                         }
                     }
                 }
@@ -101,34 +107,63 @@ class MainActivity : AppCompatActivity() {
                         viewModel.wordpressList,
                         scope = scope,
                         selectedDrawerItem = selectedDrawerItem,
-                        viewModel = viewModel
+                        viewModel = viewModel,
+                        drawerState = drawerState
                     )
                 }
             }
         }
+
     }
 
+    private fun changeLazyState(
+        route: NavigationDrawerRoutes,
+        viewModel: MyViewModel
+    ) {
+        when (route) {
+            NavigationDrawerRoutes.HOME -> {
+                viewModel.lazyState = viewModel.lazyStateStart
+            }
+            NavigationDrawerRoutes.TRPLAN -> {
+                viewModel.lazyState = viewModel.lazyStateTrplan
+            }
+            NavigationDrawerRoutes.PRUEFUNGEN -> {
+                viewModel.lazyState = viewModel.lazyStatePruef
+            }
+            NavigationDrawerRoutes.NACHSOFE -> {
+                viewModel.lazyState = viewModel.lazyStateSoFe
+            }
+            NavigationDrawerRoutes.CLUBWEG -> {
+                viewModel.lazyState = viewModel.lazyStateClub
+            }
+            NavigationDrawerRoutes.ANFAENGER -> {
+                viewModel.lazyState = viewModel.lazyStateAnf
+            }
+            NavigationDrawerRoutes.COLORS -> {
+                viewModel.lazyState = viewModel.lazyStateColors
+            }
+            else -> {
+                viewModel.lazyState = viewModel.lazyStateStart
+            }
+        }
+    }
 }
 
 @ExperimentalMaterial3Api
 @Composable
 private fun Bob(
-    onClick: (NavigationDrawerRoutes?, CoroutineScope, ScaffoldState) -> Unit,
+    onClick: (NavigationDrawerRoutes?, CoroutineScope, DrawerState) -> Unit,
     navHostController: NavHostController,
     wordpressList: List<Array<String>>,
     selectedDrawerItem: MutableState<NavigationDrawerRoutes>,
-    scope: CoroutineScope, viewModel: MyViewModel
+    scope: CoroutineScope, viewModel: MyViewModel,
+    drawerState: DrawerState
 ) {
-    val scaffoldState = rememberScaffoldState()
     val appBarTitle = remember {
         mutableStateOf("Shintaikan")
     }
 
-    /* if (viewModel.exoPlayer == null) {
-
-     }
-
-     val uri =
+    /*val uri =
          "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
      val context = LocalContext.current
 
@@ -139,65 +174,74 @@ private fun Bob(
      }
      exoPlayer.stop()*/
 
-    Scaffold(
-        scaffoldState = scaffoldState,
-        drawerShape = RoundedCornerShape(0),
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarScrollState())
+
+    ModalNavigationDrawer(
+        drawerState = drawerState,
         drawerContent = drawerContent(viewModel, selectedDrawerItem.value) {
-            onClick(
-                it,
-                scope,
-                scaffoldState
-            )
+            onClick(it, scope, drawerState)
         },
     ) {
-        val firestoreData = viewModel.firestoreData.value
-        if (firestoreData.isEmpty()) {
-            viewModel.updateFirestoreData()
-        }
-        val imageList: IntArray = intArrayOf(
-            R.drawable.bonsai,
-            R.drawable.sakura,
-            R.drawable.seerose1,
-            R.drawable.bonsai
-        )
-        imageList.shuffle()
-
-        Column(modifier = Modifier.navigationBarsWithImePadding()) {
-            ShintaikanAppBar(
-                appBarTitle,
-                scope,
-                scaffoldState,
-                lazyState = viewModel.lazyState
-            )
-
-            if (!viewModel.isConnected.value) Row(
-                Modifier
-                    .fillMaxWidth()
-                    .height(30.dp)
-                    .background(Color.Red),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.CloudOff,
-                    tint = Color.White,
-                    contentDescription = "Offline icon",
-                    modifier = Modifier.padding(end = 8.dp)
+        Scaffold(
+            topBar = {
+                ShintaikanAppBar(
+                    appBarTitle,
+                    scope,
+                    drawerState,
+                    scrollBehavior = scrollBehavior
                 )
-                Text(
-                    text = "OFFLINE!",
-                    style = TextStyle(color = Color.White),
+            },
+            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+        ) { innerPadding ->
+            val firestoreData = viewModel.firestoreData
+            if (firestoreData.isEmpty()) {
+                viewModel.updateFirestoreData {
+                    scope.launch {
+                        viewModel.setRefresh(false)
+                    }
+                }
+            }
+            val imageList: IntArray = intArrayOf(
+                R.drawable.bonsai,
+                R.drawable.sakura,
+                R.drawable.seerose1,
+                R.drawable.bonsai
+            )
+            imageList.shuffle()
+
+            Column(
+                modifier = Modifier
+                    .navigationBarsWithImePadding()
+                    .padding(innerPadding),
+            ) {
+                if (!viewModel.isConnected.value) Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(30.dp)
+                        .background(Color.Red),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.CloudOff,
+                        tint = Color.White,
+                        contentDescription = "Offline icon",
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                    Text(
+                        text = "OFFLINE!",
+                        style = TextStyle(color = Color.White),
+                    )
+                }
+                MainNavHost(
+                    navHostController,
+                    viewModel,
+                    wordpressList,
+                    appBarTitle,
+                    imageList,
+                    selectedDrawerItem,
                 )
             }
-            MainNavHost(
-                navHostController,
-                viewModel,
-                wordpressList,
-                appBarTitle,
-                firestoreData,
-                imageList,
-                selectedDrawerItem,
-            )
         }
     }
 }

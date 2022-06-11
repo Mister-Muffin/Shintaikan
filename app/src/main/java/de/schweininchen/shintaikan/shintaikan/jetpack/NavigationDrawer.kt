@@ -11,13 +11,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Divider
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
+import androidx.compose.material3.*
+import androidx.compose.material3.MenuDefaults.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -84,7 +81,10 @@ fun drawerContent(
                         .size(120.dp)
                         .padding(top = 8.dp)
                 )
-                Divider(modifier = Modifier.padding(top = 4.dp, bottom = 4.dp))
+                Divider(
+                    modifier = Modifier.padding(vertical = 4.dp),
+                    color = MaterialTheme.colorScheme.outline
+                )
                 DrawerItems(
                     selectedMain, onClickMain, context, openCustomDialog,
                     openDialog, showDebugInfo, coroutineScope, listState
@@ -106,13 +106,21 @@ fun DebugInfo(vm: MyViewModel) {
         val context = LocalContext.current
         Text(
             text = BuildConfig.VERSION_CODE.toString(),
-            style = TextStyle(fontWeight = FontWeight.Bold),
+            style = TextStyle(
+                fontWeight = FontWeight.Bold,
+                fontSize = 10.sp,
+                fontStyle = MaterialTheme.typography.bodySmall.fontStyle
+            ),
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )
         Text(
             text = vm.firebaseMessagingToken.value,
-            style = TextStyle(fontWeight = FontWeight.Normal, fontSize = 10.sp),
+            style = TextStyle(
+                fontWeight = FontWeight.Normal,
+                fontSize = 10.sp,
+                fontStyle = MaterialTheme.typography.bodySmall.fontStyle
+            ),
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {

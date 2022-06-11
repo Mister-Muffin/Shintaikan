@@ -1,15 +1,18 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.pages
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import de.schweininchen.shintaikan.shintaikan.jetpack.MyViewModel
-import kotlin.random.Random
+import de.schweininchen.shintaikan.shintaikan.jetpack.R
 
 @Composable
 fun Trplan(vm: MyViewModel) {
@@ -23,7 +26,7 @@ fun Trplan(vm: MyViewModel) {
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth(),
         contentPadding = PaddingValues(8.dp),
-        state = vm.lazyState
+        state = vm.lazyStateTrplan
     ) {
         items(10) {
             Box(
@@ -53,7 +56,7 @@ fun Trplan(vm: MyViewModel) {
             }
         }
         item {
-            Text(text = "Trainingsplan", style = Typography.h2)
+            Text(text = "Trainingsplan", style = MaterialTheme.typography.headlineLarge)
 
             Image(
                 painter = painterResource(id = R.drawable.bambus),
@@ -67,13 +70,13 @@ fun Trplan(vm: MyViewModel) {
             if (firestoreData.isEmpty()) {
                 CircularProgressIndicator()
             } else {
-                Log.d("TAG2", "Trplan: $firestoreData")
+                //Log.d("TAG2", "Trplan: $firestoreData")
                 for (i in days) {
-                    Text(text = i, style = Typography.h2)
-                    Log.d("TAG", "Keys: ${firestoreData.keys}")
+                    Text(text = i, style = MaterialTheme.typography.headlineMedium)
+                    //Log.d("TAG", "Keys: ${firestoreData.keys}")
                     for (j in firestoreData.keys) {
-                        Log.d("TAG", "Keys: ${firestoreData[j]}")
-                        Log.d("TAG", "Index: ${days.indexOf(i).inc()}")
+                        //Log.d("TAG", "Keys: ${firestoreData[j]}")
+                        //Log.d("TAG", "Index: ${days.indexOf(i).inc()}")
                         if (!firestoreData[j].isNullOrEmpty() &&
                             firestoreData[j]?.get("key").toString()
                                 .startsWith(days.indexOf(i).inc().toString()) &&
@@ -87,14 +90,14 @@ fun Trplan(vm: MyViewModel) {
                                     text = "${firestoreData[j]?.get("start").toString()} - " +
                                             "${firestoreData[j]?.get("end").toString()}: " +
                                             firestoreData[j]?.get("customText").toString(),
-                                    style = Typography.body2
+                                    style = MaterialTheme.typography.bodyMedium
                                 )
                             } else {
                                 Text(
                                     text = "${firestoreData[j]?.get("start").toString()} - " +
                                             "${firestoreData[j]?.get("end").toString()}: " +
                                             firestoreData[j]?.get("group").toString(),
-                                    style = Typography.body2
+                                    style = MaterialTheme.typography.bodyMedium
                                 )
                             }
                         }

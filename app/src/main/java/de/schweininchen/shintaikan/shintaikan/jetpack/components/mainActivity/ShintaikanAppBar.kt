@@ -2,7 +2,7 @@ package de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
@@ -11,7 +11,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
-import com.google.accompanist.insets.statusBarsPadding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -20,24 +19,20 @@ import kotlinx.coroutines.launch
 fun ShintaikanAppBar(
     appBarTitle: MutableState<String>,
     scope: CoroutineScope,
-    scaffoldState: ScaffoldState,
-    lazyState: LazyListState
+    drawerState: DrawerState,
+    scrollBehavior: TopAppBarScrollBehavior
 ) {
     val backgroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors()
-    val backgroundColor = backgroundColors.containerColor(
-        scrollFraction = if (lazyState.firstVisibleItemIndex == 0)
-            (lazyState.firstVisibleItemScrollOffset.toFloat() - 50f).clamp(0f, 1f)
-        else 1f
-    ).value
     val foregroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors(
         containerColor = Color.Transparent,
         scrolledContainerColor = Color.Transparent
     )
     Box(
-        modifier = Modifier.background(backgroundColor)
+        modifier = Modifier.background(backgroundColors.containerColor(scrollFraction = scrollBehavior.scrollFraction).value)
     ) {
         CenterAlignedTopAppBar(
             modifier = Modifier.statusBarsPadding(),
+            scrollBehavior = scrollBehavior,
             title = {
                 Text(
                     appBarTitle.value, fontSize = 20.sp
@@ -45,7 +40,9 @@ fun ShintaikanAppBar(
             },
 
             navigationIcon = {
-                IconButton(onClick = { scope.launch { scaffoldState.drawerState.open() } }
+                IconButton(onClick = {
+                    scope.launch { drawerState.open() }
+                }
                 ) {
                     Icon(Icons.Filled.Menu, contentDescription = null)
                 }

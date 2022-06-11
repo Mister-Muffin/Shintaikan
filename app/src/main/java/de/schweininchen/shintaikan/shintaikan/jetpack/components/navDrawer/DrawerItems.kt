@@ -2,34 +2,27 @@ package de.schweininchen.shintaikan.shintaikan.jetpack.components.navDrawer
 
 import android.content.Context
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.material.Divider
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import de.schweininchen.shintaikan.shintaikan.jetpack.NavigationDrawerRoutes
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
-import de.schweininchen.shintaikan.shintaikan.jetpack.customPadding
 import de.schweininchen.shintaikan.shintaikan.jetpack.linkToWebpage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DrawerItem(
     name: String,
@@ -40,65 +33,36 @@ private fun DrawerItem(
     route: NavigationDrawerRoutes = NavigationDrawerRoutes.NONE,
     onClick: (NavigationDrawerRoutes?) -> Unit
 ) {
-    val color =
-        if (selected == route && !disabled) androidx.compose.material3.MaterialTheme.colorScheme.primary else Color(
-            0xFF898989
-        )
-    Row(
-        modifier = Modifier
-            .padding(top = 4.dp, bottom = 4.dp, start = 8.dp, end = 8.dp)
-            .clip(MaterialTheme.shapes.medium)
-            .clickable(onClick = { onClick(route) })
-            .background(
-                color = if (selected == route) androidx.compose.material3.MaterialTheme.colorScheme.primary.copy(
-                    alpha = .15f
-                ) else Color.Transparent
-            )
-            .padding(top = customPadding, bottom = customPadding, start = 12.dp, end = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        if (disabled) {
-            Icon(imageVector = icon, "Drawer item", tint = Color(0xFFC9C9C9))
-            Text(
-                modifier = Modifier
-                    .padding(start = 20.dp)
-                    .weight(1f), text = name,
-                style = TextStyle(fontWeight = FontWeight.Bold, color = Color(0xFFC9C9C9))
-            )
-            if (externalLink) {
-                Box(contentAlignment = Alignment.CenterEnd) {
-                    Icon(
-                        imageVector = Icons.Outlined.ExitToApp,
-                        "",
-                        tint = Color(0xFFC9C9C9)
-                    )
-                }
-            }
-        } else {
-            Icon(imageVector = icon, "Drawer item", tint = color)
-            Text(
-                modifier = Modifier
-                    .padding(start = 20.dp)
-                    .weight(1f), text = name,
-                style = TextStyle(
-                    fontWeight = FontWeight.Bold,
-                    color = if (selected == route) androidx.compose.material3.MaterialTheme.colorScheme.primary else Color.Black
-                )
-            )
-            if (externalLink) {
-                Box(contentAlignment = Alignment.CenterEnd) {
-                    Icon(
-                        imageVector = Icons.Outlined.ExitToApp,
-                        "",
-                        tint = color
-                    )
-                }
-            }
-        }
-    }
+    val disabledColor = MaterialTheme.colorScheme.surfaceVariant
 
+    NavigationDrawerItem(
+        icon = { Icon(icon, contentDescription = null) },
+        label = { Text(name) },
+        selected = selected == route,
+        onClick = {
+            onClick(route)
+        },
+        badge = { if (externalLink) Icon(Icons.Outlined.ExitToApp, contentDescription = null) },
+        colors = if (disabled) NavigationDrawerItemDefaults.colors(
+            unselectedTextColor = disabledColor,
+            unselectedBadgeColor = disabledColor,
+            unselectedIconColor = disabledColor
+        ) else NavigationDrawerItemDefaults.colors(),
+        modifier = Modifier
+            .padding(NavigationDrawerItemDefaults.ItemPadding)
+        /*.clip(MaterialTheme.shapes.medium)
+        .clickable(onClick = { onClick(route) })
+        .background(
+            color = if (selected == route) MaterialTheme.colorScheme.primary.copy(
+                alpha = .15f
+            ) else Color.Transparent
+        )
+        .padding(top = customPadding, bottom = customPadding, start = 12.dp, end = 12.dp),
+    verticalAlignment = Alignment.CenterVertically*/
+    )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DrawerItems(
     selectedMain: NavigationDrawerRoutes,
@@ -133,13 +97,6 @@ fun DrawerItems(
             onClick = onClickMain,
         )
         DrawerItem(
-            "Ferientraining",
-            Icons.Outlined.BeachAccess,
-            selected = selectedMain,
-            route = NavigationDrawerRoutes.FERIEN,
-            onClick = onClickMain,
-        )
-        DrawerItem(
             "Nach den Sommerferien",
             Icons.Outlined.WbSunny,
             selected = selectedMain,
@@ -160,21 +117,12 @@ fun DrawerItems(
             route = NavigationDrawerRoutes.ANFAENGER,
             onClick = onClickMain,
         )
-        DrawerItem(
-            "Vorführungen",
-            Icons.Outlined.RemoveRedEye,
-            selected = selectedMain,
-            route = NavigationDrawerRoutes.VORFUEHRUNGEN,
-            onClick = onClickMain,
+        Divider(
+            modifier = Modifier
+                .padding(NavigationDrawerItemDefaults.ItemPadding)
+                .padding(vertical = 4.dp),
+            color = MaterialTheme.colorScheme.outline
         )
-        DrawerItem(
-            "Lehrgänge + Turniere",
-            Icons.Outlined.People,
-            selected = selectedMain,
-            route = NavigationDrawerRoutes.LEHRGAENGE,
-            onClick = onClickMain,
-        )
-        Divider()
         DrawerItem(
             "Infofilmchen",
             Icons.Outlined.Movie, externalLink = false, disabled = true
@@ -187,7 +135,12 @@ fun DrawerItems(
             "Mixfilm 2019",
             Icons.Outlined.Movie, externalLink = false, disabled = true
         ) { }
-        Divider()
+        Divider(
+            modifier = Modifier
+                .padding(NavigationDrawerItemDefaults.ItemPadding)
+                .padding(vertical = 4.dp),
+            color = MaterialTheme.colorScheme.outline
+        )
         DrawerItem(
             "Kontakt und Feedback",
             Icons.Outlined.Mail, externalLink = false, disabled = true
@@ -211,7 +164,12 @@ fun DrawerItems(
         ) {
             openDialog.value = true
         }
-        Divider(modifier = Modifier.padding(bottom = 8.dp))
+        Divider(
+            modifier = Modifier
+                .padding(NavigationDrawerItemDefaults.ItemPadding)
+                .padding(vertical = 4.dp),
+            color = MaterialTheme.colorScheme.outline
+        )
         Image(
             painter = painterResource(id = R.drawable.jetpackcompose_logo),
             contentDescription = "Jetpack Compose logo",
@@ -219,11 +177,18 @@ fun DrawerItems(
                 .width(30.dp)
                 .height(30.dp)
                 .align(Alignment.CenterHorizontally)
-                .clickable {
-                    showDebugInfo.value = true
-                    coroutineScope.launch {
-                        listState.animateScrollToItem(index = listState.layoutInfo.totalItemsCount)
-                    }
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onLongPress = {
+                            onClickMain(NavigationDrawerRoutes.COLORS)
+                        },
+                        onTap = {
+                            showDebugInfo.value = true
+                            coroutineScope.launch {
+                                listState.animateScrollToItem(index = listState.layoutInfo.totalItemsCount)
+                            }
+                        }
+                    )
                 }
         )
         Box(modifier = Modifier.size(8.dp))

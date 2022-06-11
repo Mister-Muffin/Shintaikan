@@ -1,18 +1,13 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.pages
 
 import android.os.Build
-import android.util.Log
-import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,15 +17,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.text.HtmlCompat
 import de.schweininchen.shintaikan.shintaikan.jetpack.MyViewModel
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
-import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.Typography
 import java.time.LocalDate
 import java.time.LocalTime
 import kotlin.random.Random
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(
     postsList: List<Array<String>>,
@@ -44,7 +38,7 @@ fun Home(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier
             .fillMaxWidth(),
-        state = viewModel.lazyState
+        state = viewModel.lazyStateStart
     ) {
         items(10) {
             Box(
@@ -64,10 +58,16 @@ fun Home(
             )
         }
         item {
-            Text(text = "Karate Club\nShintaikan e.V.", style = Typography.h1)
+            Text(
+                text = "Karate Club\nShintaikan e.V.",
+                style = MaterialTheme.typography.headlineLarge
+            )
         }
         item {
-            Text(text = "Linnéstraße 14, Freiburg West", style = Typography.h2)
+            Text(
+                text = "Linnéstraße 14, Freiburg West",
+                style = MaterialTheme.typography.headlineMedium
+            )
         }
         item {
             Image(
@@ -77,10 +77,10 @@ fun Home(
             )
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O /*&& viewModel.firestoreData.value.isNotEmpty()*/) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && viewModel.firestoreData.isNotEmpty()) {
             item {
                 Card(
-                    elevation = 2.dp, modifier = Modifier
+                    modifier = Modifier
                         .fillMaxWidth()
                 ) {
                     /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -90,33 +90,40 @@ fun Home(
             }
         }
 
-        //if (!viewModel.isConnected.value && postsList.isEmpty()) {
-        item {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_cloud_sad_24dp),
-                contentDescription = "",
-                tint = Color.Red, modifier = Modifier.size(100.dp)
-            )
-            Text(
-                text = "Wolki ist traurig,\nweil keine Internetverbindung besteht :(",
-                style = TextStyle(fontSize = 15.sp), textAlign = TextAlign.Center
-            )
-        }
-        //} else if (postsList.isEmpty()) {
-        item { CircularProgressIndicator(color = MaterialTheme.colorScheme.primary) }
-        //} else {
-        items(3) { post ->
-            /*Card(elevation = 2.dp, modifier = Modifier.fillMaxWidth()) {
-                *//*Column(Modifier.padding(8.dp)) {
-                    Text(
-                        style = Typography.h3,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        text = post[0]
-                    )
-                    Box(Modifier.padding(top = 8.dp)) {
-                        Html(text = post[1])
+        if (!viewModel.isConnected.value && postsList.isEmpty()) {
+            item {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_cloud_sad_24dp),
+                    contentDescription = "",
+                    tint = Color.Red, modifier = Modifier.size(100.dp)
+                )
+                Text(
+                    text = "Wolki ist traurig,\nweil keine Internetverbindung besteht :(",
+                    style = TextStyle(fontSize = 15.sp), textAlign = TextAlign.Center
+                )
+            }
+        } else if (postsList.isEmpty()) {
+            item {
+                CircularProgressIndicator(
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
+                )
+            }
+        } else {
+            items(postsList) { post ->
+                Card(modifier = Modifier.fillMaxWidth()) {
+                    Column(
+                        Modifier
+                            .padding(8.dp)
+                            .fillMaxWidth()) {
+                        Text(
+                            style = MaterialTheme.typography.headlineSmall,
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                            text = post[0]
+                        )
+                        Box(Modifier.padding(top = 8.dp)) {
+                            Html(text = post[1])
+                        }
                     }
                 }
             }*/
@@ -170,18 +177,10 @@ fun Home(
 
 @Composable
 fun Html(text: String) {
-    AndroidView(factory = { context ->
-        TextView(context).apply {
-            this.setTextColor(
-                android.graphics.Color.rgb(
-                    (Typography.h3.color.red * 255).toInt(),
-                    (Typography.h3.color.green * 255).toInt(),
-                    (Typography.h3.color.blue * 255).toInt()
-                )
-            )
-            setText(HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY))
-        }
-    })
+    Text(
+        HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY).toString(),
+        style = MaterialTheme.typography.bodyMedium
+    )
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -208,12 +207,12 @@ private fun Today(viewModel: MyViewModel) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(16.dp)) {
         Text(
             text = "Heute, $dayWord",
-            style = Typography.h2,
+            style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
         for (j in firestoreData.keys) {
-            Log.d("TAG", "Today: $j")
+            //Log.d("TAG", "Today: $j")
             if (!firestoreData[j].isNullOrEmpty() &&
                 firestoreData[j]?.get("start")
                     .toString().isNotEmpty() &&
@@ -227,14 +226,14 @@ private fun Today(viewModel: MyViewModel) {
                         text = "${firestoreData[j]?.get("start").toString()} - " +
                                 "${firestoreData[j]?.get("end").toString()}: " +
                                 firestoreData[j]?.get("customText").toString(),
-                        style = Typography.body2
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 } else {
                     Text(
                         text = "${firestoreData[j]?.get("start").toString()} - " +
                                 "${firestoreData[j]?.get("end").toString()}: " +
                                 firestoreData[j]?.get("group").toString(),
-                        style = Typography.body2
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
             }
