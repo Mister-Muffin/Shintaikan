@@ -58,12 +58,15 @@ private fun DrawerItem(
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (disabled) {
-            Icon(imageVector = icon, "Drawer item", tint = Color(0xFFC9C9C9))
+            Icon(imageVector = icon, "Drawer item", tint = MaterialTheme.colorScheme.surfaceVariant)
             Text(
                 modifier = Modifier
                     .padding(start = 20.dp)
                     .weight(1f), text = name,
-                style = TextStyle(fontWeight = FontWeight.Bold, color = Color(0xFFC9C9C9))
+                style = TextStyle(
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.surfaceVariant
+                )
             )
             if (externalLink) {
                 Box(contentAlignment = Alignment.CenterEnd) {
@@ -82,7 +85,7 @@ private fun DrawerItem(
                     .weight(1f), text = name,
                 style = TextStyle(
                     fontWeight = FontWeight.Bold,
-                    color = if (selected == route) MaterialTheme.colorScheme.primary else Color.Black
+                    color = color
                 )
             )
             if (externalLink) {

@@ -18,6 +18,7 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -106,13 +107,21 @@ fun DebugInfo(vm: MyViewModel) {
         val context = LocalContext.current
         Text(
             text = BuildConfig.VERSION_CODE.toString(),
-            style = TextStyle(fontWeight = FontWeight.Bold),
+            style = TextStyle(
+                fontWeight = FontWeight.Bold,
+                fontSize = 10.sp,
+                fontStyle = MaterialTheme.typography.bodySmall.fontStyle
+            ),
             modifier = Modifier.fillMaxWidth(),
             textAlign = TextAlign.Center
         )
         Text(
             text = vm.firebaseMessagingToken.value,
-            style = TextStyle(fontWeight = FontWeight.Normal, fontSize = 10.sp),
+            style = TextStyle(
+                fontWeight = FontWeight.Normal,
+                fontSize = 10.sp,
+                fontStyle = MaterialTheme.typography.bodySmall.fontStyle
+            ),
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
