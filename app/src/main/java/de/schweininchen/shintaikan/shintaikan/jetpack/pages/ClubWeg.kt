@@ -13,9 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
+import de.schweininchen.shintaikan.shintaikan.jetpack.components.trimedStringResource
 
 @Composable
 fun ClubWeg() {
@@ -42,7 +42,7 @@ fun ClubWeg() {
         }
         item {
 
-            Text(stringResource(R.string.club_1))
+            Text(trimedStringResource(R.string.club_1))
 
         }
         item {
@@ -51,7 +51,7 @@ fun ClubWeg() {
 
         }
         item {
-            Text(stringResource(R.string.club_2))
+            Text(trimedStringResource(R.string.club_2))
 
         }
         item {

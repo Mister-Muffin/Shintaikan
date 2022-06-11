@@ -1,6 +1,7 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.pages
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,9 +12,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
+import de.schweininchen.shintaikan.shintaikan.jetpack.components.trimedStringResource
 
 @Composable
 fun Anfaenger() {
@@ -23,37 +24,44 @@ fun Anfaenger() {
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxWidth(),
-        state = lazyListState
+        state = lazyListState,
+        contentPadding = PaddingValues(horizontal = 8.dp)
     ) {
         item {
-            Text(text = "Karate Club\nShintaikan e.V.", style = MaterialTheme.typography.headlineMedium)
-            Text(text = "Anfänger und Interessenten", style = MaterialTheme.typography.headlineSmall)
+            Text(
+                text = "Karate Club\nShintaikan e.V.",
+                style = MaterialTheme.typography.headlineMedium
+            )
+            Text(
+                text = "Anfänger und Interessenten",
+                style = MaterialTheme.typography.headlineSmall
+            )
             Text(text = "Generell sind 2 Schnupperstunden gratis!")
 
             Bambus()
 
             Text(text = "Karaminis", style = MaterialTheme.typography.titleMedium)
 
-            Text(stringResource(R.string.about_1))
-            Text(stringResource(R.string.about_3))
+            Text(trimedStringResource(R.string.about_1))
+            Text(trimedStringResource(R.string.about_3))
 
             Bambus()
 
 
             Text(text = "Kinder Karate Anfänger", style = MaterialTheme.typography.titleMedium)
-            Text(stringResource(R.string.about_4))
+            Text(trimedStringResource(R.string.about_4))
             Bambus()
 
             Text(text = "Jugend Karate", style = MaterialTheme.typography.titleMedium)
-            Text(stringResource(R.string.about_5))
+            Text(trimedStringResource(R.string.about_5))
             Bambus()
 
             Text(text = "Karate Erwachsene", style = MaterialTheme.typography.titleMedium)
-            Text(stringResource(R.string.about_6))
+            Text(trimedStringResource(R.string.about_6))
             Bambus()
 
             Text(text = "Beiträge und Zahlweise", style = MaterialTheme.typography.titleMedium)
-            Text(stringResource(R.string.about_7))
+            Text(trimedStringResource(R.string.about_7))
 
         }
     }

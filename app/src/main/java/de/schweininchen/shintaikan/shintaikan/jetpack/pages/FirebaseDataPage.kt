@@ -16,6 +16,7 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
+import de.schweininchen.shintaikan.shintaikan.jetpack.components.Html
 
 @Composable
 fun FirebaseDataPage(

@@ -29,19 +29,6 @@ enum class Destinations(
             firestoreData = viewModel.firestoreData[id],
             swipeRefreshState = viewModel.swipeResfreshState,
             onRefresh = { refresh(viewModel) })
-    },
-    val call: (navigate: ((route: String, builder: NavOptionsBuilder.() -> Unit) -> Unit)?, closeDrawer: (() -> Unit)?, handleUri: ((uri: String) -> Unit)?, openDialog: ((Destinations) -> Unit)?) -> Unit = { navigate, closeDrawer, handleUri, openDialog ->
-        try {
-            navigate?.invoke(id) {
-                popUpTo(HOME.id)
-                launchSingleTop = true
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, ": ", e)
-        }
-        closeDrawer?.invoke()
-        uri?.let { handleUri?.invoke(it) }
-        openDialog?.invoke(values().find { it.id == id }!!)
     }
 ) {
     HOME(
@@ -70,11 +57,13 @@ enum class Destinations(
         id = "pruefungen",
         displayName = "Gürtelprüfungen",
         icon = Icons.Outlined.SportsMartialArts,
+        imageIndex = 0
     ),
     FERIEN(
         id = "ferientraining",
         displayName = "Ferientraining",
         icon = Icons.Outlined.BeachAccess,
+        imageIndex = 1
     ),
     NACHSOFE(
         id = "nachsofe",
@@ -96,8 +85,14 @@ enum class Destinations(
         id = "vorfuehrungen",
         displayName = "Vorführungen",
         icon = Icons.Outlined.RemoveRedEye,
+        imageIndex = 2
     ),
-    LEHRGAENGE(id = "turniere", displayName = "Lehrgänge & Turniere", icon = Icons.Outlined.People),
+    LEHRGAENGE(
+        id = "turniere",
+        displayName = "Lehrgänge & Turniere",
+        icon = Icons.Outlined.People,
+        imageIndex = 3
+    ),
     IMPRESSUM(
         id = "impressum",
         displayName = "Impressum",
@@ -128,6 +123,7 @@ enum class Destinations(
     NONE(id = "", displayName = "Unknown", page = null);
 
     override fun toString(): String = displayName
+
     fun NavGraphBuilder.navigationDestination(viewModel: MyViewModel) {
         this@Destinations.page?.let { page ->
             composable(
@@ -140,6 +136,25 @@ enum class Destinations(
                 content = { page(viewModel) })
         }
     }
+
+    fun call(
+        navigate: ((route: String, builder: NavOptionsBuilder.() -> Unit) -> Unit)?,
+        closeDrawer: (() -> Unit)?,
+        handleUri: ((uri: String) -> Unit)?,
+        openDialog: ((Destinations) -> Unit)?
+    ) {
+        try {
+            navigate?.invoke(id) {
+                popUpTo(HOME.id)
+                launchSingleTop = true
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, ": ", e)
+        }
+        closeDrawer?.invoke()
+        uri?.let { handleUri?.invoke(it) }
+        openDialog?.invoke(values().find { it.id == id }!!)
+    }
 }
 
 private val imageList: IntArray = intArrayOf(
@@ -148,6 +163,7 @@ private val imageList: IntArray = intArrayOf(
     R.drawable.seerose1,
     R.drawable.bonsai
 ).apply { shuffle() }
+
 fun refresh(viewModel: MyViewModel) {
     viewModel.setRefresh(true)
     viewModel.updateFirestoreData {

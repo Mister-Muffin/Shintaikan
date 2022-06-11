@@ -94,12 +94,12 @@ fun ColumnScope.DrawerContent(
     LazyColumn(
         state = listState,
         modifier = Modifier
-            .statusBarsPadding()
             .imePadding()
             .fillMaxSize()
             .padding(horizontal = 12.dp)
     ) {
-        item { Box(modifier = Modifier.height(16.dp)) }
+        item { Box(modifier = Modifier.height(16.dp)
+            .statusBarsPadding()) }
         item {
             Image(
                 painter = painterResource(id = R.drawable.pelli),

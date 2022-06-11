@@ -1,7 +1,6 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.pages
 
 import android.os.Build
-import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -21,7 +20,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.text.HtmlCompat
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
 import java.time.LocalDate
@@ -153,25 +151,6 @@ fun Home(
         }
 
     }
-}
-
-@Composable
-fun Html(html: String, color: Color) {
-    AndroidView(factory = { context ->
-        TextView(context).apply {
-            this.setTextColor(
-                android.graphics.Color.rgb(
-                    (color.red * 255).toInt(),
-                    (color.green * 255).toInt(),
-                    (color.blue * 255).toInt()
-                )
-            )
-            text = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
-        }
-    },
-        update = {
-            it.text = HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
-        })
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
