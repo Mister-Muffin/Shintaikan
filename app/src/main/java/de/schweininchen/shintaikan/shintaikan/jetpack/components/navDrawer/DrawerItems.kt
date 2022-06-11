@@ -102,6 +102,7 @@ private fun DrawerItem(
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DrawerItems(
     selectedMain: NavigationDrawerRoutes,
@@ -156,7 +157,10 @@ fun DrawerItems(
             route = NavigationDrawerRoutes.ANFAENGER,
             onClick = onClickMain,
         )
-        Divider()
+        Divider(
+            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
+            color = MaterialTheme.colorScheme.outline
+        )
         DrawerItem(
             "Infofilmchen",
             Icons.Outlined.Movie, externalLink = false, disabled = true
