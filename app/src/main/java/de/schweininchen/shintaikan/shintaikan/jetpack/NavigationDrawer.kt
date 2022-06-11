@@ -85,7 +85,10 @@ fun drawerContent(
                         .size(120.dp)
                         .padding(top = 8.dp)
                 )
-                Divider(modifier = Modifier.padding(top = 4.dp, bottom = 4.dp))
+                Divider(
+                    modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
+                    color = MaterialTheme.colorScheme.outline
+                )
                 DrawerItems(
                     selectedMain, onClickMain, context, openCustomDialog,
                     openDialog, showDebugInfo, coroutineScope, listState
