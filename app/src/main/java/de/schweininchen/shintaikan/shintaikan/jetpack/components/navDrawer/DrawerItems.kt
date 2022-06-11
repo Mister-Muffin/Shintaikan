@@ -118,7 +118,9 @@ fun DrawerItems(
             onClick = onClickMain,
         )
         Divider(
-            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
+            modifier = Modifier
+                .padding(NavigationDrawerItemDefaults.ItemPadding)
+                .padding(vertical = 4.dp),
             color = MaterialTheme.colorScheme.outline
         )
         DrawerItem(
@@ -133,7 +135,12 @@ fun DrawerItems(
             "Mixfilm 2019",
             Icons.Outlined.Movie, externalLink = false, disabled = true
         ) { }
-        Divider()
+        Divider(
+            modifier = Modifier
+                .padding(NavigationDrawerItemDefaults.ItemPadding)
+                .padding(vertical = 4.dp),
+            color = MaterialTheme.colorScheme.outline
+        )
         DrawerItem(
             "Kontakt und Feedback",
             Icons.Outlined.Mail, externalLink = false, disabled = true
@@ -157,7 +164,12 @@ fun DrawerItems(
         ) {
             openDialog.value = true
         }
-        Divider(modifier = Modifier.padding(bottom = 8.dp))
+        Divider(
+            modifier = Modifier
+                .padding(NavigationDrawerItemDefaults.ItemPadding)
+                .padding(vertical = 4.dp),
+            color = MaterialTheme.colorScheme.outline
+        )
         Image(
             painter = painterResource(id = R.drawable.jetpackcompose_logo),
             contentDescription = "Jetpack Compose logo",
