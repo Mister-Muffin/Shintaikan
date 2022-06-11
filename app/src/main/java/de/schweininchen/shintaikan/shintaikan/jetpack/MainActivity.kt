@@ -8,7 +8,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudOff
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -160,7 +159,6 @@ private fun Bob(
     scope: CoroutineScope, viewModel: MyViewModel,
     drawerState: DrawerState
 ) {
-    rememberScaffoldState()
     val appBarTitle = remember {
         mutableStateOf("Shintaikan")
     }
