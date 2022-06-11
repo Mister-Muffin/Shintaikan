@@ -2,8 +2,6 @@ package de.schweininchen.shintaikan.shintaikan.jetpack.components.navDrawer
 
 import android.content.Context
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
@@ -14,17 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import de.schweininchen.shintaikan.shintaikan.jetpack.NavigationDrawerRoutes
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
-import de.schweininchen.shintaikan.shintaikan.jetpack.customPadding
 import de.schweininchen.shintaikan.shintaikan.jetpack.linkToWebpage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -40,66 +33,33 @@ private fun DrawerItem(
     route: NavigationDrawerRoutes = NavigationDrawerRoutes.NONE,
     onClick: (NavigationDrawerRoutes?) -> Unit
 ) {
-    val color =
-        if (selected == route && !disabled) MaterialTheme.colorScheme.primary else Color(
-            0xFF898989
-        )
-    Row(
+    val disabledColor = MaterialTheme.colorScheme.surfaceVariant
+
+    NavigationDrawerItem(
+        icon = { Icon(icon, contentDescription = null) },
+        label = { Text(name) },
+        selected = selected == route,
+        onClick = {
+            onClick(route)
+        },
+        badge = { if (externalLink) Icon(Icons.Outlined.ExitToApp, contentDescription = null) },
+        colors = if (disabled) NavigationDrawerItemDefaults.colors(
+            unselectedTextColor = disabledColor,
+            unselectedBadgeColor = disabledColor,
+            unselectedIconColor = disabledColor
+        ) else NavigationDrawerItemDefaults.colors(),
         modifier = Modifier
             .padding(NavigationDrawerItemDefaults.ItemPadding)
-            .clip(MaterialTheme.shapes.medium)
-            .clickable(onClick = { onClick(route) })
-            .background(
-                color = if (selected == route) MaterialTheme.colorScheme.primary.copy(
-                    alpha = .15f
-                ) else Color.Transparent
-            )
-            .padding(top = customPadding, bottom = customPadding, start = 12.dp, end = 12.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        if (disabled) {
-            Icon(imageVector = icon, "Drawer item", tint = MaterialTheme.colorScheme.surfaceVariant)
-            Text(
-                modifier = Modifier
-                    .padding(start = 20.dp)
-                    .weight(1f), text = name,
-                style = TextStyle(
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.surfaceVariant
-                )
-            )
-            if (externalLink) {
-                Box(contentAlignment = Alignment.CenterEnd) {
-                    Icon(
-                        imageVector = Icons.Outlined.ExitToApp,
-                        "",
-                        tint = Color(0xFFC9C9C9)
-                    )
-                }
-            }
-        } else {
-            Icon(imageVector = icon, "Drawer item", tint = color)
-            Text(
-                modifier = Modifier
-                    .padding(start = 20.dp)
-                    .weight(1f), text = name,
-                style = TextStyle(
-                    fontWeight = FontWeight.Bold,
-                    color = color
-                )
-            )
-            if (externalLink) {
-                Box(contentAlignment = Alignment.CenterEnd) {
-                    Icon(
-                        imageVector = Icons.Outlined.ExitToApp,
-                        "",
-                        tint = color
-                    )
-                }
-            }
-        }
-    }
-
+        /*.clip(MaterialTheme.shapes.medium)
+        .clickable(onClick = { onClick(route) })
+        .background(
+            color = if (selected == route) MaterialTheme.colorScheme.primary.copy(
+                alpha = .15f
+            ) else Color.Transparent
+        )
+        .padding(top = customPadding, bottom = customPadding, start = 12.dp, end = 12.dp),
+    verticalAlignment = Alignment.CenterVertically*/
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
