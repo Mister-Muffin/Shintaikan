@@ -115,7 +115,8 @@ fun Home(
                     Column(
                         Modifier
                             .padding(8.dp)
-                            .fillMaxWidth()) {
+                            .fillMaxWidth()
+                    ) {
                         Text(
                             style = MaterialTheme.typography.headlineSmall,
                             modifier = Modifier.align(Alignment.CenterHorizontally),
@@ -126,8 +127,7 @@ fun Home(
                         }
                     }
                 }
-            }*/
-            Text("hi")
+            }
         }
         //}
         item {
