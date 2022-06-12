@@ -3,7 +3,6 @@ package de.schweininchen.shintaikan.shintaikan.jetpack.pages
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -22,7 +21,6 @@ import de.schweininchen.shintaikan.shintaikan.jetpack.MyViewModel
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
 import java.time.LocalDate
 import java.time.LocalTime
-import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,23 +38,6 @@ fun Home(
             .fillMaxWidth(),
         state = viewModel.lazyStateStart
     ) {
-        items(10) {
-            Box(
-                modifier = Modifier
-                    .height(100.dp)
-                    .fillMaxWidth()
-                    .background(
-                        Color(
-                            android.graphics.Color.rgb(
-                                Random.nextInt(0, 255),
-                                Random.nextInt(0, 255),
-                                Random.nextInt(0, 255)
-                            )
-                        )
-                    )
-                    .padding(8.dp)
-            )
-        }
         item {
             Text(
                 text = "Karate Club\nShintaikan e.V.",
