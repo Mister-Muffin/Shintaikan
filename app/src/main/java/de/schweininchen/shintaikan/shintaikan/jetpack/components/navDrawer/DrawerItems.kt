@@ -93,7 +93,7 @@ fun DrawerItems(
         )
         DrawerItem(
             "Gürtelprüfungen",
-            Icons.Outlined.NorthEast,
+            Icons.Outlined.SportsMartialArts,
             selected = selectedMain,
             route = NavigationDrawerRoutes.PRUEFUNGEN,
             onClick = onClickMain,
