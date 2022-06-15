@@ -1,6 +1,7 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.components.navDrawer
 
 import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
@@ -16,6 +17,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import de.schweininchen.shintaikan.shintaikan.jetpack.ContactActivity
 import de.schweininchen.shintaikan.shintaikan.jetpack.NavigationDrawerRoutes
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
 import de.schweininchen.shintaikan.shintaikan.jetpack.linkToWebpage
@@ -143,8 +145,15 @@ fun DrawerItems(
         )
         DrawerItem(
             "Kontakt und Feedback",
-            Icons.Outlined.Mail, externalLink = false, disabled = true
-        ) { }
+            Icons.Outlined.Mail, externalLink = false,
+        ) {
+            context.startActivity(
+                Intent(
+                    context,
+                    ContactActivity::class.java
+                )
+            )
+        }
         DrawerItem(
             "Impressum",
             Icons.Outlined.AttachFile, true
