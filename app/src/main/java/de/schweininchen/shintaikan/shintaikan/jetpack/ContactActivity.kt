@@ -1,5 +1,6 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
@@ -9,13 +10,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import com.google.accompanist.insets.ProvideWindowInsets
@@ -79,6 +81,7 @@ fun ContactAppBar(
     Box(
         modifier = Modifier.background(backgroundColors.containerColor(scrollFraction = scrollBehavior.scrollFraction).value)
     ) {
+        val activity = (LocalContext.current as? Activity)
         CenterAlignedTopAppBar(
             modifier = Modifier.statusBarsPadding(),
             scrollBehavior = scrollBehavior,
@@ -90,15 +93,17 @@ fun ContactAppBar(
 
             navigationIcon = {
                 IconButton(onClick = {
-                    scope.launch { }
+                    scope.launch {
+                        activity?.finish() //
+                    }
                 }
                 ) {
-                    Icon(Icons.Filled.ArrowBack, contentDescription = null)
+                    Icon(Icons.Outlined.ArrowBack, contentDescription = null)
                 }
             },
             actions = {
                 IconButton(onClick = { /* doSomething() */ }) {
-                    Icon(Icons.Filled.Send, contentDescription = "Send")
+                    Icon(Icons.Outlined.Send, contentDescription = "Send")
                 }
             }
         )
