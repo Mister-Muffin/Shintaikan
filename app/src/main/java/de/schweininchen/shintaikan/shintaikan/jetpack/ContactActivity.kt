@@ -39,7 +39,6 @@ class ContactActivity : AppCompatActivity() {
                 ShintaikanJetpackTheme {
 
                     val appBarTitle = "Kontakt & Feedback"
-
                     val scrollBehavior =
                         TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarScrollState())
 
