@@ -5,19 +5,23 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Send
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import com.google.accompanist.insets.ProvideWindowInsets
@@ -40,6 +44,9 @@ class ContactActivity : AppCompatActivity() {
 
                 ShintaikanJetpackTheme {
 
+                    val emailText = remember { mutableStateOf("") }
+                    val messageText = remember { mutableStateOf("") }
+
                     val appBarTitle = "Kontakt & Feedback"
                     val scrollBehavior =
                         TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarScrollState())
@@ -57,9 +64,45 @@ class ContactActivity : AppCompatActivity() {
                         Column(
                             modifier = Modifier
                                 .navigationBarsWithImePadding()
-                                .padding(innerPadding),
+                                .padding(innerPadding)
+                                .padding(start = 8.dp, end = 8.dp)
+                                .fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
-
+                            OutlinedTextField(
+                                value = emailText.value,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 8.dp, bottom = 8.dp),
+                                label = { Text("E-Mail") },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Email,
+                                        contentDescription = "Email Icon"
+                                    )
+                                },
+                                isError = !android.util.Patterns.EMAIL_ADDRESS.matcher(emailText.value)
+                                    .matches(),
+                                singleLine = true,
+                                colors = TextFieldDefaults.outlinedTextFieldColors(
+                                    focusedBorderColor = Color(0xff00c600)
+                                ),
+                                onValueChange = { text -> emailText.value = text }
+                            )
+                            OutlinedTextField(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 8.dp, bottom = 8.dp),
+                                value = messageText.value,
+                                label = { Text("Nachricht") },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Edit,
+                                        contentDescription = "Message Icon"
+                                    )
+                                },
+                                onValueChange = { text -> messageText.value = text }
+                            )
                         }
                     }
 
