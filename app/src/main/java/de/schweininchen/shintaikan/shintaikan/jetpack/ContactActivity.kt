@@ -23,12 +23,18 @@ import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
+import com.google.android.gms.tasks.Task
+import com.google.firebase.functions.FirebaseFunctions
+import com.google.firebase.functions.FirebaseFunctionsException
+import com.google.firebase.functions.ktx.functions
+import com.google.firebase.ktx.Firebase
 import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.ShintaikanJetpackTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @ExperimentalMaterial3Api
 class ContactActivity : AppCompatActivity() {
+    private lateinit var functions: FirebaseFunctions
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,13 +47,22 @@ class ContactActivity : AppCompatActivity() {
 
                 ShintaikanJetpackTheme {
 
+                    functions = Firebase.functions("europe-west1")
+
                     val emailText = remember { mutableStateOf("") }
                     val subjectText = remember { mutableStateOf("") }
                     val messageText = remember { mutableStateOf("") }
 
+                    val sendSuccesful = remember { mutableStateOf(false) }
+                    val sendPending = remember { mutableStateOf(false) }
+                    val sendFailed = remember { mutableStateOf(false) }
+                    val sendErrorCode = remember { mutableStateOf("") }
+                    val sendErrorDetails = remember { mutableStateOf("") }
+
                     val appBarTitle = "Kontakt & Feedback"
                     val scrollBehavior =
                         TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarScrollState())
+
 
                     Scaffold(
                         topBar = {
@@ -55,7 +70,24 @@ class ContactActivity : AppCompatActivity() {
                                 appBarTitle,
                                 scope,
                                 scrollBehavior = scrollBehavior
-                            )
+                            ) {
+                                sendPending.value = true
+                                sendSuccesful.value = false
+                                sendFailed.value = false
+                                sendMessage(emailText.value, subjectText.value, messageText.value)
+                                    .addOnCompleteListener { task ->
+                                        sendPending.value = false
+                                        sendSuccesful.value = task.isSuccessful
+                                        if (!task.isSuccessful) {
+                                            sendFailed.value = true
+                                            val e = task.exception
+                                            if (e is FirebaseFunctionsException) {
+                                                sendErrorCode.value = e.code.toString()
+                                                sendErrorDetails.value = e.details.toString()
+                                            }
+                                        }
+                                    }
+                            }
                         },
                         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
                     ) { innerPadding ->
@@ -73,6 +105,7 @@ class ContactActivity : AppCompatActivity() {
                                     .fillMaxWidth()
                                     .padding(top = 8.dp, bottom = 8.dp),
                                 label = { Text("E-Mail") },
+                                enabled = !sendPending.value,
                                 leadingIcon = {
                                     Icon(
                                         imageVector = Icons.Outlined.AlternateEmail,
@@ -93,6 +126,7 @@ class ContactActivity : AppCompatActivity() {
                                     .padding(top = 8.dp, bottom = 8.dp),
                                 value = subjectText.value,
                                 label = { Text("Betreff") },
+                                enabled = !sendPending.value,
                                 leadingIcon = {
                                     Icon(
                                         imageVector = Icons.Outlined.Subject,
@@ -108,6 +142,7 @@ class ContactActivity : AppCompatActivity() {
                                     .padding(top = 8.dp, bottom = 8.dp),
                                 value = messageText.value,
                                 label = { Text("Nachricht") },
+                                enabled = !sendPending.value,
                                 leadingIcon = {
                                     Icon(
                                         imageVector = Icons.Outlined.Edit,
@@ -116,6 +151,22 @@ class ContactActivity : AppCompatActivity() {
                                 },
                                 onValueChange = { text -> messageText.value = text }
                             )
+                            if (sendPending.value && !sendSuccesful.value && !sendFailed.value) { // Message sending
+                                CircularProgressIndicator()
+                            } else if (sendSuccesful.value && !sendFailed.value) { // Message sent successfully
+                                Icon(
+                                    imageVector = Icons.Outlined.Done,
+                                    contentDescription = "Done Icon"
+                                )
+                            } else if (!sendSuccesful.value && sendFailed.value) { // Message send failed
+                                Icon(
+                                    imageVector = Icons.Outlined.ErrorOutline,
+                                    contentDescription = "Error Icon",
+                                    tint = Color.Red,
+                                )
+                                Text(sendErrorCode.value)
+                                Text(sendErrorDetails.value)
+                            }
                         }
                     }
 
@@ -124,44 +175,64 @@ class ContactActivity : AppCompatActivity() {
         }
 
     }
-}
 
-@ExperimentalMaterial3Api
-@Composable
-fun ContactAppBar(
-    appBarTitle: String,
-    scope: CoroutineScope,
-    scrollBehavior: TopAppBarScrollBehavior
-) {
-    val backgroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors()
-    Box(
-        modifier = Modifier.background(backgroundColors.containerColor(scrollFraction = scrollBehavior.scrollFraction).value)
+    private fun sendMessage(email: String, subject: String, message: String): Task<String> {
+        val data = hashMapOf(
+            "email" to email,
+            "subject" to subject,
+            "message" to message
+        )
+
+        return functions
+            .getHttpsCallable("sendEmail")
+            .call(data)
+            .continueWith { task ->
+                // This continuation runs on either success or failure, but if the task
+                // has failed then result will throw an Exception which will be
+                // propagated down.
+                val result = task.result?.data as String
+                result
+            }
+    }
+
+    @ExperimentalMaterial3Api
+    @Composable
+    fun ContactAppBar(
+        appBarTitle: String,
+        scope: CoroutineScope,
+        scrollBehavior: TopAppBarScrollBehavior,
+        send: () -> Unit,
     ) {
-        val activity = (LocalContext.current as? Activity)
-        CenterAlignedTopAppBar(
-            modifier = Modifier.statusBarsPadding(),
-            scrollBehavior = scrollBehavior,
-            title = {
-                Text(
-                    appBarTitle, fontSize = 20.sp //TODO: Make global style?
-                )
-            },
+        val backgroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors()
+        Box(
+            modifier = Modifier.background(backgroundColors.containerColor(scrollFraction = scrollBehavior.scrollFraction).value)
+        ) {
+            val activity = (LocalContext.current as? Activity)
+            CenterAlignedTopAppBar(
+                modifier = Modifier.statusBarsPadding(),
+                scrollBehavior = scrollBehavior,
+                title = {
+                    Text(
+                        appBarTitle, fontSize = 20.sp //TODO: Make global style?
+                    )
+                },
 
-            navigationIcon = {
-                IconButton(onClick = {
-                    scope.launch {
-                        activity?.finish() //
+                navigationIcon = {
+                    IconButton(onClick = {
+                        scope.launch {
+                            activity?.finish() //
+                        }
+                    }
+                    ) {
+                        Icon(Icons.Outlined.ArrowBack, contentDescription = null)
+                    }
+                },
+                actions = {
+                    IconButton(onClick = { send() }) {
+                        Icon(Icons.Outlined.Send, contentDescription = "Send")
                     }
                 }
-                ) {
-                    Icon(Icons.Outlined.ArrowBack, contentDescription = null)
-                }
-            },
-            actions = {
-                IconButton(onClick = { /* doSomething() */ }) {
-                    Icon(Icons.Outlined.Send, contentDescription = "Send")
-                }
-            }
-        )
+            )
+        }
     }
 }
