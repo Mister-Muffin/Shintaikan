@@ -99,6 +99,7 @@ class ContactActivity : AppCompatActivity() {
                                         contentDescription = "Subject Icon"
                                     )
                                 },
+                                singleLine = true,
                                 onValueChange = { text -> subjectText.value = text }
                             )
                             OutlinedTextField(
