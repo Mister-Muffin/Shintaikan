@@ -159,7 +159,7 @@ fun Home(
 @Composable
 fun Html(text: String) {
     Text(
-        HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY).toString(),
+        HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY).toString().trim(),
         style = MaterialTheme.typography.bodyMedium
     )
 }
