@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.*
-import androidx.compose.material3.MenuDefaults.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -79,11 +78,7 @@ fun drawerContent(
                         .align(Alignment.CenterHorizontally)
                         .fillMaxWidth()
                         .size(120.dp)
-                        .padding(top = 8.dp)
-                )
-                Divider(
-                    modifier = Modifier.padding(vertical = 4.dp),
-                    color = MaterialTheme.colorScheme.outline
+                        .padding(top = 8.dp, bottom = 8.dp)
                 )
                 DrawerItems(
                     selectedMain, onClickMain, context, openCustomDialog,
