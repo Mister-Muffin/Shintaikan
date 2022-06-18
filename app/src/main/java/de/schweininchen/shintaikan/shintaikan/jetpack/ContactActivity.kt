@@ -1,6 +1,10 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack
 
 import android.app.Activity
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.Network
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
@@ -59,9 +63,15 @@ class ContactActivity : AppCompatActivity() {
                     val sendErrorCode = remember { mutableStateOf("") }
                     val sendErrorDetails = remember { mutableStateOf("") }
 
+                    val networkConnected = remember { mutableStateOf(true) }
+
                     val appBarTitle = "Kontakt & Feedback"
                     val scrollBehavior =
                         TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarScrollState())
+
+                    abc(LocalContext.current) { isConnected ->
+                        networkConnected.value = isConnected
+                    }
 
 
                     Scaffold(
@@ -69,7 +79,8 @@ class ContactActivity : AppCompatActivity() {
                             ContactAppBar(
                                 appBarTitle,
                                 scope,
-                                scrollBehavior = scrollBehavior
+                                scrollBehavior = scrollBehavior,
+                                networkConnected = networkConnected.value
                             ) {
                                 sendPending.value = true
                                 sendSuccesful.value = false
@@ -129,7 +140,7 @@ class ContactActivity : AppCompatActivity() {
                                 enabled = !sendPending.value,
                                 leadingIcon = {
                                     Icon(
-                                        imageVector = Icons.Outlined.Subject,
+                                        imageVector = Icons.Outlined.Title,
                                         contentDescription = "Subject Icon"
                                     )
                                 },
@@ -156,13 +167,17 @@ class ContactActivity : AppCompatActivity() {
                             } else if (sendSuccesful.value && !sendFailed.value) { // Message sent successfully
                                 Icon(
                                     imageVector = Icons.Outlined.Done,
-                                    contentDescription = "Done Icon"
+                                    contentDescription = "Done Icon",
+                                    tint = Color.Green,
+                                    modifier = Modifier.size(50.dp)
                                 )
+                                Text("Die Nachicht wurde erfolgreich versendet!")
                             } else if (!sendSuccesful.value && sendFailed.value) { // Message send failed
                                 Icon(
                                     imageVector = Icons.Outlined.ErrorOutline,
                                     contentDescription = "Error Icon",
                                     tint = Color.Red,
+                                    modifier = Modifier.size(50.dp)
                                 )
                                 Text(sendErrorCode.value)
                                 Text(sendErrorDetails.value)
@@ -180,7 +195,8 @@ class ContactActivity : AppCompatActivity() {
         val data = hashMapOf(
             "email" to email,
             "subject" to subject,
-            "message" to message
+            "message" to message,
+            "debug" to true
         )
 
         return functions
@@ -190,10 +206,40 @@ class ContactActivity : AppCompatActivity() {
                 // This continuation runs on either success or failure, but if the task
                 // has failed then result will throw an Exception which will be
                 // propagated down.
-                val result = task.result?.data as String
+                val result = task.result?.data.toString()
                 result
             }
     }
+
+    private fun abc(context: Context, updateNetworkStatus: (Boolean) -> Unit) {
+
+        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            cm.registerDefaultNetworkCallback(
+                mNetworkCallback(
+                    updateNetworkStatus
+                )
+            )
+            updateNetworkStatus(cm.activeNetwork !== null)
+        }
+
+    }
+
+    private fun mNetworkCallback(
+        updateNetworkStatus: (Boolean) -> Unit
+    ): ConnectivityManager.NetworkCallback {
+        return object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                updateNetworkStatus(true)
+            }
+
+            override fun onLost(network: Network) {
+                updateNetworkStatus(false)
+            }
+        }
+    }
+
 
     @ExperimentalMaterial3Api
     @Composable
@@ -201,6 +247,7 @@ class ContactActivity : AppCompatActivity() {
         appBarTitle: String,
         scope: CoroutineScope,
         scrollBehavior: TopAppBarScrollBehavior,
+        networkConnected: Boolean,
         send: () -> Unit,
     ) {
         val backgroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors()
@@ -228,7 +275,7 @@ class ContactActivity : AppCompatActivity() {
                     }
                 },
                 actions = {
-                    IconButton(onClick = { send() }) {
+                    IconButton(onClick = { send() }, enabled = networkConnected) {
                         Icon(Icons.Outlined.Send, contentDescription = "Send")
                     }
                 }
