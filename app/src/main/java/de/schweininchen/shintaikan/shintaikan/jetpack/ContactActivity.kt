@@ -13,10 +13,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -53,24 +50,24 @@ class ContactActivity : AppCompatActivity() {
 
                     functions = Firebase.functions("europe-west1")
 
-                    val emailText = remember { mutableStateOf("") }
-                    val subjectText = remember { mutableStateOf("") }
-                    val messageText = remember { mutableStateOf("") }
+                    var emailText by remember { mutableStateOf("") }
+                    var subjectText by remember { mutableStateOf("") }
+                    var messageText by remember { mutableStateOf("") }
 
-                    val sendSuccesful = remember { mutableStateOf(false) }
-                    val sendPending = remember { mutableStateOf(false) }
-                    val sendFailed = remember { mutableStateOf(false) }
-                    val sendErrorCode = remember { mutableStateOf("") }
-                    val sendErrorDetails = remember { mutableStateOf("") }
+                    var sendSuccesful by remember { mutableStateOf(false) }
+                    var sendPending by remember { mutableStateOf(false) }
+                    var sendFailed by remember { mutableStateOf(false) }
+                    var sendErrorCode by remember { mutableStateOf("") }
+                    var sendErrorDetails by remember { mutableStateOf("") }
 
-                    val networkConnected = remember { mutableStateOf(true) }
+                    var networkConnected by remember { mutableStateOf(true) }
 
                     val appBarTitle = "Kontakt & Feedback"
                     val scrollBehavior =
                         TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarScrollState())
 
                     abc(LocalContext.current) { isConnected ->
-                        networkConnected.value = isConnected
+                        networkConnected = isConnected
                     }
 
 
@@ -80,21 +77,21 @@ class ContactActivity : AppCompatActivity() {
                                 appBarTitle,
                                 scope,
                                 scrollBehavior = scrollBehavior,
-                                networkConnected = networkConnected.value
+                                networkConnected = networkConnected
                             ) {
-                                sendPending.value = true
-                                sendSuccesful.value = false
-                                sendFailed.value = false
-                                sendMessage(emailText.value, subjectText.value, messageText.value)
+                                sendPending = true
+                                sendSuccesful = false
+                                sendFailed = false
+                                sendMessage(emailText, subjectText, messageText)
                                     .addOnCompleteListener { task ->
-                                        sendPending.value = false
-                                        sendSuccesful.value = task.isSuccessful
+                                        sendPending = false
+                                        sendSuccesful = task.isSuccessful
                                         if (!task.isSuccessful) {
-                                            sendFailed.value = true
+                                            sendFailed = true
                                             val e = task.exception
                                             if (e is FirebaseFunctionsException) {
-                                                sendErrorCode.value = e.code.toString()
-                                                sendErrorDetails.value = e.details.toString()
+                                                sendErrorCode = e.code.toString()
+                                                sendErrorDetails = e.details.toString()
                                             }
                                         }
                                     }
@@ -111,33 +108,33 @@ class ContactActivity : AppCompatActivity() {
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             OutlinedTextField(
-                                value = emailText.value,
+                                value = emailText,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(top = 8.dp, bottom = 8.dp),
                                 label = { Text("E-Mail") },
-                                enabled = !sendPending.value,
+                                enabled = !sendPending,
                                 leadingIcon = {
                                     Icon(
                                         imageVector = Icons.Outlined.AlternateEmail,
                                         contentDescription = "Email Icon"
                                     )
                                 },
-                                isError = !android.util.Patterns.EMAIL_ADDRESS.matcher(emailText.value)
+                                isError = !android.util.Patterns.EMAIL_ADDRESS.matcher(emailText)
                                     .matches(),
                                 singleLine = true,
                                 colors = TextFieldDefaults.outlinedTextFieldColors(
                                     focusedBorderColor = Color(0xff00c600)
                                 ),
-                                onValueChange = { text -> emailText.value = text }
+                                onValueChange = { text -> emailText = text }
                             )
                             OutlinedTextField(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(top = 8.dp, bottom = 8.dp),
-                                value = subjectText.value,
+                                value = subjectText,
                                 label = { Text("Betreff") },
-                                enabled = !sendPending.value,
+                                enabled = !sendPending,
                                 leadingIcon = {
                                     Icon(
                                         imageVector = Icons.Outlined.Title,
@@ -145,26 +142,26 @@ class ContactActivity : AppCompatActivity() {
                                     )
                                 },
                                 singleLine = true,
-                                onValueChange = { text -> subjectText.value = text }
+                                onValueChange = { text -> subjectText = text }
                             )
                             OutlinedTextField(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(top = 8.dp, bottom = 8.dp),
-                                value = messageText.value,
+                                value = messageText,
                                 label = { Text("Nachricht") },
-                                enabled = !sendPending.value,
+                                enabled = !sendPending,
                                 leadingIcon = {
                                     Icon(
                                         imageVector = Icons.Outlined.Edit,
                                         contentDescription = "Message Icon"
                                     )
                                 },
-                                onValueChange = { text -> messageText.value = text }
+                                onValueChange = { text -> messageText = text }
                             )
-                            if (sendPending.value && !sendSuccesful.value && !sendFailed.value) { // Message sending
+                            if (sendPending && !sendSuccesful && !sendFailed) { // Message sending
                                 CircularProgressIndicator()
-                            } else if (sendSuccesful.value && !sendFailed.value) { // Message sent successfully
+                            } else if (sendSuccesful && !sendFailed) { // Message sent successfully
                                 Icon(
                                     imageVector = Icons.Outlined.Done,
                                     contentDescription = "Done Icon",
@@ -172,15 +169,15 @@ class ContactActivity : AppCompatActivity() {
                                     modifier = Modifier.size(50.dp)
                                 )
                                 Text("Die Nachicht wurde erfolgreich versendet!")
-                            } else if (!sendSuccesful.value && sendFailed.value) { // Message send failed
+                            } else if (!sendSuccesful && sendFailed) { // Message send failed
                                 Icon(
                                     imageVector = Icons.Outlined.ErrorOutline,
                                     contentDescription = "Error Icon",
                                     tint = Color.Red,
                                     modifier = Modifier.size(50.dp)
                                 )
-                                Text(sendErrorCode.value)
-                                Text(sendErrorDetails.value)
+                                Text(sendErrorCode)
+                                Text(sendErrorDetails)
                             }
                         }
                     }
