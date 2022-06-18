@@ -193,7 +193,7 @@ class ContactActivity : AppCompatActivity() {
             "email" to email,
             "subject" to subject,
             "message" to message,
-            "debug" to true
+            "debug" to (BuildConfig.BUILD_TYPE == "debug")
         )
 
         return functions
