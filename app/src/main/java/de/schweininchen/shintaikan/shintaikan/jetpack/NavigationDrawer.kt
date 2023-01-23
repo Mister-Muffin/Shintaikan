@@ -43,56 +43,54 @@ fun drawerContent(
     vm: MyViewModel,
     selectedMain: NavigationDrawerRoutes,
     onClickMain: (NavigationDrawerRoutes?) -> Unit
-): @Composable (ColumnScope.() -> Unit) =
-    {
-        val context = LocalContext.current
+) {
+    val context = LocalContext.current
 
-        val showDebugInfo = remember { mutableStateOf(false) }
-        val listState = rememberLazyListState()
-        val coroutineScope = rememberCoroutineScope()
+    val showDebugInfo = remember { mutableStateOf(false) }
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
 
-        val openDialog = remember { mutableStateOf(false) }
-        val openCustomDialog = remember { mutableStateOf(false) }
+    val openDialog = remember { mutableStateOf(false) }
+    val openCustomDialog = remember { mutableStateOf(false) }
 
-        if (openDialog.value) AboutAlertDialog { openDialog.value = false }
-        if (openCustomDialog.value) CustomAlertDialog(
-            title = "Weiteres",
-            text = "Was Rüdiger noch sagen wollte:\nTiefer stehen, schneller schlagen! :)"
-        ) {
-            openCustomDialog.value = false
+    if (openDialog.value) AboutAlertDialog { openDialog.value = false }
+    if (openCustomDialog.value) CustomAlertDialog(
+        title = "Weiteres",
+        text = "Was Rüdiger noch sagen wollte:\nTiefer stehen, schneller schlagen! :)"
+    ) {
+        openCustomDialog.value = false
+    }
+
+    LazyColumn(
+        state = listState,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier
+            .statusBarsPadding()
+            .navigationBarsWithImePadding()
+            .fillMaxWidth()
+    ) {
+        item {
+            Image(
+                painter = painterResource(id = R.drawable.pelli),
+                contentDescription = "Shintaikan logo",
+                Modifier
+                    .fillMaxWidth()
+                    .size(120.dp)
+                    .padding(top = 8.dp, bottom = 8.dp)
+            )
+            DrawerItems(
+                selectedMain, onClickMain, context, openCustomDialog,
+                openDialog, showDebugInfo, coroutineScope, listState
+            )
         }
-
-        LazyColumn(
-            state = listState,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier
-                .statusBarsPadding()
-                .navigationBarsWithImePadding()
-                .fillMaxWidth()
-        ) {
+        if (showDebugInfo.value) {
             item {
-                Image(
-                    painter = painterResource(id = R.drawable.pelli),
-                    contentDescription = "Shintaikan logo",
-                    Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .fillMaxWidth()
-                        .size(120.dp)
-                        .padding(top = 8.dp, bottom = 8.dp)
-                )
-                DrawerItems(
-                    selectedMain, onClickMain, context, openCustomDialog,
-                    openDialog, showDebugInfo, coroutineScope, listState
-                )
-            }
-            if (showDebugInfo.value) {
-                item {
-                    DebugInfo(vm = vm)
-                    Box(modifier = Modifier.size(8.dp))
-                }
+                DebugInfo(vm = vm)
+                Box(modifier = Modifier.size(8.dp))
             }
         }
     }
+}
 
 
 @Composable

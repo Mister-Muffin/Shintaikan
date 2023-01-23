@@ -6,14 +6,13 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.CloudOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
@@ -174,13 +173,17 @@ private fun Bob(
      }
      exoPlayer.stop()*/
 
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarScrollState())
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     ModalNavigationDrawer(
         drawerState = drawerState,
-        drawerContent = drawerContent(viewModel, selectedDrawerItem.value) {
-            onClick(it, scope, drawerState)
-        },
+        drawerContent = {
+            ModalDrawerSheet() {
+                drawerContent(viewModel, selectedDrawerItem.value) {
+                    onClick(it, scope, drawerState)
+                }
+            }
+        }
     ) {
         Scaffold(
             topBar = {
@@ -223,7 +226,7 @@ private fun Bob(
                     horizontalArrangement = Arrangement.Center,
                 ) {
                     Icon(
-                        imageVector = Icons.Outlined.CloudOff,
+                        painterResource(R.drawable.outline_cloud_off_24),
                         tint = Color.White,
                         contentDescription = "Offline icon",
                         modifier = Modifier.padding(end = 8.dp)

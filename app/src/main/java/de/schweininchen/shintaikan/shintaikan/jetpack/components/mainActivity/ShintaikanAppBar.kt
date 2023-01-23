@@ -1,6 +1,5 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
@@ -28,7 +27,7 @@ fun ShintaikanAppBar(
         scrolledContainerColor = Color.Transparent
     )
     Box(
-        modifier = Modifier.background(backgroundColors.containerColor(scrollFraction = scrollBehavior.scrollFraction).value)
+        // TODO: modifier = Modifier.background(backgroundColors.containerColor(scrollFraction = scrollBehavior.scrollFraction).value)
     ) {
         CenterAlignedTopAppBar(
             modifier = Modifier.statusBarsPadding(),

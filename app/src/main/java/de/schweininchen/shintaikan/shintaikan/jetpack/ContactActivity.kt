@@ -8,7 +8,6 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.*
@@ -64,7 +63,7 @@ class ContactActivity : AppCompatActivity() {
 
                     val appBarTitle = "Kontakt & Feedback"
                     val scrollBehavior =
-                        TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarScrollState())
+                        TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
                     abc(LocalContext.current) { isConnected ->
                         networkConnected = isConnected
@@ -249,7 +248,7 @@ class ContactActivity : AppCompatActivity() {
     ) {
         val backgroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors()
         Box(
-            modifier = Modifier.background(backgroundColors.containerColor(scrollFraction = scrollBehavior.scrollFraction).value)
+            // TODO: modifier = Modifier.background(backgroundColors.containerColor(scrollFraction = scrollBehavior.scrollFraction).value)
         ) {
             val activity = (LocalContext.current as? Activity)
             CenterAlignedTopAppBar(
