@@ -6,13 +6,14 @@ import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.CloudOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
@@ -226,7 +227,7 @@ private fun Bob(
                     horizontalArrangement = Arrangement.Center,
                 ) {
                     Icon(
-                        painterResource(R.drawable.outline_cloud_off_24),
+                        Icons.Outlined.CloudOff,
                         tint = Color.White,
                         contentDescription = "Offline icon",
                         modifier = Modifier.padding(end = 8.dp)
