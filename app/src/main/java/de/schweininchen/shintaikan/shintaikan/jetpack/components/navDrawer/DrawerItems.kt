@@ -24,7 +24,6 @@ import de.schweininchen.shintaikan.shintaikan.jetpack.linkToWebpage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DrawerItem(
     name: String,

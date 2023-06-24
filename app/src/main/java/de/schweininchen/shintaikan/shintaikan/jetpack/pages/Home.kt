@@ -22,7 +22,6 @@ import de.schweininchen.shintaikan.shintaikan.jetpack.R
 import java.time.LocalDate
 import java.time.LocalTime
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(
     postsList: List<Array<String>>,
