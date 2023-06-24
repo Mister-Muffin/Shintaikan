@@ -160,13 +160,7 @@ fun CustomAlertDialog(title: String, text: String, onDissmiss: () -> Unit) {
             )
         },
         confirmButton = {
-            TextButton(
-                /*modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),*/
-                onClick = onDissmiss
-
-            ) {
+            TextButton(onClick = onDissmiss) {
                 Text("Ok")
             }
         }
