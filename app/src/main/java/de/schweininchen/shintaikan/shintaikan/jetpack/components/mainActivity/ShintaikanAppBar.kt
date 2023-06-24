@@ -33,9 +33,8 @@ fun ShintaikanAppBar(
         containerColor = Color.Transparent,
         scrolledContainerColor = Color.Transparent
     )
-    Box(
-        // TODO: modifier = Modifier.background(backgroundColors.containerColor(scrollFraction = scrollBehavior.scrollFraction).value)
-    ) {
+    // TODO: modifier = Modifier.background(backgroundColors.containerColor(scrollFraction = scrollBehavior.scrollFraction).value)
+    Box {
         CenterAlignedTopAppBar(
             modifier = Modifier.statusBarsPadding(),
             scrollBehavior = scrollBehavior,

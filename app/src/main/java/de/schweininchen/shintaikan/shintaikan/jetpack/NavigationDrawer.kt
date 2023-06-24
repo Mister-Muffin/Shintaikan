@@ -133,7 +133,7 @@ fun DebugInfo(vm: MyViewModel) {
 
 @Composable
 fun CustomAlertDialog(title: String, text: String, onDissmiss: () -> Unit) {
-    androidx.compose.material3.AlertDialog(
+    AlertDialog(
         onDismissRequest = onDissmiss,
         title = { if (title.isNotEmpty()) Text(text = title) },
         icon = { Icon(imageVector = Icons.Outlined.Info, contentDescription = "Info icon") },
@@ -145,7 +145,7 @@ fun CustomAlertDialog(title: String, text: String, onDissmiss: () -> Unit) {
             )
         },
         confirmButton = {
-            androidx.compose.material3.TextButton(
+            TextButton(
                 /*modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp),*/
@@ -167,7 +167,7 @@ fun AboutAlertDialog(onDissmiss: () -> Unit) {
         containerColor = Color.DarkGray,
     )
 
-    androidx.compose.material3.AlertDialog(
+    AlertDialog(
         onDismissRequest = onDissmiss,
         title = {
             Row {
@@ -187,7 +187,7 @@ fun AboutAlertDialog(onDissmiss: () -> Unit) {
         },
         text = {
             Column {
-                androidx.compose.material3.Button(
+                Button(
                     onClick = {
                         linkToWebpage(
                             "https://github.com/Mister-Muffin/Shintaikan",
@@ -205,7 +205,7 @@ fun AboutAlertDialog(onDissmiss: () -> Unit) {
             }
         },
         dismissButton = {
-            androidx.compose.material3.OutlinedButton(
+            OutlinedButton(
                 onClick = onDissmiss
             ) {
                 Text("Close")
@@ -213,7 +213,7 @@ fun AboutAlertDialog(onDissmiss: () -> Unit) {
 
         },
         confirmButton = {
-            androidx.compose.material3.Button(
+            Button(
                 onClick = {
                     context.startActivity(
                         Intent(

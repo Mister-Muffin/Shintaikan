@@ -273,9 +273,7 @@ class ContactActivity : AppCompatActivity() {
         send: () -> Unit,
     ) {
         val backgroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors()
-        Box(
-            // TODO: modifier = Modifier.background(backgroundColors.containerColor(scrollFraction = scrollBehavior.scrollFraction).value)
-        ) {
+        Box {
             val activity = (LocalContext.current as? Activity)
             CenterAlignedTopAppBar(
                 modifier = Modifier.statusBarsPadding(),
