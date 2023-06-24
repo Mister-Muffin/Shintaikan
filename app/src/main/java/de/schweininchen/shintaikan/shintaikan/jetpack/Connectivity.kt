@@ -5,13 +5,13 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.os.Build
 
-fun abc(context: Context, _viewModel: MyViewModel) {
+fun autoSetConnectionState(context: Context, _viewModel: MyViewModel) {
 
     val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
         cm.registerDefaultNetworkCallback(mNetworkCallback(_viewModel, context = context))
-        _viewModel.isConnected.value = cm.activeNetwork !== null
+        _viewModel.isConnected.value = cm.activeNetwork != null
     }
     
 }

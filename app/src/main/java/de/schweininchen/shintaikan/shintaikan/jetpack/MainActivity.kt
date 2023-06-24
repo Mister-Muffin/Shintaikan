@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 LaunchedEffect(true) {
-                    abc(baseContext, viewModel)
+                    autoSetConnectionState(baseContext, viewModel)
                 }
 
                 if (viewModel.wordpressList.isEmpty()) viewModel.updateHomeData(url, cacheDir)
@@ -101,7 +101,7 @@ class MainActivity : AppCompatActivity() {
                     scope: CoroutineScope,
                     drawerState: DrawerState
                 ) {
-                    if (route !== null) {
+                    if (route != null) {
 
                         changeLazyState(route, viewModel)
 
