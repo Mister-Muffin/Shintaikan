@@ -13,7 +13,7 @@ fun autoSetConnectionState(context: Context, _viewModel: MyViewModel) {
         cm.registerDefaultNetworkCallback(mNetworkCallback(_viewModel, context = context))
         _viewModel.isConnected.value = cm.activeNetwork != null
     }
-    
+
 }
 
 private fun mNetworkCallback(

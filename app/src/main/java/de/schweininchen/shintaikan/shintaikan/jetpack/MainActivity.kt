@@ -144,24 +144,31 @@ class MainActivity : AppCompatActivity() {
             NavigationDrawerRoutes.HOME -> {
                 viewModel.lazyState = viewModel.lazyStateStart
             }
+
             NavigationDrawerRoutes.TRPLAN -> {
                 viewModel.lazyState = viewModel.lazyStateTrplan
             }
+
             NavigationDrawerRoutes.PRUEFUNGEN -> {
                 viewModel.lazyState = viewModel.lazyStatePruef
             }
+
             NavigationDrawerRoutes.NACHSOFE -> {
                 viewModel.lazyState = viewModel.lazyStateSoFe
             }
+
             NavigationDrawerRoutes.CLUBWEG -> {
                 viewModel.lazyState = viewModel.lazyStateClub
             }
+
             NavigationDrawerRoutes.ANFAENGER -> {
                 viewModel.lazyState = viewModel.lazyStateAnf
             }
+
             NavigationDrawerRoutes.COLORS -> {
                 viewModel.lazyState = viewModel.lazyStateColors
             }
+
             else -> {
                 viewModel.lazyState = viewModel.lazyStateStart
             }
