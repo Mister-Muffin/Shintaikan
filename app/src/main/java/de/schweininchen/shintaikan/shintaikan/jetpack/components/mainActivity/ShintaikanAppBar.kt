@@ -52,14 +52,8 @@ fun ShintaikanAppBar(
                     Icon(Icons.Filled.Menu, contentDescription = null)
                 }
             },
-            actions = {
-                /*IconButton(onClick = { *//* doSomething() *//* }) {
-                         Icon(Icons.Filled.Favorite, contentDescription = "Localized description")
-                     }*/
-            },
+            actions = { },
             colors = foregroundColors
-            /* if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) colorBelowS
-             else colorS*/
         )
     }
 }
