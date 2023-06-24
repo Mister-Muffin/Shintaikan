@@ -207,7 +207,7 @@ private fun Bob(
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet {
-                drawerContent(viewModel, selectedDrawerItem.value) {
+                DrawerContent(viewModel, selectedDrawerItem.value) {
                     onClick(it, scope, drawerState)
                 }
             }

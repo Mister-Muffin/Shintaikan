@@ -54,7 +54,7 @@ val customPadding = 12.dp
 
 @ExperimentalMaterial3Api
 @Composable
-fun drawerContent(
+fun DrawerContent(
     vm: MyViewModel,
     selectedMain: NavigationDrawerRoutes,
     onClickMain: (NavigationDrawerRoutes?) -> Unit
