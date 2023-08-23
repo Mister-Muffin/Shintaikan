@@ -190,17 +190,6 @@ private fun Bob(
         mutableStateOf("Shintaikan")
     }
 
-    /*val uri =
-         "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-     val context = LocalContext.current
-
-     if (appBarTitle.value.contains("film")) {
-         exoPlayer.play()
-     } else if (!appBarTitle.value.contains("Film") && exoPlayer.isPlaying) {
-         exoPlayer.stop()
-     }
-     exoPlayer.stop()*/
-
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     ModalNavigationDrawer(
