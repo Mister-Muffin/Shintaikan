@@ -125,17 +125,9 @@ fun DrawerItems(
             color = MaterialTheme.colorScheme.outline
         )
         DrawerItem(
-            "Infofilmchen",
-            Icons.Outlined.Movie, externalLink = false, disabled = true
-        ) { }
-        DrawerItem(
-            "Seefest 2019",
-            Icons.Outlined.Movie, externalLink = false, disabled = true
-        ) { }
-        DrawerItem(
-            "Mixfilm 2019",
-            Icons.Outlined.Movie, externalLink = false, disabled = true
-        ) { }
+            "Filmchen",
+            Icons.Outlined.Movie, externalLink = true,
+        ) { linkToWebpage("https://shintaikan.de/?page_id=235", context = context) }
         Divider(
             modifier = Modifier
                 .padding(NavigationDrawerItemDefaults.ItemPadding)
