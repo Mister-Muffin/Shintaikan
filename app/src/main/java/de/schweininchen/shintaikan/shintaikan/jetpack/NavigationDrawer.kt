@@ -8,13 +8,27 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material3.*
-import androidx.compose.material3.MenuDefaults.Divider
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,64 +54,58 @@ val customPadding = 12.dp
 
 @ExperimentalMaterial3Api
 @Composable
-fun drawerContent(
+fun DrawerContent(
     vm: MyViewModel,
     selectedMain: NavigationDrawerRoutes,
     onClickMain: (NavigationDrawerRoutes?) -> Unit
-): @Composable (ColumnScope.() -> Unit) =
-    {
-        val context = LocalContext.current
+) {
+    val context = LocalContext.current
 
-        val showDebugInfo = remember { mutableStateOf(false) }
-        val listState = rememberLazyListState()
-        val coroutineScope = rememberCoroutineScope()
+    val showDebugInfo = remember { mutableStateOf(false) }
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
 
-        val openDialog = remember { mutableStateOf(false) }
-        val openCustomDialog = remember { mutableStateOf(false) }
+    val openDialog = remember { mutableStateOf(false) }
+    val openCustomDialog = remember { mutableStateOf(false) }
 
-        if (openDialog.value) AboutAlertDialog { openDialog.value = false }
-        if (openCustomDialog.value) CustomAlertDialog(
-            title = "Weiteres",
-            text = "Was Rüdiger noch sagen wollte:\nTiefer stehen, schneller schlagen! :)"
-        ) {
-            openCustomDialog.value = false
+    if (openDialog.value) AboutAlertDialog { openDialog.value = false }
+    if (openCustomDialog.value) CustomAlertDialog(
+        title = "Weiteres",
+        text = "Was Rüdiger noch sagen wollte:\nTiefer stehen, schneller schlagen! :)"
+    ) {
+        openCustomDialog.value = false
+    }
+
+    LazyColumn(
+        state = listState,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier
+            .statusBarsPadding()
+            .navigationBarsWithImePadding()
+            .fillMaxWidth()
+    ) {
+        item {
+            Image(
+                painter = painterResource(id = R.drawable.pelli),
+                contentDescription = "Shintaikan logo",
+                Modifier
+                    .fillMaxWidth()
+                    .size(120.dp)
+                    .padding(top = 8.dp, bottom = 8.dp)
+            )
+            DrawerItems(
+                selectedMain, onClickMain, context, openCustomDialog,
+                openDialog, showDebugInfo, coroutineScope, listState
+            )
         }
-
-        LazyColumn(
-            state = listState,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier
-                .statusBarsPadding()
-                .navigationBarsWithImePadding()
-                .fillMaxWidth()
-        ) {
+        if (showDebugInfo.value) {
             item {
-                Image(
-                    painter = painterResource(id = R.drawable.pelli),
-                    contentDescription = "Shintaikan logo",
-                    Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .fillMaxWidth()
-                        .size(120.dp)
-                        .padding(top = 8.dp)
-                )
-                Divider(
-                    modifier = Modifier.padding(vertical = 4.dp),
-                    color = MaterialTheme.colorScheme.outline
-                )
-                DrawerItems(
-                    selectedMain, onClickMain, context, openCustomDialog,
-                    openDialog, showDebugInfo, coroutineScope, listState
-                )
-            }
-            if (showDebugInfo.value) {
-                item {
-                    DebugInfo(vm = vm)
-                    Box(modifier = Modifier.size(8.dp))
-                }
+                DebugInfo(vm = vm)
+                Box(modifier = Modifier.size(8.dp))
             }
         }
     }
+}
 
 
 @Composable
@@ -140,7 +148,7 @@ fun DebugInfo(vm: MyViewModel) {
 
 @Composable
 fun CustomAlertDialog(title: String, text: String, onDissmiss: () -> Unit) {
-    androidx.compose.material3.AlertDialog(
+    AlertDialog(
         onDismissRequest = onDissmiss,
         title = { if (title.isNotEmpty()) Text(text = title) },
         icon = { Icon(imageVector = Icons.Outlined.Info, contentDescription = "Info icon") },
@@ -152,13 +160,7 @@ fun CustomAlertDialog(title: String, text: String, onDissmiss: () -> Unit) {
             )
         },
         confirmButton = {
-            androidx.compose.material3.TextButton(
-                /*modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),*/
-                onClick = onDissmiss
-
-            ) {
+            TextButton(onClick = onDissmiss) {
                 Text("Ok")
             }
         }
@@ -174,7 +176,7 @@ fun AboutAlertDialog(onDissmiss: () -> Unit) {
         containerColor = Color.DarkGray,
     )
 
-    androidx.compose.material3.AlertDialog(
+    AlertDialog(
         onDismissRequest = onDissmiss,
         title = {
             Row {
@@ -194,7 +196,7 @@ fun AboutAlertDialog(onDissmiss: () -> Unit) {
         },
         text = {
             Column {
-                androidx.compose.material3.Button(
+                Button(
                     onClick = {
                         linkToWebpage(
                             "https://github.com/Mister-Muffin/Shintaikan",
@@ -212,7 +214,7 @@ fun AboutAlertDialog(onDissmiss: () -> Unit) {
             }
         },
         dismissButton = {
-            androidx.compose.material3.OutlinedButton(
+            OutlinedButton(
                 onClick = onDissmiss
             ) {
                 Text("Close")
@@ -220,7 +222,7 @@ fun AboutAlertDialog(onDissmiss: () -> Unit) {
 
         },
         confirmButton = {
-            androidx.compose.material3.Button(
+            Button(
                 onClick = {
                     context.startActivity(
                         Intent(

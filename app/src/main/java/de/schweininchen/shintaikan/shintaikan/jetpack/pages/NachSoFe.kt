@@ -6,8 +6,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,13 +41,19 @@ fun NachSoFe(vm: MyViewModel) {
             Text(text = "Neue Trainingspläne nach den Sommerferien", style = MaterialTheme.typography.headlineMedium)
         }
         item {
-            Text(stringResource(R.string.nach_so_fe_1), style = MaterialTheme.typography.bodyMedium)
+            Text(
+                stringResource(R.string.nach_so_fe_1).trimIndent(),
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
         item {
             Bambus()
         }
         item {
-            Text(stringResource(R.string.nach_so_fe_2), style = MaterialTheme.typography.bodyMedium)
+            Text(
+                stringResource(R.string.nach_so_fe_2).trimIndent(),
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
         item {
             Bambus()

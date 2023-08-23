@@ -1,14 +1,14 @@
 <resources>
     <string name="app_name" translatable="false">Shintaikan</string>
     <string name="nach_so_fe_1">
+        \n
         Normalerweise müssen wir nach den Sommerferien einen neuen Trainingsplan erstellen.\n\n
         Dafür benötigen wir ca. 2 Wochen Zeit.\n\n
         Das bedeutet:\n
-        In der ersten 2 Wochen nach den Sommerferien findet das Training\n
-        für alle zu den gewohnten Zeiten (alter Trainingsplan) statt.\n
-        In diesem Zeitraum erscheint der neue Trainingsplan.\n
+        In den ersten 2 Wochen nach den Sommerferien findet das Training für alle zu den gewohnten Zeiten (alter Trainingsplan) statt.
+        In diesem Zeitraum erscheint der neue Trainingsplan.
         Der neue Trainingsplan gilt ab der 3. Woche nach den Sommerferien!\n
-        Grundsätzlich: Alle fortgeschrittenen Kinder können nach dem Erscheinen des neuen Trainingsplans gerne 2 mal wöchentlich kommen – das gilt auch für diejenigen, die ihre Prüfung verpasst haben oder noch nicht teilnehmen konnten!\n
+        Grundsätzlich: Alle fortgeschrittenen Kinder können nach dem Erscheinen des neuen Trainingsplans gerne 2 mal wöchentlich kommen – das gilt auch für diejenigen, die ihre Prüfung verpasst haben oder noch nicht teilnehmen konnten!
         Alle Karaminis, die eingeschult werden kommen bitte in das Kinder A Training, Karaminis, die schulisch eingeschult werden könnten aber zurückgestellt werden besprechen bitte mit dem Trainer welches Training besucht werden soll/kann.
     </string>
     <string name="nach_so_fe_2">

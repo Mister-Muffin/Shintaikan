@@ -5,11 +5,31 @@ import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudOff
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.rememberTopAppBarState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -52,7 +72,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 LaunchedEffect(true) {
-                    abc(baseContext, viewModel)
+                    autoSetConnectionState(baseContext, viewModel)
                 }
 
                 if (viewModel.wordpressList.isEmpty()) viewModel.updateHomeData(url, cacheDir)
@@ -81,7 +101,7 @@ class MainActivity : AppCompatActivity() {
                     scope: CoroutineScope,
                     drawerState: DrawerState
                 ) {
-                    if (route !== null) {
+                    if (route != null) {
 
                         changeLazyState(route, viewModel)
 
@@ -124,24 +144,31 @@ class MainActivity : AppCompatActivity() {
             NavigationDrawerRoutes.HOME -> {
                 viewModel.lazyState = viewModel.lazyStateStart
             }
+
             NavigationDrawerRoutes.TRPLAN -> {
                 viewModel.lazyState = viewModel.lazyStateTrplan
             }
+
             NavigationDrawerRoutes.PRUEFUNGEN -> {
                 viewModel.lazyState = viewModel.lazyStatePruef
             }
+
             NavigationDrawerRoutes.NACHSOFE -> {
                 viewModel.lazyState = viewModel.lazyStateSoFe
             }
+
             NavigationDrawerRoutes.CLUBWEG -> {
                 viewModel.lazyState = viewModel.lazyStateClub
             }
+
             NavigationDrawerRoutes.ANFAENGER -> {
                 viewModel.lazyState = viewModel.lazyStateAnf
             }
+
             NavigationDrawerRoutes.COLORS -> {
                 viewModel.lazyState = viewModel.lazyStateColors
             }
+
             else -> {
                 viewModel.lazyState = viewModel.lazyStateStart
             }
@@ -163,24 +190,17 @@ private fun Bob(
         mutableStateOf("Shintaikan")
     }
 
-    /*val uri =
-         "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-     val context = LocalContext.current
-
-     if (appBarTitle.value.contains("film")) {
-         exoPlayer.play()
-     } else if (!appBarTitle.value.contains("Film") && exoPlayer.isPlaying) {
-         exoPlayer.stop()
-     }
-     exoPlayer.stop()*/
-
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarScrollState())
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
     ModalNavigationDrawer(
         drawerState = drawerState,
-        drawerContent = drawerContent(viewModel, selectedDrawerItem.value) {
-            onClick(it, scope, drawerState)
-        },
+        drawerContent = {
+            ModalDrawerSheet {
+                DrawerContent(viewModel, selectedDrawerItem.value) {
+                    onClick(it, scope, drawerState)
+                }
+            }
+        }
     ) {
         Scaffold(
             topBar = {
@@ -223,7 +243,7 @@ private fun Bob(
                     horizontalArrangement = Arrangement.Center,
                 ) {
                     Icon(
-                        imageVector = Icons.Outlined.CloudOff,
+                        Icons.Outlined.CloudOff,
                         tint = Color.White,
                         contentDescription = "Offline icon",
                         modifier = Modifier.padding(end = 8.dp)

@@ -1,11 +1,17 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.*
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
@@ -27,9 +33,8 @@ fun ShintaikanAppBar(
         containerColor = Color.Transparent,
         scrolledContainerColor = Color.Transparent
     )
-    Box(
-        modifier = Modifier.background(backgroundColors.containerColor(scrollFraction = scrollBehavior.scrollFraction).value)
-    ) {
+    // TODO: modifier = Modifier.background(backgroundColors.containerColor(scrollFraction = scrollBehavior.scrollFraction).value)
+    Box {
         CenterAlignedTopAppBar(
             modifier = Modifier.statusBarsPadding(),
             scrollBehavior = scrollBehavior,
@@ -47,16 +52,8 @@ fun ShintaikanAppBar(
                     Icon(Icons.Filled.Menu, contentDescription = null)
                 }
             },
-            actions = {
-                /*IconButton(onClick = { *//* doSomething() *//* }) {
-                         Icon(Icons.Filled.Favorite, contentDescription = "Localized description")
-                     }*/
-            },
+            actions = { },
             colors = foregroundColors
-            /* if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) colorBelowS
-             else colorS*/
         )
     }
 }
-
-fun Float.clamp(min: Float, max: Float): Float = Math.max(min, Math.min(max, this))

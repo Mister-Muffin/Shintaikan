@@ -22,7 +22,6 @@ import de.schweininchen.shintaikan.shintaikan.jetpack.R
 import java.time.LocalDate
 import java.time.LocalTime
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Home(
     postsList: List<Array<String>>,
@@ -159,7 +158,7 @@ fun Home(
 @Composable
 fun Html(text: String) {
     Text(
-        HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY).toString(),
+        HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY).toString().trim(),
         style = MaterialTheme.typography.bodyMedium
     )
 }

@@ -1,6 +1,7 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.components.navDrawer
 
 import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
@@ -16,13 +17,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import de.schweininchen.shintaikan.shintaikan.jetpack.ContactActivity
 import de.schweininchen.shintaikan.shintaikan.jetpack.NavigationDrawerRoutes
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
 import de.schweininchen.shintaikan.shintaikan.jetpack.linkToWebpage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DrawerItem(
     name: String,
@@ -91,7 +92,7 @@ fun DrawerItems(
         )
         DrawerItem(
             "Gürtelprüfungen",
-            Icons.Outlined.NorthEast,
+            Icons.Outlined.SportsMartialArts,
             selected = selectedMain,
             route = NavigationDrawerRoutes.PRUEFUNGEN,
             onClick = onClickMain,
@@ -124,17 +125,9 @@ fun DrawerItems(
             color = MaterialTheme.colorScheme.outline
         )
         DrawerItem(
-            "Infofilmchen",
-            Icons.Outlined.Movie, externalLink = false, disabled = true
-        ) { }
-        DrawerItem(
-            "Seefest 2019",
-            Icons.Outlined.Movie, externalLink = false, disabled = true
-        ) { }
-        DrawerItem(
-            "Mixfilm 2019",
-            Icons.Outlined.Movie, externalLink = false, disabled = true
-        ) { }
+            "Filmchen",
+            Icons.Outlined.Movie, externalLink = true,
+        ) { linkToWebpage("https://shintaikan.de/?page_id=235", context = context) }
         Divider(
             modifier = Modifier
                 .padding(NavigationDrawerItemDefaults.ItemPadding)
@@ -143,8 +136,15 @@ fun DrawerItems(
         )
         DrawerItem(
             "Kontakt und Feedback",
-            Icons.Outlined.Mail, externalLink = false, disabled = true
-        ) { }
+            Icons.Outlined.Mail, externalLink = false,
+        ) {
+            context.startActivity(
+                Intent(
+                    context,
+                    ContactActivity::class.java
+                )
+            )
+        }
         DrawerItem(
             "Impressum",
             Icons.Outlined.AttachFile, true
