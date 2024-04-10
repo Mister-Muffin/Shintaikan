@@ -6,6 +6,7 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.os.Build
 import android.os.Bundle
+import android.util.Patterns
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
@@ -35,6 +36,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -70,6 +72,8 @@ class ContactActivity : AppCompatActivity() {
 
         setContent {
             ProvideWindowInsets(consumeWindowInsets = false) {
+                val context = LocalContext.current
+
                 val scope = rememberCoroutineScope()
 
                 functions = Firebase.functions("europe-west1")
@@ -90,8 +94,10 @@ class ContactActivity : AppCompatActivity() {
                 val scrollBehavior =
                     TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
-                abc(LocalContext.current) { isConnected ->
-                    networkConnected = isConnected
+                LaunchedEffect(true) {
+                    autoSetNetworkState(context) { isConnected ->
+                        networkConnected = isConnected
+                    }
                 }
 
                 ShintaikanJetpackTheme {
@@ -144,7 +150,7 @@ class ContactActivity : AppCompatActivity() {
                                         contentDescription = "Email Icon"
                                     )
                                 },
-                                isError = !android.util.Patterns.EMAIL_ADDRESS.matcher(emailText)
+                                isError = !Patterns.EMAIL_ADDRESS.matcher(emailText)
                                     .matches(),
                                 singleLine = true,
                                 colors = OutlinedTextFieldDefaults.colors(
@@ -232,8 +238,7 @@ class ContactActivity : AppCompatActivity() {
             }
     }
 
-    private fun abc(context: Context, updateNetworkStatus: (Boolean) -> Unit) {
-
+    private fun autoSetNetworkState(context: Context, updateNetworkStatus: (Boolean) -> Unit) {
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
