@@ -16,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -39,9 +38,7 @@ fun ShintaikanAppBar(
             modifier = Modifier.statusBarsPadding(),
             scrollBehavior = scrollBehavior,
             title = {
-                Text(
-                    appBarTitle.value, fontSize = 20.sp
-                )
+                Text(appBarTitle.value)
             },
 
             navigationIcon = {

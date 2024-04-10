@@ -16,12 +16,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.Send
 import androidx.compose.material.icons.outlined.AlternateEmail
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.ErrorOutline
-import androidx.compose.material.icons.outlined.Send
 import androidx.compose.material.icons.outlined.Title
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
@@ -48,7 +48,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import com.google.accompanist.insets.ProvideWindowInsets
 import com.google.accompanist.insets.navigationBarsWithImePadding
@@ -61,10 +60,10 @@ import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.ShintaikanJetpack
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+const val appBarTitle = "Kontakt & Feedback"
+
 @ExperimentalMaterial3Api
 class ContactActivity : AppCompatActivity() {
-    private lateinit var functions: FirebaseFunctions
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -76,7 +75,7 @@ class ContactActivity : AppCompatActivity() {
 
                 val scope = rememberCoroutineScope()
 
-                functions = Firebase.functions("europe-west1")
+                val functions = Firebase.functions("europe-west1")
 
                 var emailText by remember { mutableStateOf("") }
                 var subjectText by remember { mutableStateOf("") }
@@ -90,7 +89,6 @@ class ContactActivity : AppCompatActivity() {
 
                 var networkConnected by remember { mutableStateOf(true) }
 
-                val appBarTitle = "Kontakt & Feedback"
                 val scrollBehavior =
                     TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
@@ -104,7 +102,6 @@ class ContactActivity : AppCompatActivity() {
                     Scaffold(
                         topBar = {
                             ContactAppBar(
-                                appBarTitle,
                                 scope,
                                 scrollBehavior = scrollBehavior,
                                 networkConnected = networkConnected
@@ -112,7 +109,7 @@ class ContactActivity : AppCompatActivity() {
                                 sendPending = true
                                 sendSuccesful = false
                                 sendFailed = false
-                                sendMessage(emailText, subjectText, messageText)
+                                sendMessage(emailText, subjectText, messageText, functions)
                                     .addOnCompleteListener { task ->
                                         sendPending = false
                                         sendSuccesful = task.isSuccessful
@@ -218,7 +215,12 @@ class ContactActivity : AppCompatActivity() {
 
     }
 
-    private fun sendMessage(email: String, subject: String, message: String): Task<String> {
+    private fun sendMessage(
+        email: String,
+        subject: String,
+        message: String,
+        functions: FirebaseFunctions
+    ): Task<String> {
         val data = hashMapOf(
             "email" to email,
             "subject" to subject,
@@ -270,24 +272,19 @@ class ContactActivity : AppCompatActivity() {
     @ExperimentalMaterial3Api
     @Composable
     fun ContactAppBar(
-        appBarTitle: String,
         scope: CoroutineScope,
         scrollBehavior: TopAppBarScrollBehavior,
         networkConnected: Boolean,
         send: () -> Unit,
     ) {
-        val backgroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors()
         Box {
             val activity = (LocalContext.current as? Activity)
             CenterAlignedTopAppBar(
                 modifier = Modifier.statusBarsPadding(),
                 scrollBehavior = scrollBehavior,
                 title = {
-                    Text(
-                        appBarTitle, fontSize = 20.sp //TODO: Make global style?
-                    )
+                    Text(appBarTitle)
                 },
-
                 navigationIcon = {
                     IconButton(onClick = {
                         scope.launch {
@@ -295,12 +292,12 @@ class ContactActivity : AppCompatActivity() {
                         }
                     }
                     ) {
-                        Icon(Icons.Outlined.ArrowBack, contentDescription = null)
+                        Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
                     }
                 },
                 actions = {
                     IconButton(onClick = { send() }, enabled = networkConnected) {
-                        Icon(Icons.Outlined.Send, contentDescription = "Send")
+                        Icon(Icons.AutoMirrored.Outlined.Send, contentDescription = "Send")
                     }
                 }
             )
