@@ -1,20 +1,42 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.components.navDrawer
 
-import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.*
-import androidx.compose.material3.*
+import androidx.compose.material.icons.automirrored.outlined.DirectionsWalk
+import androidx.compose.material.icons.automirrored.outlined.ExitToApp
+import androidx.compose.material.icons.outlined.AttachFile
+import androidx.compose.material.icons.outlined.DateRange
+import androidx.compose.material.icons.outlined.Face
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.Mail
+import androidx.compose.material.icons.outlined.Movie
+import androidx.compose.material.icons.outlined.SportsMartialArts
+import androidx.compose.material.icons.outlined.WbSunny
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.NavigationDrawerItemDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import de.schweininchen.shintaikan.shintaikan.jetpack.ContactActivity
@@ -40,26 +62,19 @@ private fun DrawerItem(
         icon = { Icon(icon, contentDescription = null) },
         label = { Text(name) },
         selected = selected == route,
-        onClick = {
-            onClick(route)
+        onClick = { onClick(route) },
+        badge = {
+            if (externalLink) Icon(
+                Icons.AutoMirrored.Outlined.ExitToApp,
+                contentDescription = null
+            )
         },
-        badge = { if (externalLink) Icon(Icons.Outlined.ExitToApp, contentDescription = null) },
         colors = if (disabled) NavigationDrawerItemDefaults.colors(
             unselectedTextColor = disabledColor,
             unselectedBadgeColor = disabledColor,
             unselectedIconColor = disabledColor
         ) else NavigationDrawerItemDefaults.colors(),
-        modifier = Modifier
-            .padding(NavigationDrawerItemDefaults.ItemPadding)
-        /*.clip(MaterialTheme.shapes.medium)
-        .clickable(onClick = { onClick(route) })
-        .background(
-            color = if (selected == route) MaterialTheme.colorScheme.primary.copy(
-                alpha = .15f
-            ) else Color.Transparent
-        )
-        .padding(top = customPadding, bottom = customPadding, start = 12.dp, end = 12.dp),
-    verticalAlignment = Alignment.CenterVertically*/
+        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
     )
 }
 
@@ -68,13 +83,13 @@ private fun DrawerItem(
 fun DrawerItems(
     selectedMain: NavigationDrawerRoutes,
     onClickMain: (NavigationDrawerRoutes?) -> Unit,
-    context: Context,
     openCustomDialog: MutableState<Boolean>,
     openDialog: MutableState<Boolean>,
     showDebugInfo: MutableState<Boolean>,
     coroutineScope: CoroutineScope,
     listState: LazyListState
 ) {
+    val context = LocalContext.current
     Column {
         DrawerItem(
             "Start",
@@ -113,12 +128,12 @@ fun DrawerItems(
         )
         DrawerItem(
             "Anfänger / Interressenten",
-            Icons.Outlined.DirectionsWalk,
+            Icons.AutoMirrored.Outlined.DirectionsWalk,
             selected = selectedMain,
             route = NavigationDrawerRoutes.ANFAENGER,
             onClick = onClickMain,
         )
-        Divider(
+        HorizontalDivider(
             modifier = Modifier
                 .padding(NavigationDrawerItemDefaults.ItemPadding)
                 .padding(vertical = 4.dp),
@@ -128,7 +143,7 @@ fun DrawerItems(
             "Filmchen",
             Icons.Outlined.Movie, externalLink = true,
         ) { linkToWebpage("https://shintaikan.de/?page_id=235", context = context) }
-        Divider(
+        HorizontalDivider(
             modifier = Modifier
                 .padding(NavigationDrawerItemDefaults.ItemPadding)
                 .padding(vertical = 4.dp),
@@ -138,12 +153,7 @@ fun DrawerItems(
             "Kontakt und Feedback",
             Icons.Outlined.Mail, externalLink = false,
         ) {
-            context.startActivity(
-                Intent(
-                    context,
-                    ContactActivity::class.java
-                )
-            )
+            Intent(context, ContactActivity::class.java).also { context.startActivity(it) }
         }
         DrawerItem(
             "Impressum",
@@ -164,7 +174,7 @@ fun DrawerItems(
         ) {
             openDialog.value = true
         }
-        Divider(
+        HorizontalDivider(
             modifier = Modifier
                 .padding(NavigationDrawerItemDefaults.ItemPadding)
                 .padding(vertical = 4.dp),

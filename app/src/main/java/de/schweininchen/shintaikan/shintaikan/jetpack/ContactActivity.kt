@@ -72,30 +72,29 @@ class ContactActivity : AppCompatActivity() {
             ProvideWindowInsets(consumeWindowInsets = false) {
                 val scope = rememberCoroutineScope()
 
+                functions = Firebase.functions("europe-west1")
+
+                var emailText by remember { mutableStateOf("") }
+                var subjectText by remember { mutableStateOf("") }
+                var messageText by remember { mutableStateOf("") }
+
+                var sendSuccesful by remember { mutableStateOf(false) }
+                var sendPending by remember { mutableStateOf(false) }
+                var sendFailed by remember { mutableStateOf(false) }
+                var sendErrorCode by remember { mutableStateOf("") }
+                var sendErrorDetails by remember { mutableStateOf("") }
+
+                var networkConnected by remember { mutableStateOf(true) }
+
+                val appBarTitle = "Kontakt & Feedback"
+                val scrollBehavior =
+                    TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+
+                abc(LocalContext.current) { isConnected ->
+                    networkConnected = isConnected
+                }
+
                 ShintaikanJetpackTheme {
-
-                    functions = Firebase.functions("europe-west1")
-
-                    var emailText by remember { mutableStateOf("") }
-                    var subjectText by remember { mutableStateOf("") }
-                    var messageText by remember { mutableStateOf("") }
-
-                    var sendSuccesful by remember { mutableStateOf(false) }
-                    var sendPending by remember { mutableStateOf(false) }
-                    var sendFailed by remember { mutableStateOf(false) }
-                    var sendErrorCode by remember { mutableStateOf("") }
-                    var sendErrorDetails by remember { mutableStateOf("") }
-
-                    var networkConnected by remember { mutableStateOf(true) }
-
-                    val appBarTitle = "Kontakt & Feedback"
-                    val scrollBehavior =
-                        TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
-
-                    abc(LocalContext.current) { isConnected ->
-                        networkConnected = isConnected
-                    }
-
                     Scaffold(
                         topBar = {
                             ContactAppBar(

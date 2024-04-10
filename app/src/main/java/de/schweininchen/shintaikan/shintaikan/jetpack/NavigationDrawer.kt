@@ -50,17 +50,13 @@ import com.google.accompanist.insets.statusBarsPadding
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import de.schweininchen.shintaikan.shintaikan.jetpack.components.navDrawer.DrawerItems
 
-val customPadding = 12.dp
-
 @ExperimentalMaterial3Api
 @Composable
 fun DrawerContent(
     vm: MyViewModel,
     selectedMain: NavigationDrawerRoutes,
-    onClickMain: (NavigationDrawerRoutes?) -> Unit
+    onClickMain: (NavigationDrawerRoutes?) -> Unit,
 ) {
-    val context = LocalContext.current
-
     val showDebugInfo = remember { mutableStateOf(false) }
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -94,7 +90,7 @@ fun DrawerContent(
                     .padding(top = 8.dp, bottom = 8.dp)
             )
             DrawerItems(
-                selectedMain, onClickMain, context, openCustomDialog,
+                selectedMain, onClickMain, openCustomDialog,
                 openDialog, showDebugInfo, coroutineScope, listState
             )
         }
@@ -106,7 +102,6 @@ fun DrawerContent(
         }
     }
 }
-
 
 @Composable
 fun DebugInfo(vm: MyViewModel) {
