@@ -1,10 +1,18 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.pages
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
@@ -13,40 +21,27 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
-import com.google.accompanist.swiperefresh.SwipeRefreshState
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import de.schweininchen.shintaikan.shintaikan.jetpack.MyViewModel
 import kotlin.random.Random
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Colors(vm: MyViewModel) {
-    val refreshState = rememberSwipeRefreshState(false)
+    val refreshState = rememberPullToRefreshState()
     val colors = remember {
         mutableStateListOf<IntArray>()
     }
 
+    if (refreshState.isRefreshing) {
+        refreshColors(colors)
+        refreshState.endRefresh()
+    }
+
     LaunchedEffect(key1 = true) { refreshColors(colors = colors) }
 
-    SwipeRefresh(
-        state = SwipeRefreshState(isRefreshing = refreshState.isRefreshing),
-        onRefresh = { refreshColors(colors) },
-        indicator = { state, trigger ->
-            SwipeRefreshIndicator(
-                // Pass the SwipeRefreshState + trigger through
-                state = state,
-                refreshTriggerDistance = trigger,
-                // Enable the scale animation
-                scale = true,
-                // Change the color and shape
-                backgroundColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.surface
-            )
-        }
-
-    ) {
+    Box(Modifier.nestedScroll(refreshState.nestedScrollConnection)) {
         LazyColumn(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth(),
@@ -72,6 +67,16 @@ fun Colors(vm: MyViewModel) {
                 )
             }
         }
+        PullToRefreshContainer(
+            modifier = Modifier.align(Alignment.TopCenter),
+            state = refreshState,
+            indicator = {
+                Indicator(
+                    state = refreshState,
+                )
+            }
+
+        )
     }
 }
 

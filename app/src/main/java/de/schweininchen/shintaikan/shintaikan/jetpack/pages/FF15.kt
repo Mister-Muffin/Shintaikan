@@ -1,6 +1,7 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.pages
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -8,50 +9,38 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.PullToRefreshState
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
-import com.google.accompanist.swiperefresh.SwipeRefreshState
 import de.schweininchen.shintaikan.shintaikan.jetpack.MyViewModel
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FirebaseDataPage(
     title: String,
     document: String,
     imageResource: Int,
     vm: MyViewModel,
-    onRefresh: () -> Unit,
+    onRefresh: (s: PullToRefreshState) -> Unit,
     extraComposable: @Composable () -> Unit = {}
 ) {
-    val isRefreshing by vm.isRefreshing.collectAsState()
+    val refreshState = rememberPullToRefreshState()
     val firestoreData = vm.firestoreData[document]
 
-    SwipeRefresh(
-        state = SwipeRefreshState(isRefreshing = isRefreshing),
-        onRefresh = onRefresh,
-        indicator = { state, trigger ->
-            SwipeRefreshIndicator(
-                // Pass the SwipeRefreshState + trigger through
-                state = state,
-                refreshTriggerDistance = trigger,
-                // Enable the scale animation
-                scale = true,
-                // Change the color and shape
-                backgroundColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.surface
-            )
-        }
+    if (refreshState.isRefreshing) onRefresh(refreshState)
 
-    ) {
+    Box(Modifier.nestedScroll(refreshState.nestedScrollConnection)) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
@@ -69,7 +58,7 @@ fun FirebaseDataPage(
 
             Text(text = title, style = MaterialTheme.typography.headlineLarge)
 
-            if (firestoreData == null || firestoreData.isEmpty()) {
+            if (firestoreData.isNullOrEmpty()) {
                 CircularProgressIndicator()
             } else {
                 Html(text = firestoreData["html"].toString())
@@ -86,5 +75,15 @@ fun FirebaseDataPage(
             )
 
         }
+        PullToRefreshContainer(
+            modifier = Modifier.align(Alignment.TopCenter),
+            state = refreshState,
+            indicator = {
+                Indicator(
+                    state = refreshState,
+                )
+            }
+
+        )
     }
 }

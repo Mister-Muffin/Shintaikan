@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudOff
@@ -213,11 +212,7 @@ private fun Bob(
         ) { innerPadding ->
             val firestoreData = viewModel.firestoreData
             if (firestoreData.isEmpty()) {
-                viewModel.updateFirestoreData {
-                    scope.launch {
-                        viewModel.setRefresh(false)
-                    }
-                }
+                viewModel.updateFirestoreData()
             }
             val imageList: IntArray = intArrayOf(
                 R.drawable.bonsai,
@@ -229,7 +224,6 @@ private fun Bob(
 
             Column(
                 modifier = Modifier
-                    .navigationBarsPadding()
                     .imePadding()
                     .padding(innerPadding),
             ) {

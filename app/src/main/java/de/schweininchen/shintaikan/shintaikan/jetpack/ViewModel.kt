@@ -6,24 +6,10 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.io.File
 
 class MyViewModel : ViewModel() {
-
-    //<editor-fold desc="Pull to refresh">
-    private val _isRefreshing = MutableStateFlow(false)
-
-    val isRefreshing: StateFlow<Boolean> get() = _isRefreshing.asStateFlow()
-
-    suspend fun setRefresh(refreshing: Boolean) {
-        _isRefreshing.emit(refreshing)
-    }
-    //</editor-fold>
-
     //<editor-fold desc="Trplan">
     val trplanData = mutableStateOf(mapOf<String, MutableMap<String, Any>>())
 
@@ -59,21 +45,16 @@ class MyViewModel : ViewModel() {
         this.isConnected.value = isConnected
     }
 
-    /*val exoPlayer: SimpleExoPlayer
-        get() {
-            return exoPlayer
-        }*/
-
     //</editor-fold>
 
     //<editor-fold desc="Firestore Data">
     val firestoreData = mutableStateMapOf<String, MutableMap<String, Any>>()
 
-    fun updateFirestoreData(function: () -> Unit = {}) {
+    fun updateFirestoreData(onFinished: () -> Unit = {}) {
         getFirestoreData {
             firestoreData.clear()
             firestoreData.putAll(it)
-            function()
+            onFinished()
         }
     }
     //</editor-fold>
