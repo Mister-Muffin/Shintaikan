@@ -7,7 +7,6 @@ on:
 
 jobs:
   deploy:
-    if: $(wc -m < dist/releaseName) > 0
     runs-on: ubuntu-latest
 
     steps:
