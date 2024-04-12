@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    if: ${{ wc -w dist/releaseName }} > 0
+    if: ${{ 'wc -w dist/releaseName' }} > 0
     runs-on: ubuntu-latest
 
     steps:
