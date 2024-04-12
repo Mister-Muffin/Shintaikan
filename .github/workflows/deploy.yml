@@ -49,7 +49,7 @@ jobs:
         run: |
           version_name=$(cat -s dist/releaseName)
           echo "Tagging release with tag $version_name"
-          git tag $version_name release/$version_name
+          git tag $version_name ${{ github.ref_name }}
           git push origin --tags
 
       - name: Deploy to Alpha
