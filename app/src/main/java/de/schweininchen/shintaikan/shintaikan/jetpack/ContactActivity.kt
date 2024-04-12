@@ -221,7 +221,7 @@ class ContactActivity : AppCompatActivity() {
         message: String,
         functions: FirebaseFunctions
     ): Task<String> {
-        val data = hashMapOf(
+        @Suppress("KotlinConstantConditions") val data = hashMapOf(
             "email" to email,
             "subject" to subject,
             "message" to message,
@@ -267,7 +267,6 @@ class ContactActivity : AppCompatActivity() {
             }
         }
     }
-
 
     @ExperimentalMaterial3Api
     @Composable

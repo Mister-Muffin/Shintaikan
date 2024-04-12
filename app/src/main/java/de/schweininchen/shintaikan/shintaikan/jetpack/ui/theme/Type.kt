@@ -88,7 +88,7 @@ fun Typography(colorScheme: ColorScheme): Typography {
         displayLarge = TextStyle(
             fontFamily = Roboto,
             fontWeight = FontWeight.W400,
-            letterSpacing = -0.25.sp,
+            letterSpacing = (-0.25).sp,
             lineHeight = 64.sp,
             fontSize = 57.sp
         ),
