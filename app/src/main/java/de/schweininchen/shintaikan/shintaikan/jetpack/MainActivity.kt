@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudOff
@@ -40,8 +42,6 @@ import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.google.accompanist.insets.ProvideWindowInsets
-import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.messaging.FirebaseMessaging
 import de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity.MainNavHost
@@ -61,76 +61,74 @@ class MainActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            ProvideWindowInsets(consumeWindowInsets = false) {
-                val viewModel: MyViewModel = viewModel()
-                val navController = rememberNavController()
-                val url = "https://shintaikan.de/?rest_route=/wp/v2/posts"
-                val scope = rememberCoroutineScope()
+            val viewModel: MyViewModel = viewModel()
+            val navController = rememberNavController()
+            val url = "https://shintaikan.de/?rest_route=/wp/v2/posts"
+            val scope = rememberCoroutineScope()
 
-                val selectedDrawerItem = remember {
-                    mutableStateOf(NavigationDrawerRoutes.HOME)
+            val selectedDrawerItem = remember {
+                mutableStateOf(NavigationDrawerRoutes.HOME)
+            }
+
+            LaunchedEffect(true) {
+                autoSetConnectionState(baseContext, viewModel)
+            }
+
+            if (viewModel.wordpressList.isEmpty()) viewModel.updateHomeData(url, cacheDir)
+
+            FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                    return@OnCompleteListener
+                }
+                // Get new FCM registration token
+                val token = task.result
+                if (token != null) {
+                    viewModel.updatefirebaseMessagingToken(token = token)
                 }
 
-                LaunchedEffect(true) {
-                    autoSetConnectionState(baseContext, viewModel)
-                }
+            })
 
-                if (viewModel.wordpressList.isEmpty()) viewModel.updateHomeData(url, cacheDir)
+            if (viewModel.firestoreData.isEmpty()) viewModel.updateTrplan()
 
-                FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-                    if (!task.isSuccessful) {
-                        Log.w(TAG, "Fetching FCM registration token failed", task.exception)
-                        return@OnCompleteListener
+            viewModel.lazyState = viewModel.lazyStateStart
+
+            val drawerState = rememberDrawerState(DrawerValue.Closed)
+
+            fun navDrawerClickie(
+                route: NavigationDrawerRoutes?,
+                scope: CoroutineScope,
+                drawerState: DrawerState
+            ) {
+                if (route != null) {
+
+                    changeLazyState(route, viewModel)
+
+                    scope.launch {
+                        if (!viewModel.lazyState.isScrollInProgress) viewModel.lazyState.scrollToItem(
+                            0
+                        )
                     }
-                    // Get new FCM registration token
-                    val token = task.result
-                    if (token != null) {
-                        viewModel.updatefirebaseMessagingToken(token = token)
+                    navController.navigate(route.toString()) {
+                        popUpTo(NavigationDrawerRoutes.HOME.toString())
+                        launchSingleTop = true
                     }
-
-                })
-
-                if (viewModel.firestoreData.isEmpty()) viewModel.updateTrplan()
-
-                viewModel.lazyState = viewModel.lazyStateStart
-
-                val drawerState = rememberDrawerState(DrawerValue.Closed)
-
-                fun navDrawerClickie(
-                    route: NavigationDrawerRoutes?,
-                    scope: CoroutineScope,
-                    drawerState: DrawerState
-                ) {
-                    if (route != null) {
-
-                        changeLazyState(route, viewModel)
-
-                        scope.launch {
-                            if (!viewModel.lazyState.isScrollInProgress) viewModel.lazyState.scrollToItem(
-                                0
-                            )
-                        }
-                        navController.navigate(route.toString()) {
-                            popUpTo(NavigationDrawerRoutes.HOME.toString())
-                            launchSingleTop = true
-                        }
-                        selectedDrawerItem.value = route
-                        scope.launch {
-                            drawerState.close()
-                        }
+                    selectedDrawerItem.value = route
+                    scope.launch {
+                        drawerState.close()
                     }
                 }
-                ShintaikanJetpackTheme {
-                    Bob(
-                        onClick = ::navDrawerClickie,
-                        navHostController = navController,
-                        viewModel.wordpressList,
-                        scope = scope,
-                        selectedDrawerItem = selectedDrawerItem,
-                        viewModel = viewModel,
-                        drawerState = drawerState
-                    )
-                }
+            }
+            ShintaikanJetpackTheme {
+                Bob(
+                    onClick = ::navDrawerClickie,
+                    navHostController = navController,
+                    viewModel.wordpressList,
+                    scope = scope,
+                    selectedDrawerItem = selectedDrawerItem,
+                    viewModel = viewModel,
+                    drawerState = drawerState
+                )
             }
         }
 
@@ -231,7 +229,8 @@ private fun Bob(
 
             Column(
                 modifier = Modifier
-                    .navigationBarsWithImePadding()
+                    .navigationBarsPadding()
+                    .imePadding()
                     .padding(innerPadding),
             ) {
                 if (!viewModel.isConnected.value) Row(

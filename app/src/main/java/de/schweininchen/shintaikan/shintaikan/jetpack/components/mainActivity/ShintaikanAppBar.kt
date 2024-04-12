@@ -27,6 +27,8 @@ fun ShintaikanAppBar(
     drawerState: DrawerState,
     scrollBehavior: TopAppBarScrollBehavior
 ) {
+    // val appBarContainerColor = TopAppBarDefaults.centerAlignedTopAppBarColors()
+    //    .containerColor(scrollBehavior.state.collapsedFraction)
     val backgroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors()
     val foregroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors(
         containerColor = Color.Transparent,
@@ -50,7 +52,6 @@ fun ShintaikanAppBar(
                 }
             },
             actions = { },
-            colors = foregroundColors
         )
     }
 }

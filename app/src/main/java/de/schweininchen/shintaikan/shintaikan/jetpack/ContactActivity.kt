@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -49,8 +51,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
-import com.google.accompanist.insets.ProvideWindowInsets
-import com.google.accompanist.insets.navigationBarsWithImePadding
 import com.google.android.gms.tasks.Task
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.functions.FirebaseFunctionsException
@@ -70,146 +70,145 @@ class ContactActivity : AppCompatActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
-            ProvideWindowInsets(consumeWindowInsets = false) {
-                val context = LocalContext.current
+            val context = LocalContext.current
 
-                val scope = rememberCoroutineScope()
+            val scope = rememberCoroutineScope()
 
-                val functions = Firebase.functions("europe-west1")
+            val functions = Firebase.functions("europe-west1")
 
-                var emailText by remember { mutableStateOf("") }
-                var subjectText by remember { mutableStateOf("") }
-                var messageText by remember { mutableStateOf("") }
+            var emailText by remember { mutableStateOf("") }
+            var subjectText by remember { mutableStateOf("") }
+            var messageText by remember { mutableStateOf("") }
 
-                var sendSuccesful by remember { mutableStateOf(false) }
-                var sendPending by remember { mutableStateOf(false) }
-                var sendFailed by remember { mutableStateOf(false) }
-                var sendErrorCode by remember { mutableStateOf("") }
-                var sendErrorDetails by remember { mutableStateOf("") }
+            var sendSuccesful by remember { mutableStateOf(false) }
+            var sendPending by remember { mutableStateOf(false) }
+            var sendFailed by remember { mutableStateOf(false) }
+            var sendErrorCode by remember { mutableStateOf("") }
+            var sendErrorDetails by remember { mutableStateOf("") }
 
-                var networkConnected by remember { mutableStateOf(true) }
+            var networkConnected by remember { mutableStateOf(true) }
 
-                val scrollBehavior =
-                    TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
+            val scrollBehavior =
+                TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
 
-                LaunchedEffect(true) {
-                    autoSetNetworkState(context) { isConnected ->
-                        networkConnected = isConnected
-                    }
+            LaunchedEffect(true) {
+                autoSetNetworkState(context) { isConnected ->
+                    networkConnected = isConnected
                 }
+            }
 
-                ShintaikanJetpackTheme {
-                    Scaffold(
-                        topBar = {
-                            ContactAppBar(
-                                scope,
-                                scrollBehavior = scrollBehavior,
-                                networkConnected = networkConnected
-                            ) {
-                                sendPending = true
-                                sendSuccesful = false
-                                sendFailed = false
-                                sendMessage(emailText, subjectText, messageText, functions)
-                                    .addOnCompleteListener { task ->
-                                        sendPending = false
-                                        sendSuccesful = task.isSuccessful
-                                        if (!task.isSuccessful) {
-                                            sendFailed = true
-                                            val e = task.exception
-                                            if (e is FirebaseFunctionsException) {
-                                                sendErrorCode = e.code.toString()
-                                                sendErrorDetails = e.details.toString()
-                                            }
+            ShintaikanJetpackTheme {
+                Scaffold(
+                    topBar = {
+                        ContactAppBar(
+                            scope,
+                            scrollBehavior = scrollBehavior,
+                            networkConnected = networkConnected
+                        ) {
+                            sendPending = true
+                            sendSuccesful = false
+                            sendFailed = false
+                            sendMessage(emailText, subjectText, messageText, functions)
+                                .addOnCompleteListener { task ->
+                                    sendPending = false
+                                    sendSuccesful = task.isSuccessful
+                                    if (!task.isSuccessful) {
+                                        sendFailed = true
+                                        val e = task.exception
+                                        if (e is FirebaseFunctionsException) {
+                                            sendErrorCode = e.code.toString()
+                                            sendErrorDetails = e.details.toString()
                                         }
                                     }
-                            }
-                        },
-                        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-                    ) { innerPadding ->
-                        Column(
+                                }
+                        }
+                    },
+                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                ) { innerPadding ->
+                    Column(
+                        modifier = Modifier
+                            .navigationBarsPadding()
+                            .imePadding()
+                            .padding(innerPadding)
+                            .padding(start = 8.dp, end = 8.dp)
+                            .fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        OutlinedTextField(
+                            value = emailText,
                             modifier = Modifier
-                                .navigationBarsWithImePadding()
-                                .padding(innerPadding)
-                                .padding(start = 8.dp, end = 8.dp)
-                                .fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
-                            OutlinedTextField(
-                                value = emailText,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 8.dp, bottom = 8.dp),
-                                label = { Text("E-Mail") },
-                                enabled = !sendPending,
-                                leadingIcon = {
-                                    Icon(
-                                        imageVector = Icons.Outlined.AlternateEmail,
-                                        contentDescription = "Email Icon"
-                                    )
-                                },
-                                isError = !Patterns.EMAIL_ADDRESS.matcher(emailText)
-                                    .matches(),
-                                singleLine = true,
-                                colors = OutlinedTextFieldDefaults.colors(
-                                    focusedBorderColor = Color(0xff00c600),
-                                ),
-                                onValueChange = { text -> emailText = text }
-                            )
-                            OutlinedTextField(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 8.dp, bottom = 8.dp),
-                                value = subjectText,
-                                label = { Text("Betreff") },
-                                enabled = !sendPending,
-                                leadingIcon = {
-                                    Icon(
-                                        imageVector = Icons.Outlined.Title,
-                                        contentDescription = "Subject Icon"
-                                    )
-                                },
-                                singleLine = true,
-                                onValueChange = { text -> subjectText = text }
-                            )
-                            OutlinedTextField(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 8.dp, bottom = 8.dp),
-                                value = messageText,
-                                label = { Text("Nachricht") },
-                                enabled = !sendPending,
-                                leadingIcon = {
-                                    Icon(
-                                        imageVector = Icons.Outlined.Edit,
-                                        contentDescription = "Message Icon"
-                                    )
-                                },
-                                onValueChange = { text -> messageText = text }
-                            )
-                            if (sendPending && !sendSuccesful && !sendFailed) { // Message sending
-                                CircularProgressIndicator()
-                            } else if (sendSuccesful && !sendFailed) { // Message sent successfully
+                                .fillMaxWidth()
+                                .padding(top = 8.dp, bottom = 8.dp),
+                            label = { Text("E-Mail") },
+                            enabled = !sendPending,
+                            leadingIcon = {
                                 Icon(
-                                    imageVector = Icons.Outlined.Done,
-                                    contentDescription = "Done Icon",
-                                    tint = Color.Green,
-                                    modifier = Modifier.size(50.dp)
+                                    imageVector = Icons.Outlined.AlternateEmail,
+                                    contentDescription = "Email Icon"
                                 )
-                                Text("Die Nachicht wurde erfolgreich versendet!")
-                            } else if (!sendSuccesful && sendFailed) { // Message send failed
+                            },
+                            isError = !Patterns.EMAIL_ADDRESS.matcher(emailText)
+                                .matches(),
+                            singleLine = true,
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = Color(0xff00c600),
+                            ),
+                            onValueChange = { text -> emailText = text }
+                        )
+                        OutlinedTextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp, bottom = 8.dp),
+                            value = subjectText,
+                            label = { Text("Betreff") },
+                            enabled = !sendPending,
+                            leadingIcon = {
                                 Icon(
-                                    imageVector = Icons.Outlined.ErrorOutline,
-                                    contentDescription = "Error Icon",
-                                    tint = Color.Red,
-                                    modifier = Modifier.size(50.dp)
+                                    imageVector = Icons.Outlined.Title,
+                                    contentDescription = "Subject Icon"
                                 )
-                                Text(sendErrorCode)
-                                Text(sendErrorDetails)
-                            }
+                            },
+                            singleLine = true,
+                            onValueChange = { text -> subjectText = text }
+                        )
+                        OutlinedTextField(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 8.dp, bottom = 8.dp),
+                            value = messageText,
+                            label = { Text("Nachricht") },
+                            enabled = !sendPending,
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Outlined.Edit,
+                                    contentDescription = "Message Icon"
+                                )
+                            },
+                            onValueChange = { text -> messageText = text }
+                        )
+                        if (sendPending && !sendSuccesful && !sendFailed) { // Message sending
+                            CircularProgressIndicator()
+                        } else if (sendSuccesful && !sendFailed) { // Message sent successfully
+                            Icon(
+                                imageVector = Icons.Outlined.Done,
+                                contentDescription = "Done Icon",
+                                tint = Color.Green,
+                                modifier = Modifier.size(50.dp)
+                            )
+                            Text("Die Nachicht wurde erfolgreich versendet!")
+                        } else if (!sendSuccesful && sendFailed) { // Message send failed
+                            Icon(
+                                imageVector = Icons.Outlined.ErrorOutline,
+                                contentDescription = "Error Icon",
+                                tint = Color.Red,
+                                modifier = Modifier.size(50.dp)
+                            )
+                            Text(sendErrorCode)
+                            Text(sendErrorDetails)
                         }
                     }
-
                 }
+
             }
         }
 
