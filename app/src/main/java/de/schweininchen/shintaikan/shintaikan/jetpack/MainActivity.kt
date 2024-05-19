@@ -2,6 +2,7 @@ package de.schweininchen.shintaikan.shintaikan.jetpack
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
@@ -42,7 +43,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.google.firebase.remoteconfig.remoteConfig
+import com.google.firebase.remoteconfig.remoteConfigSettings
 import de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity.MainNavHost
 import de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity.ShintaikanAppBar
 import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.ShintaikanJetpackTheme
@@ -62,15 +67,43 @@ class MainActivity : AppCompatActivity() {
         setContent {
             val viewModel: MyViewModel = viewModel()
             val navController = rememberNavController()
-            val url = "https://shintaikan.de/?rest_route=/wp/v2/posts"
             val scope = rememberCoroutineScope()
 
             val selectedDrawerItem = remember {
                 mutableStateOf(NavigationDrawerRoutes.HOME)
             }
 
+            val remoteConfig: FirebaseRemoteConfig = Firebase.remoteConfig
+            val url = remoteConfig.getString("wp_api_url")
+
+            val context = applicationContext
+            LaunchedEffect(Unit) {
+                val configSettings = remoteConfigSettings {
+                    minimumFetchIntervalInSeconds = 3600
+                }
+                remoteConfig.setConfigSettingsAsync(configSettings)
+                remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
+                remoteConfig.fetchAndActivate().addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val updated = task.result
+                        Log.d(TAG, "Config params updated: $updated")
+                        Toast.makeText(
+                            context,
+                            "Fetch and activate succeeded",
+                            Toast.LENGTH_SHORT,
+                        ).show()
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "Fetch failed",
+                            Toast.LENGTH_SHORT,
+                        ).show()
+                    }
+                }
+            }
+
             LaunchedEffect(true) {
-                autoSetConnectionState(baseContext, viewModel)
+                autoSetConnectionState(context, viewModel, url)
             }
 
             if (viewModel.wordpressList.isEmpty()) viewModel.updateHomeData(url, cacheDir)
@@ -126,7 +159,8 @@ class MainActivity : AppCompatActivity() {
                     scope = scope,
                     selectedDrawerItem = selectedDrawerItem,
                     viewModel = viewModel,
-                    drawerState = drawerState
+                    drawerState = drawerState,
+                    remoteConfig = remoteConfig
                 )
             }
         }
@@ -181,7 +215,8 @@ private fun Bob(
     wordpressList: List<Array<String>>,
     selectedDrawerItem: MutableState<NavigationDrawerRoutes>,
     scope: CoroutineScope, viewModel: MyViewModel,
-    drawerState: DrawerState
+    drawerState: DrawerState,
+    remoteConfig: FirebaseRemoteConfig
 ) {
     val appBarTitle = remember {
         mutableStateOf("Shintaikan")
@@ -193,7 +228,7 @@ private fun Bob(
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet {
-                DrawerContent(viewModel, selectedDrawerItem.value) {
+                DrawerContent(viewModel, selectedDrawerItem.value, remoteConfig) {
                     onClick(it, scope, drawerState)
                 }
             }

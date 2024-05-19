@@ -61,6 +61,7 @@ dependencies {
     implementation "com.google.firebase:firebase-firestore-ktx"
     implementation "com.google.firebase:firebase-messaging-ktx"
     implementation 'com.google.firebase:firebase-functions-ktx'
+    implementation("com.google.firebase:firebase-config")
 
     implementation "com.android.volley:volley:1.2.1"
     implementation 'com.google.android.gms:play-services-oss-licenses:17.0.1'

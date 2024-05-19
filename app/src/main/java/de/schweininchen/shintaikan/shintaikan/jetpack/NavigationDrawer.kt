@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.ContextCompat.startActivity
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import de.schweininchen.shintaikan.shintaikan.jetpack.components.navDrawer.DrawerItems
 
 @ExperimentalMaterial3Api
@@ -53,7 +54,8 @@ import de.schweininchen.shintaikan.shintaikan.jetpack.components.navDrawer.Drawe
 fun DrawerContent(
     vm: MyViewModel,
     selectedMain: NavigationDrawerRoutes,
-    onClickMain: (NavigationDrawerRoutes?) -> Unit,
+    remoteConfig: FirebaseRemoteConfig,
+    onClickMain: (NavigationDrawerRoutes?) -> Unit
 ) {
     val showDebugInfo = remember { mutableStateOf(false) }
     val listState = rememberLazyListState()
@@ -86,7 +88,8 @@ fun DrawerContent(
             )
             DrawerItems(
                 selectedMain, onClickMain, openCustomDialog,
-                openDialog, showDebugInfo, coroutineScope, listState
+                openDialog, showDebugInfo, coroutineScope, listState,
+                remoteConfig
             )
         }
         if (showDebugInfo.value) {

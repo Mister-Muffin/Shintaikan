@@ -39,6 +39,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import de.schweininchen.shintaikan.shintaikan.jetpack.ContactActivity
 import de.schweininchen.shintaikan.shintaikan.jetpack.NavigationDrawerRoutes
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
@@ -87,7 +88,8 @@ fun DrawerItems(
     openDialog: MutableState<Boolean>,
     showDebugInfo: MutableState<Boolean>,
     coroutineScope: CoroutineScope,
-    listState: LazyListState
+    listState: LazyListState,
+    remoteConfig: FirebaseRemoteConfig
 ) {
     val context = LocalContext.current
     Column {
@@ -142,7 +144,7 @@ fun DrawerItems(
         DrawerItem(
             "Filmchen",
             Icons.Outlined.Movie, externalLink = true,
-        ) { linkToWebpage("https://shintaikan.de/?page_id=235", context = context) }
+        ) { linkToWebpage(remoteConfig.getString("link_filmchen"), context = context) }
         HorizontalDivider(
             modifier = Modifier
                 .padding(NavigationDrawerItemDefaults.ItemPadding)
@@ -158,11 +160,11 @@ fun DrawerItems(
         DrawerItem(
             "Impressum",
             Icons.Outlined.AttachFile, true
-        ) { linkToWebpage("https://shintaikan.de/?page_id=207", context = context) }
+        ) { linkToWebpage(remoteConfig.getString("link_impressum"), context = context) }
         DrawerItem(
             "Datenschutz",
             Icons.Outlined.Lock, true
-        ) { linkToWebpage("https://shintaikan.de/?page_id=378", context = context) }
+        ) { linkToWebpage(remoteConfig.getString("link_datenschutz"), context = context) }
         DrawerItem(
             "Weiteres",
             Icons.Outlined.Face
