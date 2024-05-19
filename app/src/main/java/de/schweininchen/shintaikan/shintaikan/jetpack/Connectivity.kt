@@ -25,7 +25,7 @@ private fun mNetworkCallback(
             viewModel.updateConnectifityStatus(true)
             if (viewModel.wordpressList.isEmpty()) {
                 viewModel.updateHomeData(
-                    "https://shintaikan.de/?rest_route=/wp/v2/posts",
+                    "https://shintaikan.de/wp-json/wp/v2/posts?_fields=title,content",
                     context.cacheDir
                 )
             }
