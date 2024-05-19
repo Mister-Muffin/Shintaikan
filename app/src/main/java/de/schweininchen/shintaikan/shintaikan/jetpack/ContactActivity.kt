@@ -240,14 +240,11 @@ class ContactActivity : AppCompatActivity() {
     }
 
     private fun autoSetNetworkState(context: Context, updateNetworkStatus: (Boolean) -> Unit) {
+
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            cm.registerDefaultNetworkCallback(
-                mNetworkCallback(
-                    updateNetworkStatus
-                )
-            )
+            cm.registerDefaultNetworkCallback(mNetworkCallback(updateNetworkStatus))
             updateNetworkStatus(cm.activeNetwork !== null)
         }
 
@@ -276,7 +273,7 @@ class ContactActivity : AppCompatActivity() {
         send: () -> Unit,
     ) {
         Box {
-            val activity = (LocalContext.current as? Activity)
+            val activity = LocalContext.current as Activity
             CenterAlignedTopAppBar(
                 modifier = Modifier.statusBarsPadding(),
                 scrollBehavior = scrollBehavior,
@@ -286,7 +283,7 @@ class ContactActivity : AppCompatActivity() {
                 navigationIcon = {
                     IconButton(onClick = {
                         scope.launch {
-                            activity?.finish() //
+                            activity.finish()
                         }
                     }
                     ) {
