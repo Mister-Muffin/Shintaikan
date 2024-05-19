@@ -87,11 +87,7 @@ class MainActivity : AppCompatActivity() {
                     if (task.isSuccessful) {
                         val updated = task.result
                         Log.d(TAG, "Config params updated: $updated")
-                        Toast.makeText(
-                            context,
-                            "Fetch and activate succeeded",
-                            Toast.LENGTH_SHORT,
-                        ).show()
+                        Log.i(TAG, "Config updated.")
                     } else {
                         Toast.makeText(
                             context,
