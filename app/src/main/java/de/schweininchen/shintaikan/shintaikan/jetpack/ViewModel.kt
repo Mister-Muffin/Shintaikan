@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import org.json.JSONException
 import java.io.File
 
 class MyViewModel : ViewModel() {
@@ -30,8 +31,16 @@ class MyViewModel : ViewModel() {
                 for (i in 0 until it.length()) {
                     wordpressList.add(
                         arrayOf(
-                            it.getJSONObject(i).getJSONObject("title").getString("rendered"),
-                            it.getJSONObject(i).getJSONObject("content").getString("rendered")
+                            try {
+                                it.getJSONObject(i).getJSONObject("title").getString("rendered")
+                            } catch (jsex: JSONException) {
+                                "Ein Fehler ist aufgetreten!"
+                            },
+                            try {
+                                it.getJSONObject(i).getJSONObject("content").getString("rendered")
+                            } catch (jsex: JSONException) {
+                                "Ein Fehler ist aufgetreten!"
+                            },
                         )
                     )
                 }
