@@ -1,0 +1,62 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
+
+      - name: Install google-services.json
+        uses: mobiledevops/secret-to-file-action@be5f14e82c235ccde011f6ab0f6c984b35dc34c6 # v1
+        with:
+          base64-encoded-secret: ${{ secrets.GOOGLE_SERVICES_BASE64 }}
+          filename: "google-services.json"
+          is-executable: false
+          working-directory: "./app"
+
+      - name: Build
+        run: ./gradlew build
+
+      - name: Assemble Release Bundle
+        run: |
+          ./gradlew bundleRelease
+
+      - name: Sign Release
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: app/build/outputs/bundle/release
+          signingKeyBase64: ${{ secrets.SIGNING_KEY }}
+          alias: ${{ secrets.ALIAS }}
+          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Tag Release
+        run: |
+          version_name=$(cat -s dist/releaseName)
+          echo "Tagging release with tag $version_name"
+          git tag $version_name ${{ github.ref_name }}
+          git push origin --tags
+
+      - name: Deploy to Production
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          packageName: de.schweininchen.shintaikan.shintaikan.new
+          releaseFiles: app/build/outputs/bundle/release/app-release.aab
+          track: production
+          whatsNewDirectory: dist/whatsnew

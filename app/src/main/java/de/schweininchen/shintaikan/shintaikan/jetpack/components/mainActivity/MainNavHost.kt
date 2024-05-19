@@ -1,11 +1,10 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity
 
-import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.pulltorefresh.PullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -13,9 +12,16 @@ import androidx.navigation.navDeepLink
 import de.schweininchen.shintaikan.shintaikan.jetpack.BuildConfig
 import de.schweininchen.shintaikan.shintaikan.jetpack.MyViewModel
 import de.schweininchen.shintaikan.shintaikan.jetpack.NavigationDrawerRoutes
-import de.schweininchen.shintaikan.shintaikan.jetpack.pages.*
+import de.schweininchen.shintaikan.shintaikan.jetpack.pages.Anfaenger
+import de.schweininchen.shintaikan.shintaikan.jetpack.pages.ClubWeg
+import de.schweininchen.shintaikan.shintaikan.jetpack.pages.Colors
+import de.schweininchen.shintaikan.shintaikan.jetpack.pages.FirebaseDataPage
+import de.schweininchen.shintaikan.shintaikan.jetpack.pages.Home
+import de.schweininchen.shintaikan.shintaikan.jetpack.pages.NachSoFe
+import de.schweininchen.shintaikan.shintaikan.jetpack.pages.Trplan
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainNavHost(
     navHostController: NavHostController,
@@ -26,12 +32,11 @@ fun MainNavHost(
     selectedDrawerItem: MutableState<NavigationDrawerRoutes>,
 ) {
     val refreshScope = rememberCoroutineScope()
-    fun refresh() {
+    fun refresh(state: PullToRefreshState) {
         refreshScope.launch {
-            viewModel.setRefresh(true)
             viewModel.updateFirestoreData {
                 refreshScope.launch {
-                    viewModel.setRefresh(false)
+                    state.endRefresh()
                 }
             }
         }
@@ -39,7 +44,6 @@ fun MainNavHost(
     NavHost(
         navController = navHostController,
         startDestination = NavigationDrawerRoutes.HOME.toString(),
-        modifier = Modifier.padding(top = if (viewModel.isConnected.value) 0.dp else 30.dp),
     ) {
         composable(NavigationDrawerRoutes.HOME.toString()) {
             Home(wordpressList, viewModel = viewModel)
@@ -97,14 +101,5 @@ fun MainNavHost(
                 selectedDrawerItem.value = NavigationDrawerRoutes.HOME
             }
         }
-
-        /* composable("Movie1") {
-
-                 ExoVideoPlayer(
-                     exoPlayer = exoPlayer
-                 )
-                 appBarTitle.value = "Infofilmchen"
-                 exoPlayer.play()
-             }*/
     }
 }

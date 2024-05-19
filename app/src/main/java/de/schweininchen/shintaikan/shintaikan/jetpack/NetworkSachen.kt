@@ -1,6 +1,5 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack
 
-import android.os.StrictMode
 import android.util.Log
 import com.android.volley.Request
 import com.android.volley.RequestQueue
@@ -30,11 +29,8 @@ fun getHttpJson(
     val requestQueue = RequestQueue(cache, network).apply {
         start()
     }
-    val policy = StrictMode.ThreadPolicy.Builder().permitAll().build()
-    StrictMode.setThreadPolicy(policy)
 
-    val jsonObjectRequest = JsonArrayRequest(
-        Request.Method.GET, getURL, null,
+    val jsonObjectRequest = JsonArrayRequest(Request.Method.GET, getURL, null,
         { response ->
             setText(response)
         },

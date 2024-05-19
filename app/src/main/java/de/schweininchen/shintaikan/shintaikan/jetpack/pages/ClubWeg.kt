@@ -6,8 +6,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,7 +29,10 @@ fun ClubWeg(
         state = viewModel.lazyStateClub,
     ) {
         item {
-            Text(text = "Karate Club\nShintaikan e.V.", style = MaterialTheme.typography.headlineLarge)
+            Text(
+                text = "Karate Club\nShintaikan e.V.",
+                style = MaterialTheme.typography.headlineLarge
+            )
             Text(
                 text = "GPS: 48°00’57.7″N 7°48’47.8″E",
                 style = MaterialTheme.typography.bodyMedium,
@@ -47,13 +50,10 @@ fun ClubWeg(
 
         }
         item {
-
             Text(text = "Wegbeschreibung", style = MaterialTheme.typography.headlineMedium)
-
         }
         item {
             Text(stringResource(R.string.club_2), style = MaterialTheme.typography.bodyMedium)
-
         }
         item {
             Image(

@@ -45,22 +45,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.ContextCompat.startActivity
-import com.google.accompanist.insets.navigationBarsWithImePadding
-import com.google.accompanist.insets.statusBarsPadding
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import de.schweininchen.shintaikan.shintaikan.jetpack.components.navDrawer.DrawerItems
-
-val customPadding = 12.dp
 
 @ExperimentalMaterial3Api
 @Composable
 fun DrawerContent(
     vm: MyViewModel,
     selectedMain: NavigationDrawerRoutes,
+    remoteConfig: FirebaseRemoteConfig,
     onClickMain: (NavigationDrawerRoutes?) -> Unit
 ) {
-    val context = LocalContext.current
-
     val showDebugInfo = remember { mutableStateOf(false) }
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -79,10 +75,7 @@ fun DrawerContent(
     LazyColumn(
         state = listState,
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier
-            .statusBarsPadding()
-            .navigationBarsWithImePadding()
-            .fillMaxWidth()
+        modifier = Modifier.fillMaxWidth()
     ) {
         item {
             Image(
@@ -94,8 +87,9 @@ fun DrawerContent(
                     .padding(top = 8.dp, bottom = 8.dp)
             )
             DrawerItems(
-                selectedMain, onClickMain, context, openCustomDialog,
-                openDialog, showDebugInfo, coroutineScope, listState
+                selectedMain, onClickMain, openCustomDialog,
+                openDialog, showDebugInfo, coroutineScope, listState,
+                remoteConfig
             )
         }
         if (showDebugInfo.value) {
@@ -106,7 +100,6 @@ fun DrawerContent(
         }
     }
 }
-
 
 @Composable
 fun DebugInfo(vm: MyViewModel) {

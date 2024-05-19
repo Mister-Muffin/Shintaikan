@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<defaults>
+  <entry>
+    <key>link_filmchen</key>
+    <value>https://shintaikan.de/?page_id=235</value>
+  </entry>
+  <entry>
+    <key>link_impressum</key>
+    <value>https://shintaikan.de/?page_id=207</value>
+  </entry>
+  <entry>
+    <key>link_datenschutz</key>
+    <value>https://shintaikan.de/?page_id=378</value>
+  </entry>
+  <entry>
+    <key>wp_api_url</key>
+    <value>https://shintaikan.de/wp-json/wp/v2/posts?_fields=title,content</value>
+  </entry>
+  <entry>
+    <key>email</key>
+    <value>app@shintaikan.de</value>
+  </entry>
+</defaults>
