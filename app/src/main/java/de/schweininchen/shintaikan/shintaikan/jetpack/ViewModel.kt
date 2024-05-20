@@ -1,5 +1,6 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack
 
+import android.content.Context
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
@@ -8,7 +9,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import org.json.JSONException
-import java.io.File
 
 class MyViewModel : ViewModel() {
     //<editor-fold desc="Trplan">
@@ -24,9 +24,9 @@ class MyViewModel : ViewModel() {
     //<editor-fold desc="HomeData">
     val wordpressList = mutableStateListOf<Array<String>>()
 
-    fun updateHomeData(url: String, cacheDir: File) {
+    fun updateHomeData(url: String, context: Context) {
         viewModelScope.launch {
-            getHttpJson(url, cacheDir) {
+            getHttpJson(url, context) {
                 wordpressList.clear()
                 for (i in 0 until it.length()) {
                     wordpressList.add(

@@ -95,12 +95,10 @@ class MainActivity : AppCompatActivity() {
                             Toast.LENGTH_SHORT,
                         ).show()
                     }
-                    if (viewModel.wordpressList.isEmpty()) viewModel.updateHomeData(url, cacheDir)
-                }
-            }
+                    if (viewModel.wordpressList.isEmpty()) viewModel.updateHomeData(url, context)
 
-            LaunchedEffect(true) {
-                autoSetConnectionState(context, viewModel, url)
+                    autoSetConnectionState(context, viewModel, url)
+                }
             }
 
             FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
@@ -128,7 +126,6 @@ class MainActivity : AppCompatActivity() {
                 drawerState: DrawerState
             ) {
                 if (route != null) {
-
                     changeLazyState(route, viewModel)
 
                     scope.launch {

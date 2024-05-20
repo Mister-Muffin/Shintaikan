@@ -25,7 +25,7 @@ private fun mNetworkCallback(
         override fun onAvailable(network: Network) {
             viewModel.updateConnectifityStatus(true)
             if (viewModel.wordpressList.isEmpty()) {
-                viewModel.updateHomeData(url, context.cacheDir)
+                viewModel.updateHomeData(url, context)
             }
         }
 
