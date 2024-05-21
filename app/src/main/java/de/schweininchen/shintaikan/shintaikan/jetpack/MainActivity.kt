@@ -88,15 +88,11 @@ class MainActivity : AppCompatActivity() {
                         Log.d(TAG, "Config params updated: $updated")
                         Log.i(TAG, "Config updated.")
                     } else {
-                        Toast.makeText(
-                            context,
-                            "Fetch failed",
-                            Toast.LENGTH_SHORT,
-                        ).show()
+                        Toast.makeText(context, "Fetch failed", Toast.LENGTH_SHORT).show()
                     }
                     val url = remoteConfig.getString("wp_api_url")
-                    if (viewModel.wordpressList.isEmpty()) viewModel.updateHomeData(url, context)
 
+                    // this also will auto query wp posts
                     autoSetConnectionState(context, viewModel, url)
                 }
             }
