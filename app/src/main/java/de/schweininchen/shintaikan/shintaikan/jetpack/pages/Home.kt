@@ -3,6 +3,7 @@ package de.schweininchen.shintaikan.shintaikan.jetpack.pages
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +25,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -32,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.text.HtmlCompat
 import de.schweininchen.shintaikan.shintaikan.jetpack.MyViewModel
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
+import de.schweininchen.shintaikan.shintaikan.jetpack.toColorMatrix
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -40,6 +44,10 @@ fun Home(
     postsList: List<Array<String>>,
     viewModel: MyViewModel,
 ) {
+    // Credits to Mr-Pine
+    // Source: https://github.com/Mr-Pine/XKCDFeed/tree/9f4b95307822062ed74e251f2ac00d55d6d4d26b
+    val colorFilter = ColorFilter.colorMatrix(ColorMatrix(viewModel.matrix.toColorMatrix()))
+
     val imageSize = 100.dp
 
     LazyColumn(
@@ -129,14 +137,16 @@ fun Home(
                     contentDescription = null,
                     modifier = Modifier
                         .width(imageSize)
-                        .height(imageSize)
+                        .height(imageSize),
+                    colorFilter = if (!isSystemInDarkTheme()) null else colorFilter
                 )
                 Image(
                     painter = painterResource(id = R.drawable.icon_karate_2),
                     contentDescription = null,
                     modifier = Modifier
                         .width(imageSize)
-                        .height(imageSize)
+                        .height(imageSize),
+                    colorFilter = if (!isSystemInDarkTheme()) null else colorFilter
                 )
             }
 
@@ -147,7 +157,8 @@ fun Home(
                 contentDescription = "kara",
                 modifier = Modifier
                     .width(imageSize)
-                    .height(imageSize)
+                    .height(imageSize),
+                colorFilter = if (!isSystemInDarkTheme()) null else colorFilter
             )
         }
         item {
@@ -156,7 +167,8 @@ fun Home(
                 contentDescription = "te",
                 modifier = Modifier
                     .width(imageSize)
-                    .height(imageSize)
+                    .height(imageSize),
+                colorFilter = if (!isSystemInDarkTheme()) null else colorFilter
             )
         }
         item {

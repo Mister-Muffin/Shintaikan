@@ -2,15 +2,63 @@ package de.schweininchen.shintaikan.shintaikan.jetpack
 
 import android.content.Context
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import org.json.JSONException
+import kotlin.math.PI
+import kotlin.math.sqrt
 
 class MyViewModel : ViewModel() {
+    //-> Credits to Mr-Pine
+    // Source: https://github.com/Mr-Pine/XKCDFeed/tree/9f4b95307822062ed74e251f2ac00d55d6d4d26b
+    var matrix by mutableStateOf(identityMatrix(4, 4))
+
+    //No clue why these values work but I found them to work best but only if I run the Matrix multiply on them twice
+    private val wR = 50f
+    private val wG = 10f
+    private val wB = 4f
+
+    init { //implementation of http://www.graficaobscura.com/matrix/index.html
+        //RGB invert
+        matrix = matrix.matrixMultiply(
+            arrayOf(
+                floatArrayOf(-1f, 0f, 0f, 0f),
+                floatArrayOf(0f, -1f, 0f, 0f),
+                floatArrayOf(0f, 0f, -1f, 0f),
+                floatArrayOf(0f, 0f, 0f, -1f),
+            )
+        )
+        matrix = matrix.matrixAdd(
+            arrayOf(
+                floatArrayOf(0f, 0f, 0f, 0f),
+                floatArrayOf(0f, 0f, 0f, 0f),
+                floatArrayOf(0f, 0f, 0f, 0f),
+                floatArrayOf(255f, 255f, 255f, 0f),
+            )
+        )
+
+        //HSV 180 rotation
+        matrix = matrix.matrixMultiply(xRotation(cos = 1 / sqrt(2f), sin = 1 / sqrt(2f)))
+        matrix = matrix.matrixMultiply(yRotation(cos = sqrt(2 / 3f), sin = -sqrt(1 / 3f)))
+        val transformedWeights =
+            arrayOf(floatArrayOf(wR, wG, wB)).matrixMultiply(matrix.cutTo(3, 3))
+                .matrixMultiply(matrix.cutTo(3, 3))
+        val shearX = (transformedWeights[0][0] / transformedWeights[0][2])
+        val shearY = (transformedWeights[0][1] / transformedWeights[0][2])
+        matrix = matrix.matrixMultiply(shearZ(shearX, shearY))
+        matrix = matrix.matrixMultiply(zRotation(PI.toFloat()))
+        matrix = matrix.matrixMultiply(shearZ(-shearX, -shearY))
+        matrix = matrix.matrixMultiply(yRotation(cos = sqrt(2 / 3f), sin = sqrt(1 / 3f)))
+        matrix = matrix.matrixMultiply(xRotation(cos = 1 / sqrt(2f), sin = -1 / sqrt(2f)))
+    }
+    //<- Credits to Mr-Pine
+
     //<editor-fold desc="Trplan">
     val trplanData = mutableStateOf(mapOf<String, MutableMap<String, Any>>())
 
