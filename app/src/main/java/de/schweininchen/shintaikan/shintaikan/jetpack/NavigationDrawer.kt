@@ -207,21 +207,14 @@ fun AboutAlertDialog(onDissmiss: () -> Unit) {
             }
         },
         dismissButton = {
-            OutlinedButton(
-                onClick = onDissmiss
-            ) {
-                Text("Close")
-            }
+            OutlinedButton(onClick = onDissmiss) { Text("Close") }
 
         },
         confirmButton = {
             Button(
                 onClick = {
                     context.startActivity(
-                        Intent(
-                            context,
-                            OssLicensesMenuActivity::class.java
-                        )
+                        Intent(context, OssLicensesMenuActivity::class.java)
                     )
                 }
 

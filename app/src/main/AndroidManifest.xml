@@ -37,6 +37,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ContactActivity" />
+        <activity android:name=".NotificationActivity" />
         <activity android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity" />
         <activity android:name="com.google.android.gms.oss.licenses.OssLicensesActivity" />
 

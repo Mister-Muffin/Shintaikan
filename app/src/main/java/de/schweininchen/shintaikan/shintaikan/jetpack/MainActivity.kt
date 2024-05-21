@@ -74,7 +74,6 @@ class MainActivity : AppCompatActivity() {
             }
 
             val remoteConfig: FirebaseRemoteConfig = Firebase.remoteConfig
-            val url = remoteConfig.getString("wp_api_url")
 
             val context = applicationContext
             LaunchedEffect(Unit) {
@@ -95,6 +94,7 @@ class MainActivity : AppCompatActivity() {
                             Toast.LENGTH_SHORT,
                         ).show()
                     }
+                    val url = remoteConfig.getString("wp_api_url")
                     if (viewModel.wordpressList.isEmpty()) viewModel.updateHomeData(url, context)
 
                     autoSetConnectionState(context, viewModel, url)
