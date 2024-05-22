@@ -35,3 +35,15 @@ fun askNotificationPermission(
         }
     }
 }
+
+fun getPermissionGranted(
+    context: Context
+): Boolean {
+    // This is only necessary for API level >= 33 (TIRAMISU)
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) ==
+                PackageManager.PERMISSION_GRANTED
+    } else {
+        true
+    }
+}

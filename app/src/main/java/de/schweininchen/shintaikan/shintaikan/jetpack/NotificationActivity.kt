@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.CheckCircleOutline
 import androidx.compose.material.icons.outlined.NotificationImportant
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.WarningAmber
@@ -84,6 +85,8 @@ class NotificationActivity : AppCompatActivity() {
             var importantNotificationsChcked by remember { mutableStateOf(false) }
             var autoNotificationsChcked by remember { mutableStateOf(false) }
 
+            var permissionGranted by remember { mutableStateOf(getPermissionGranted(context)) }
+
             ShintaikanJetpackTheme {
                 Scaffold(
                     topBar = {
@@ -103,9 +106,9 @@ class NotificationActivity : AppCompatActivity() {
                             title = "Wichtige Benachichtigungen",
                             description = "Benachichtigungen, die von uns manuell gesendet werden",
                             Icons.Outlined.NotificationImportant,
-                            checked = importantNotificationsChcked
+                            checked = importantNotificationsChcked,
+                            enabled = permissionGranted
                         ) {
-                            askNotificationPermission(requestPermissionLauncher, context)
                             importantNotificationsChcked = !importantNotificationsChcked
                         }
                         HorizontalDivider()
@@ -113,11 +116,28 @@ class NotificationActivity : AppCompatActivity() {
                             title = "Auto Benachrichtigungen",
                             description = "Benachrichtigungen, die automatisch durch neue Posts auf der Homepage gesendet werden",
                             Icons.Outlined.Notifications,
-                            checked = autoNotificationsChcked
+                            checked = autoNotificationsChcked,
+                            enabled = permissionGranted
                         ) {
                             autoNotificationsChcked = !autoNotificationsChcked
                         }
-                        NotificationCard()
+                        if (permissionGranted) {
+                            NotificationCard(
+                                null,
+                                "Berechtigung für Benachichtigungen gewährt",
+                                Icons.Outlined.CheckCircleOutline,
+                                Color(0xFF4CAF50)
+                            )
+                        } else {
+                            NotificationCard(
+                                "Beheben",
+                                getString(R.string.push_problem),
+                                Icons.Outlined.WarningAmber,
+                                Color(0xFFFFC107)
+                            ) {
+                                askNotificationPermission(requestPermissionLauncher, context)
+                            }
+                        }
                     }
                 }
 
@@ -127,7 +147,13 @@ class NotificationActivity : AppCompatActivity() {
     }
 
     @Composable
-    private fun NotificationCard() {
+    private fun NotificationCard(
+        text: String?,
+        description: String,
+        icon: ImageVector,
+        tint: Color,
+        onClick: () -> Unit = {}
+    ) {
         Card(
             modifier = Modifier
                 .padding(16.dp)
@@ -146,26 +172,28 @@ class NotificationActivity : AppCompatActivity() {
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Icon(
-                        imageVector = Icons.Outlined.WarningAmber,
-                        contentDescription = "Warning icon",
-                        tint = Color(0xFFFFC107)
+                        imageVector = icon,
+                        contentDescription = "Icon",
+                        tint = tint
                     )
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.fillMaxWidth(.75f)
                     ) {
                         Text(
-                            text = getString(R.string.push_problem),
+                            description,
                             style = MaterialTheme.typography.bodySmall
                         )
-                        Spacer(modifier = Modifier.padding(4.dp))
-                        Button(onClick = { /*TODO*/ }) {
-                            Text(text = "Beheben")
+                        if (!text.isNullOrEmpty()) {
+                            Spacer(modifier = Modifier.padding(4.dp))
+                            Button(onClick = onClick) {
+                                Text(text)
+                            }
                         }
                     }
                     Icon(
-                        imageVector = Icons.Outlined.WarningAmber,
-                        contentDescription = "Warning icon",
+                        imageVector = icon,
+                        contentDescription = null,
                         tint = Color(0x00000000)
                     )
                 }
@@ -179,12 +207,14 @@ class NotificationActivity : AppCompatActivity() {
         description: String? = null,
         icon: ImageVector,
         checked: Boolean,
+        enabled: Boolean = true,
         onCheckedChange: () -> Unit
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.clickable {
+                if (!enabled) return@clickable
                 onCheckedChange()
             }
         ) {
@@ -219,6 +249,7 @@ class NotificationActivity : AppCompatActivity() {
             Spacer(modifier = Modifier.weight(1f))
             Switch(
                 checked = checked,
+                enabled = enabled,
                 onCheckedChange = { onCheckedChange() }
             )
         }
