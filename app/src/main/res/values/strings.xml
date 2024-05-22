@@ -82,4 +82,8 @@
         Studenten/Azubis:                       € 2.-\n
         jedes zusätzliche Familienmitglied:     € 2,-\n
     </string>
+    <string name="push_problem">
+        Pushbenachrichtigungen sind deaktiviert.
+        Um Benachichtigungen empfangen zu können, musst du diese erlauben.
+    </string>
 </resources>
