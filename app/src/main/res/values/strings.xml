@@ -83,7 +83,14 @@
         jedes zusätzliche Familienmitglied:     € 2,-\n
     </string>
     <string name="push_problem">
-        Pushbenachrichtigungen sind deaktiviert.
+        Push-Benachrichtigungen sind deaktiviert.
         Um Benachichtigungen empfangen zu können, musst du diese erlauben.
+    </string>
+    <string name="push_locked">
+        Push-Benachrichtigungen sind gesperrt.
+        Wechsel zu den App Einstellungen, um diese zu erlauben.
+    </string>
+    <string name="push_dialog_text">
+        Damit die App Benachrichtigungen senden kann, musst zu zuerst die Berechtigung dafür gewähren
     </string>
 </resources>
