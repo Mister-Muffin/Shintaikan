@@ -1,4 +1,4 @@
-package de.schweininchen.shintaikan.shintaikan.jetpack
+package de.schweininchen.shintaikan.shintaikan.jetpack.util
 
 import android.content.Context
 import android.util.Log

@@ -1,4 +1,4 @@
-package de.schweininchen.shintaikan.shintaikan.jetpack
+package de.schweininchen.shintaikan.shintaikan.jetpack.activities
 
 import android.app.Activity
 import android.content.Context
@@ -56,14 +56,15 @@ import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.functions.FirebaseFunctionsException
 import com.google.firebase.functions.ktx.functions
 import com.google.firebase.ktx.Firebase
+import de.schweininchen.shintaikan.shintaikan.jetpack.BuildConfig
 import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.ShintaikanJetpackTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-const val appBarTitle = "Kontakt & Feedback"
-
 @ExperimentalMaterial3Api
 class ContactActivity : AppCompatActivity() {
+    private val appBarTitle = "Kontakt & Feedback"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

@@ -37,8 +37,8 @@
                 <data android:host="shintaikan.de" />
             </intent-filter>
         </activity>
-        <activity android:name=".ContactActivity" />
-        <activity android:name=".NotificationActivity" />
+        <activity android:name=".activities.ContactActivity" />
+        <activity android:name=".activities.NotificationActivity" />
         <activity android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity" />
         <activity android:name="com.google.android.gms.oss.licenses.OssLicensesActivity" />
 

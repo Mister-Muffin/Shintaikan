@@ -1,4 +1,4 @@
-package de.schweininchen.shintaikan.shintaikan.jetpack
+package de.schweininchen.shintaikan.shintaikan.jetpack.activities
 
 import android.app.Activity
 import android.os.Bundle
@@ -52,6 +52,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
+import de.schweininchen.shintaikan.shintaikan.jetpack.R
+import de.schweininchen.shintaikan.shintaikan.jetpack.util.askNotificationPermission
+import de.schweininchen.shintaikan.shintaikan.jetpack.util.getPermissionGranted
 import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.ShintaikanJetpackTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

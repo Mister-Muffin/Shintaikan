@@ -1,6 +1,6 @@
 // Credits to Mr-Pine
 // Source: https://github.com/Mr-Pine/XKCDFeed/tree/9f4b95307822062ed74e251f2ac00d55d6d4d26b
-package de.schweininchen.shintaikan.shintaikan.jetpack
+package de.schweininchen.shintaikan.shintaikan.jetpack.util
 
 import kotlin.math.cos
 import kotlin.math.sin

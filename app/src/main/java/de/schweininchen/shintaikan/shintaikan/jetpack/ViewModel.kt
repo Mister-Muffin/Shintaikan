@@ -9,6 +9,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import de.schweininchen.shintaikan.shintaikan.jetpack.util.cutTo
+import de.schweininchen.shintaikan.shintaikan.jetpack.util.getFirestoreData
+import de.schweininchen.shintaikan.shintaikan.jetpack.util.getFirestoreTrplan
+import de.schweininchen.shintaikan.shintaikan.jetpack.util.getHttpJson
+import de.schweininchen.shintaikan.shintaikan.jetpack.util.identityMatrix
+import de.schweininchen.shintaikan.shintaikan.jetpack.util.matrixAdd
+import de.schweininchen.shintaikan.shintaikan.jetpack.util.matrixMultiply
+import de.schweininchen.shintaikan.shintaikan.jetpack.util.shearZ
+import de.schweininchen.shintaikan.shintaikan.jetpack.util.xRotation
+import de.schweininchen.shintaikan.shintaikan.jetpack.util.yRotation
+import de.schweininchen.shintaikan.shintaikan.jetpack.util.zRotation
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import kotlin.math.PI

@@ -41,11 +41,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import de.schweininchen.shintaikan.shintaikan.jetpack.ContactActivity
-import de.schweininchen.shintaikan.shintaikan.jetpack.NavigationDrawerRoutes
-import de.schweininchen.shintaikan.shintaikan.jetpack.NotificationActivity
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
-import de.schweininchen.shintaikan.shintaikan.jetpack.linkToWebpage
+import de.schweininchen.shintaikan.shintaikan.jetpack.activities.ContactActivity
+import de.schweininchen.shintaikan.shintaikan.jetpack.activities.NotificationActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

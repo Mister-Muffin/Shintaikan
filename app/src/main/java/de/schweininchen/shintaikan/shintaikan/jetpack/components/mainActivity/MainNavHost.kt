@@ -11,7 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import de.schweininchen.shintaikan.shintaikan.jetpack.BuildConfig
 import de.schweininchen.shintaikan.shintaikan.jetpack.MyViewModel
-import de.schweininchen.shintaikan.shintaikan.jetpack.NavigationDrawerRoutes
+import de.schweininchen.shintaikan.shintaikan.jetpack.components.navDrawer.NavigationDrawerRoutes
 import de.schweininchen.shintaikan.shintaikan.jetpack.pages.Anfaenger
 import de.schweininchen.shintaikan.shintaikan.jetpack.pages.ClubWeg
 import de.schweininchen.shintaikan.shintaikan.jetpack.pages.Colors

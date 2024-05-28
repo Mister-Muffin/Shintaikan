@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.text.HtmlCompat
 import de.schweininchen.shintaikan.shintaikan.jetpack.MyViewModel
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
-import de.schweininchen.shintaikan.shintaikan.jetpack.toColorMatrix
+import de.schweininchen.shintaikan.shintaikan.jetpack.util.toColorMatrix
 import java.time.LocalDate
 import java.time.LocalTime
 

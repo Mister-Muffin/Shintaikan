@@ -50,7 +50,10 @@ import com.google.firebase.remoteconfig.remoteConfig
 import com.google.firebase.remoteconfig.remoteConfigSettings
 import de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity.MainNavHost
 import de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity.ShintaikanAppBar
+import de.schweininchen.shintaikan.shintaikan.jetpack.components.navDrawer.DrawerContent
+import de.schweininchen.shintaikan.shintaikan.jetpack.components.navDrawer.NavigationDrawerRoutes
 import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.ShintaikanJetpackTheme
+import de.schweininchen.shintaikan.shintaikan.jetpack.util.autoSetConnectionState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

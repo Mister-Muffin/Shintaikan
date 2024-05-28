@@ -1,4 +1,4 @@
-package de.schweininchen.shintaikan.shintaikan.jetpack
+package de.schweininchen.shintaikan.shintaikan.jetpack.components.navDrawer
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -47,7 +47,9 @@ import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.ContextCompat.startActivity
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import de.schweininchen.shintaikan.shintaikan.jetpack.components.navDrawer.DrawerItems
+import de.schweininchen.shintaikan.shintaikan.jetpack.BuildConfig
+import de.schweininchen.shintaikan.shintaikan.jetpack.MyViewModel
+import de.schweininchen.shintaikan.shintaikan.jetpack.R
 
 @ExperimentalMaterial3Api
 @Composable
