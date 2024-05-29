@@ -117,9 +117,23 @@ class NotificationActivity : AppCompatActivity() {
 
             var showPermissionDialog by remember { mutableStateOf(false) }
 
-            var importantNotificationsChcked by remember { mutableStateOf(false) }
+            var importantNotificationsChcked by remember {
+                mutableStateOf(
+                    FirebaseMessagingTopic(
+                        sharedPrefs,
+                        MessagingTopics.IMPORTANT.value
+                    ).getSharedPrefsMessagingEnabled()
+                )
+            }
             var importantNotificationsLoading by remember { mutableStateOf(false) }
-            var autoNotificationsChcked by remember { mutableStateOf(false) }
+            var autoNotificationsChcked by remember {
+                mutableStateOf(
+                    FirebaseMessagingTopic(
+                        sharedPrefs,
+                        MessagingTopics.AUTO.value
+                    ).getSharedPrefsMessagingEnabled()
+                )
+            }
             var autoNotificationsLoading by remember { mutableStateOf(false) }
 
             ShintaikanJetpackTheme {
@@ -154,6 +168,10 @@ class NotificationActivity : AppCompatActivity() {
                             if (importantNotificationsChcked) {
                                 unsubscribeFromMessagingTopic(MessagingTopics.IMPORTANT.value, {
                                     importantNotificationsChcked = !importantNotificationsChcked
+                                    FirebaseMessagingTopic(
+                                        sharedPrefs,
+                                        MessagingTopics.IMPORTANT.value
+                                    ).setSharedPrefsMessagingEnabled(importantNotificationsChcked)
                                     importantNotificationsLoading = false
                                 }, {
                                     importantNotificationsLoading = false
@@ -164,6 +182,10 @@ class NotificationActivity : AppCompatActivity() {
                             } else {
                                 subscribeToMessagingTopic(MessagingTopics.IMPORTANT.value, {
                                     importantNotificationsChcked = !importantNotificationsChcked
+                                    FirebaseMessagingTopic(
+                                        sharedPrefs,
+                                        MessagingTopics.IMPORTANT.value
+                                    ).setSharedPrefsMessagingEnabled(importantNotificationsChcked)
                                     importantNotificationsLoading = false
                                 }, {
                                     importantNotificationsLoading = false
@@ -186,6 +208,10 @@ class NotificationActivity : AppCompatActivity() {
                             if (autoNotificationsChcked) {
                                 unsubscribeFromMessagingTopic(MessagingTopics.AUTO.value, {
                                     autoNotificationsChcked = !autoNotificationsChcked
+                                    FirebaseMessagingTopic(
+                                        sharedPrefs,
+                                        MessagingTopics.AUTO.value
+                                    ).setSharedPrefsMessagingEnabled(autoNotificationsChcked)
                                     autoNotificationsLoading = false
                                 }, {
                                     autoNotificationsLoading = false
@@ -196,6 +222,10 @@ class NotificationActivity : AppCompatActivity() {
                             } else {
                                 subscribeToMessagingTopic(MessagingTopics.AUTO.value, {
                                     autoNotificationsChcked = !autoNotificationsChcked
+                                    FirebaseMessagingTopic(
+                                        sharedPrefs,
+                                        MessagingTopics.AUTO.value
+                                    ).setSharedPrefsMessagingEnabled(autoNotificationsChcked)
                                     autoNotificationsLoading = false
                                 }, {
                                     autoNotificationsLoading = false
@@ -267,6 +297,17 @@ class NotificationActivity : AppCompatActivity() {
                 if (task.isSuccessful) onSuccess()
                 else onFailure()
             }
+    }
+
+    private class FirebaseMessagingTopic(val sharedPreferences: SharedPreferences, topic: String) {
+        private val prefKey = "${topic}_notification_setting_enabled"
+        fun setSharedPrefsMessagingEnabled(enabled: Boolean) {
+            sharedPreferences.edit().putBoolean(prefKey, enabled).apply()
+        }
+
+        fun getSharedPrefsMessagingEnabled(): Boolean {
+            return sharedPreferences.getBoolean(prefKey, false)
+        }
     }
 
     private fun unsubscribeFromMessagingTopic(topic: String, onSuccess: () -> Unit, onFailure: () -> Unit) {
