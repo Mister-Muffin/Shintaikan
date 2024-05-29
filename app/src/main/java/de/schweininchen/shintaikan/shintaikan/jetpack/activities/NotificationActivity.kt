@@ -119,7 +119,7 @@ class NotificationActivity : AppCompatActivity() {
 
             var importantNotificationsChcked by remember {
                 mutableStateOf(
-                    FirebaseMessagingTopic(
+                    MessagingSettings(
                         sharedPrefs,
                         MessagingTopics.IMPORTANT.value
                     ).getSharedPrefsMessagingEnabled()
@@ -128,7 +128,7 @@ class NotificationActivity : AppCompatActivity() {
             var importantNotificationsLoading by remember { mutableStateOf(false) }
             var autoNotificationsChcked by remember {
                 mutableStateOf(
-                    FirebaseMessagingTopic(
+                    MessagingSettings(
                         sharedPrefs,
                         MessagingTopics.AUTO.value
                     ).getSharedPrefsMessagingEnabled()
@@ -165,13 +165,14 @@ class NotificationActivity : AppCompatActivity() {
                             loading = importantNotificationsLoading
                         ) {
                             importantNotificationsLoading = true
+                            val settings = MessagingSettings(
+                                sharedPrefs,
+                                MessagingTopics.IMPORTANT.value
+                            )
                             if (importantNotificationsChcked) {
                                 unsubscribeFromMessagingTopic(MessagingTopics.IMPORTANT.value, {
                                     importantNotificationsChcked = !importantNotificationsChcked
-                                    FirebaseMessagingTopic(
-                                        sharedPrefs,
-                                        MessagingTopics.IMPORTANT.value
-                                    ).setSharedPrefsMessagingEnabled(importantNotificationsChcked)
+                                    settings.setSharedPrefsMessagingEnabled(importantNotificationsChcked)
                                     importantNotificationsLoading = false
                                 }, {
                                     importantNotificationsLoading = false
@@ -182,10 +183,7 @@ class NotificationActivity : AppCompatActivity() {
                             } else {
                                 subscribeToMessagingTopic(MessagingTopics.IMPORTANT.value, {
                                     importantNotificationsChcked = !importantNotificationsChcked
-                                    FirebaseMessagingTopic(
-                                        sharedPrefs,
-                                        MessagingTopics.IMPORTANT.value
-                                    ).setSharedPrefsMessagingEnabled(importantNotificationsChcked)
+                                    settings.setSharedPrefsMessagingEnabled(importantNotificationsChcked)
                                     importantNotificationsLoading = false
                                 }, {
                                     importantNotificationsLoading = false
@@ -205,13 +203,14 @@ class NotificationActivity : AppCompatActivity() {
                             loading = autoNotificationsLoading
                         ) {
                             autoNotificationsLoading = true
+                            val settings = MessagingSettings(
+                                sharedPrefs,
+                                MessagingTopics.AUTO.value
+                            )
                             if (autoNotificationsChcked) {
                                 unsubscribeFromMessagingTopic(MessagingTopics.AUTO.value, {
                                     autoNotificationsChcked = !autoNotificationsChcked
-                                    FirebaseMessagingTopic(
-                                        sharedPrefs,
-                                        MessagingTopics.AUTO.value
-                                    ).setSharedPrefsMessagingEnabled(autoNotificationsChcked)
+                                    settings.setSharedPrefsMessagingEnabled(autoNotificationsChcked)
                                     autoNotificationsLoading = false
                                 }, {
                                     autoNotificationsLoading = false
@@ -222,10 +221,7 @@ class NotificationActivity : AppCompatActivity() {
                             } else {
                                 subscribeToMessagingTopic(MessagingTopics.AUTO.value, {
                                     autoNotificationsChcked = !autoNotificationsChcked
-                                    FirebaseMessagingTopic(
-                                        sharedPrefs,
-                                        MessagingTopics.AUTO.value
-                                    ).setSharedPrefsMessagingEnabled(autoNotificationsChcked)
+                                    settings.setSharedPrefsMessagingEnabled(autoNotificationsChcked)
                                     autoNotificationsLoading = false
                                 }, {
                                     autoNotificationsLoading = false
@@ -299,7 +295,7 @@ class NotificationActivity : AppCompatActivity() {
             }
     }
 
-    private class FirebaseMessagingTopic(val sharedPreferences: SharedPreferences, topic: String) {
+    private class MessagingSettings(val sharedPreferences: SharedPreferences, topic: String) {
         private val prefKey = "${topic}_notification_setting_enabled"
         fun setSharedPrefsMessagingEnabled(enabled: Boolean) {
             sharedPreferences.edit().putBoolean(prefKey, enabled).apply()
