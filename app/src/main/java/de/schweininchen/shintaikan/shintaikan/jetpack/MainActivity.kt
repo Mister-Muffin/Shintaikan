@@ -1,5 +1,9 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -80,6 +84,7 @@ class MainActivity : AppCompatActivity() {
 
             val context = applicationContext
             LaunchedEffect(Unit) {
+                createNotificationChannel()
                 val configSettings = remoteConfigSettings {
                     minimumFetchIntervalInSeconds = 3600
                 }
@@ -194,6 +199,23 @@ class MainActivity : AppCompatActivity() {
             else -> {
                 viewModel.lazyState = viewModel.lazyStateStart
             }
+        }
+    }
+
+    private fun createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is not in the Support Library.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "Default"
+            val descriptionText = "Alle Benachrichtigungen, Einstellungen sind in der App"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+                description = descriptionText
+            }
+            // Register the channel with the system.
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
         }
     }
 }
