@@ -121,7 +121,7 @@ class NotificationActivity : AppCompatActivity() {
                 mutableStateOf(
                     MessagingSettings(
                         sharedPrefs,
-                        MessagingTopics.IMPORTANT.value
+                        MessagingTopics.IMPORTANT
                     ).getSharedPrefsMessagingEnabled()
                 )
             }
@@ -130,7 +130,7 @@ class NotificationActivity : AppCompatActivity() {
                 mutableStateOf(
                     MessagingSettings(
                         sharedPrefs,
-                        MessagingTopics.AUTO.value
+                        MessagingTopics.AUTO
                     ).getSharedPrefsMessagingEnabled()
                 )
             }
@@ -165,12 +165,9 @@ class NotificationActivity : AppCompatActivity() {
                             loading = importantNotificationsLoading
                         ) {
                             importantNotificationsLoading = true
-                            val settings = MessagingSettings(
-                                sharedPrefs,
-                                MessagingTopics.IMPORTANT.value
-                            )
+                            val settings = MessagingSettings(sharedPrefs, MessagingTopics.IMPORTANT)
                             if (importantNotificationsChcked) {
-                                unsubscribeFromMessagingTopic(MessagingTopics.IMPORTANT.value, {
+                                unsubscribeFromMessagingTopic(MessagingTopics.IMPORTANT, {
                                     importantNotificationsChcked = !importantNotificationsChcked
                                     settings.setSharedPrefsMessagingEnabled(importantNotificationsChcked)
                                     importantNotificationsLoading = false
@@ -181,7 +178,7 @@ class NotificationActivity : AppCompatActivity() {
                                     Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                                 })
                             } else {
-                                subscribeToMessagingTopic(MessagingTopics.IMPORTANT.value, {
+                                subscribeToMessagingTopic(MessagingTopics.IMPORTANT, {
                                     importantNotificationsChcked = !importantNotificationsChcked
                                     settings.setSharedPrefsMessagingEnabled(importantNotificationsChcked)
                                     importantNotificationsLoading = false
@@ -203,12 +200,9 @@ class NotificationActivity : AppCompatActivity() {
                             loading = autoNotificationsLoading
                         ) {
                             autoNotificationsLoading = true
-                            val settings = MessagingSettings(
-                                sharedPrefs,
-                                MessagingTopics.AUTO.value
-                            )
+                            val settings = MessagingSettings(sharedPrefs, MessagingTopics.AUTO)
                             if (autoNotificationsChcked) {
-                                unsubscribeFromMessagingTopic(MessagingTopics.AUTO.value, {
+                                unsubscribeFromMessagingTopic(MessagingTopics.AUTO, {
                                     autoNotificationsChcked = !autoNotificationsChcked
                                     settings.setSharedPrefsMessagingEnabled(autoNotificationsChcked)
                                     autoNotificationsLoading = false
@@ -219,7 +213,7 @@ class NotificationActivity : AppCompatActivity() {
                                     Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                                 })
                             } else {
-                                subscribeToMessagingTopic(MessagingTopics.AUTO.value, {
+                                subscribeToMessagingTopic(MessagingTopics.AUTO, {
                                     autoNotificationsChcked = !autoNotificationsChcked
                                     settings.setSharedPrefsMessagingEnabled(autoNotificationsChcked)
                                     autoNotificationsLoading = false
@@ -287,16 +281,33 @@ class NotificationActivity : AppCompatActivity() {
         AUTO("auto")
     }
 
-    private fun subscribeToMessagingTopic(topic: String, onSuccess: () -> Unit, onFailure: () -> Unit) {
-        Firebase.messaging.subscribeToTopic(topic)
+    private fun subscribeToMessagingTopic(
+        topic: MessagingTopics,
+        onSuccess: () -> Unit,
+        onFailure: () -> Unit
+    ) {
+        Firebase.messaging.subscribeToTopic(topic.value)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) onSuccess()
                 else onFailure()
             }
     }
 
-    private class MessagingSettings(val sharedPreferences: SharedPreferences, topic: String) {
-        private val prefKey = "${topic}_notification_setting_enabled"
+    private fun unsubscribeFromMessagingTopic(
+        topic: MessagingTopics,
+        onSuccess: () -> Unit,
+        onFailure: () -> Unit
+    ) {
+        Firebase.messaging.unsubscribeFromTopic(topic.value)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) onSuccess()
+                else onFailure()
+            }
+    }
+
+    private class MessagingSettings(val sharedPreferences: SharedPreferences, topic: MessagingTopics) {
+        private val prefKey = "${topic.value}_notification_setting_enabled"
+
         fun setSharedPrefsMessagingEnabled(enabled: Boolean) {
             sharedPreferences.edit().putBoolean(prefKey, enabled).apply()
         }
@@ -304,14 +315,6 @@ class NotificationActivity : AppCompatActivity() {
         fun getSharedPrefsMessagingEnabled(): Boolean {
             return sharedPreferences.getBoolean(prefKey, false)
         }
-    }
-
-    private fun unsubscribeFromMessagingTopic(topic: String, onSuccess: () -> Unit, onFailure: () -> Unit) {
-        Firebase.messaging.unsubscribeFromTopic(topic)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) onSuccess()
-                else onFailure()
-            }
     }
 
     private fun increaseRequestCount(sharedPreferences: SharedPreferences) {
