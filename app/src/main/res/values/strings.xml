@@ -93,4 +93,10 @@
     <string name="push_dialog_text">
         Damit die App Benachrichtigungen senden kann, musst zu zuerst die Berechtigung dafür gewähren
     </string>
+    <string name="push_important">
+        Benachichtigungen, die von uns manuell gesendet werden
+    </string>
+    <string name="push_auto">
+        Benachrichtigungen, die automatisch durch neue Posts auf der Homepage gesendet werden
+    </string>
 </resources>

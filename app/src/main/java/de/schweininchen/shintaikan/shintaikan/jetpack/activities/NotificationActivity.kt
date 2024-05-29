@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.clickable
@@ -31,6 +33,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -55,12 +58,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import com.google.firebase.Firebase
+import com.google.firebase.messaging.messaging
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
 import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.ShintaikanJetpackTheme
 import kotlinx.coroutines.CoroutineScope
@@ -112,7 +118,9 @@ class NotificationActivity : AppCompatActivity() {
             var showPermissionDialog by remember { mutableStateOf(false) }
 
             var importantNotificationsChcked by remember { mutableStateOf(false) }
+            var importantNotificationsLoading by remember { mutableStateOf(false) }
             var autoNotificationsChcked by remember { mutableStateOf(false) }
+            var autoNotificationsLoading by remember { mutableStateOf(false) }
 
             ShintaikanJetpackTheme {
                 Scaffold(
@@ -136,22 +144,66 @@ class NotificationActivity : AppCompatActivity() {
                     ) {
                         MySwitchPreference(
                             title = "Wichtige Benachichtigungen",
-                            description = "Benachichtigungen, die von uns manuell gesendet werden",
+                            description = stringResource(R.string.push_important),
                             Icons.Outlined.NotificationImportant,
                             checked = importantNotificationsChcked,
-                            enabled = permissionStatus.equals(PermissionStatus.GRANTED)
+                            enabled = permissionStatus.equals(PermissionStatus.GRANTED),
+                            loading = importantNotificationsLoading
                         ) {
-                            importantNotificationsChcked = !importantNotificationsChcked
+                            importantNotificationsLoading = true
+                            if (importantNotificationsChcked) {
+                                unsubscribeFromMessagingTopic(MessagingTopics.IMPORTANT.value, {
+                                    importantNotificationsChcked = !importantNotificationsChcked
+                                    importantNotificationsLoading = false
+                                }, {
+                                    importantNotificationsLoading = false
+                                    val msg = "Unsubscribe failed"
+                                    Log.d("NotificationActivity", msg)
+                                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                                })
+                            } else {
+                                subscribeToMessagingTopic(MessagingTopics.IMPORTANT.value, {
+                                    importantNotificationsChcked = !importantNotificationsChcked
+                                    importantNotificationsLoading = false
+                                }, {
+                                    importantNotificationsLoading = false
+                                    val msg = "Subscribe failed"
+                                    Log.d("NotificationActivity", msg)
+                                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                                })
+                            }
                         }
                         HorizontalDivider()
                         MySwitchPreference(
                             title = "Auto Benachrichtigungen",
-                            description = "Benachrichtigungen, die automatisch durch neue Posts auf der Homepage gesendet werden",
+                            description = stringResource(R.string.push_auto),
                             Icons.Outlined.Notifications,
                             checked = autoNotificationsChcked,
-                            enabled = permissionStatus.equals(PermissionStatus.GRANTED)
+                            enabled = permissionStatus.equals(PermissionStatus.GRANTED),
+                            loading = autoNotificationsLoading
                         ) {
-                            autoNotificationsChcked = !autoNotificationsChcked
+                            autoNotificationsLoading = true
+                            if (autoNotificationsChcked) {
+                                unsubscribeFromMessagingTopic(MessagingTopics.AUTO.value, {
+                                    autoNotificationsChcked = !autoNotificationsChcked
+                                    autoNotificationsLoading = false
+                                }, {
+                                    autoNotificationsLoading = false
+                                    val msg = "Unsubscribe failed"
+                                    Log.d("NotificationActivity", msg)
+                                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                                })
+                            } else {
+                                subscribeToMessagingTopic(MessagingTopics.AUTO.value, {
+                                    autoNotificationsChcked = !autoNotificationsChcked
+                                    autoNotificationsLoading = false
+                                }, {
+                                    autoNotificationsLoading = false
+                                    val msg = "Subscribe failed"
+                                    Log.d("NotificationActivity", msg)
+                                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                                })
+                            }
                         }
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                             when (permissionStatus) {
@@ -202,6 +254,27 @@ class NotificationActivity : AppCompatActivity() {
         GRANTED,
         DENIED,
         LOCKED
+    }
+
+    enum class MessagingTopics(val value: String) {
+        IMPORTANT("important"),
+        AUTO("auto")
+    }
+
+    private fun subscribeToMessagingTopic(topic: String, onSuccess: () -> Unit, onFailure: () -> Unit) {
+        Firebase.messaging.subscribeToTopic(topic)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) onSuccess()
+                else onFailure()
+            }
+    }
+
+    private fun unsubscribeFromMessagingTopic(topic: String, onSuccess: () -> Unit, onFailure: () -> Unit) {
+        Firebase.messaging.unsubscribeFromTopic(topic)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) onSuccess()
+                else onFailure()
+            }
     }
 
     private fun increaseRequestCount(sharedPreferences: SharedPreferences) {
@@ -296,13 +369,14 @@ class NotificationActivity : AppCompatActivity() {
         icon: ImageVector,
         checked: Boolean,
         enabled: Boolean = true,
+        loading: Boolean = false,
         onCheckedChange: () -> Unit
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.clickable {
-                if (!enabled) return@clickable
+                if (!enabled || loading) return@clickable
                 onCheckedChange()
             }
         ) {
@@ -335,11 +409,15 @@ class NotificationActivity : AppCompatActivity() {
                 }
             }
             Spacer(modifier = Modifier.weight(1f))
-            Switch(
-                checked = checked,
-                enabled = enabled,
-                onCheckedChange = { onCheckedChange() }
-            )
+            if (loading) {
+                CircularProgressIndicator()
+            } else {
+                Switch(
+                    checked = checked,
+                    enabled = enabled,
+                    onCheckedChange = { onCheckedChange() }
+                )
+            }
         }
     }
 
