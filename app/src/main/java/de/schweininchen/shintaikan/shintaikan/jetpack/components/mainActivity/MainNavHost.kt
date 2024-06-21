@@ -29,7 +29,7 @@ fun MainNavHost(
     wordpressList: List<Array<String>>,
     appBarTitle: MutableState<String>,
     imageList: IntArray,
-    selectedDrawerItem: MutableState<NavigationDrawerRoutes>,
+    selectedDrawerItem: MutableState<NavigationDrawerRoutes>
 ) {
     val refreshScope = rememberCoroutineScope()
     fun refresh(state: PullToRefreshState) {
@@ -46,7 +46,7 @@ fun MainNavHost(
         startDestination = NavigationDrawerRoutes.HOME.toString(),
     ) {
         composable(NavigationDrawerRoutes.HOME.toString()) {
-            Home(wordpressList, viewModel = viewModel)
+            Home(wordpressList, viewModel)
             appBarTitle.value = "Shintaikan"
         }
         composable(NavigationDrawerRoutes.TRPLAN.toString()) {
@@ -92,7 +92,7 @@ fun MainNavHost(
                 }
                 selectedDrawerItem.value = NavigationDrawerRoutes.TRPLAN
             } else {
-                Home(wordpressList, viewModel = viewModel)
+                Home(wordpressList, viewModel)
                 appBarTitle.value = "Shintaikan"
                 navHostController.navigate(NavigationDrawerRoutes.HOME.toString()) {
                     popUpTo(NavigationDrawerRoutes.HOME.toString())

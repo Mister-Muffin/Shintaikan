@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
 
             val remoteConfig: FirebaseRemoteConfig = Firebase.remoteConfig
 
-            val context = applicationContext
+            val context = baseContext
             LaunchedEffect(Unit) {
                 createNotificationChannel()
                 val configSettings = remoteConfigSettings {
@@ -151,7 +151,7 @@ class MainActivity : AppCompatActivity() {
                 Bob(
                     onClick = ::navDrawerClickie,
                     navHostController = navController,
-                    viewModel.wordpressList,
+                    wordpressList = viewModel.wordpressList,
                     scope = scope,
                     selectedDrawerItem = selectedDrawerItem,
                     viewModel = viewModel,
@@ -227,7 +227,8 @@ private fun Bob(
     navHostController: NavHostController,
     wordpressList: List<Array<String>>,
     selectedDrawerItem: MutableState<NavigationDrawerRoutes>,
-    scope: CoroutineScope, viewModel: MyViewModel,
+    scope: CoroutineScope,
+    viewModel: MyViewModel,
     drawerState: DrawerState,
     remoteConfig: FirebaseRemoteConfig
 ) {
@@ -300,7 +301,7 @@ private fun Bob(
                     wordpressList,
                     appBarTitle,
                     imageList,
-                    selectedDrawerItem,
+                    selectedDrawerItem
                 )
             }
         }
