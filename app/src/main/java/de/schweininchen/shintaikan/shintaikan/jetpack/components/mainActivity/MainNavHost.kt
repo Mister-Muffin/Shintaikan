@@ -29,8 +29,7 @@ fun MainNavHost(
     viewModel: MyViewModel,
     wordpressList: List<Array<String>>,
     appBarTitle: MutableState<String>,
-    imageList: IntArray,
-    selectedDrawerItem: MutableState<NavigationDrawerRoutes>
+    imageList: IntArray
 ) {
     val webLinkScheme = "https://"
     val webLinkDomain = "shintaikan.de"

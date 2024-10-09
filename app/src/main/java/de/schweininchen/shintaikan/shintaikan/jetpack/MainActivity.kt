@@ -9,42 +9,16 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.CloudOff
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.ModalDrawerSheet
-import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
-import androidx.compose.material3.rememberTopAppBarState
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.Firebase
@@ -52,9 +26,7 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.remoteConfig
 import com.google.firebase.remoteconfig.remoteConfigSettings
-import de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity.MainNavHost
-import de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity.ShintaikanAppBar
-import de.schweininchen.shintaikan.shintaikan.jetpack.components.navDrawer.DrawerContent
+import de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity.AppContent
 import de.schweininchen.shintaikan.shintaikan.jetpack.components.navDrawer.NavigationDrawerRoutes
 import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.ShintaikanJetpackTheme
 import de.schweininchen.shintaikan.shintaikan.jetpack.util.autoSetConnectionState
@@ -85,27 +57,11 @@ class MainActivity : AppCompatActivity() {
             val context = baseContext
             LaunchedEffect(Unit) {
                 createNotificationChannel()
-                val configSettings = remoteConfigSettings {
-                    minimumFetchIntervalInSeconds = 3600
-                }
-                remoteConfig.setConfigSettingsAsync(configSettings)
-                remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
-                remoteConfig.fetchAndActivate().addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        val updated = task.result
-                        Log.d(TAG, "Config params updated: $updated")
-                        Log.i(TAG, "Config updated.")
-                    } else {
-                        Toast.makeText(context, "Fetch failed", Toast.LENGTH_SHORT).show()
-                    }
-                    val url = remoteConfig.getString("wp_api_url")
-
-                    // this also will auto query wp posts
-                    autoSetConnectionState(context, viewModel, url)
-                }
+                initRemoteConfig(remoteConfig, context, viewModel)
             }
 
             FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+                Log.d(TAG, "Firebase Messaging fetched.")
                 if (!task.isSuccessful) {
                     Log.w(TAG, "Fetching FCM registration token failed", task.exception)
                     return@OnCompleteListener
@@ -133,9 +89,8 @@ class MainActivity : AppCompatActivity() {
                     changeLazyState(route, viewModel)
 
                     scope.launch {
-                        if (!viewModel.lazyState.isScrollInProgress) viewModel.lazyState.scrollToItem(
-                            0
-                        )
+                        if (!viewModel.lazyState.isScrollInProgress)
+                            viewModel.lazyState.scrollToItem(0)
                     }
                     navController.navigate(route.toString()) {
                         popUpTo(NavigationDrawerRoutes.HOME.toString())
@@ -148,7 +103,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             ShintaikanJetpackTheme {
-                Bob(
+                AppContent(
                     onClick = ::navDrawerClickie,
                     navHostController = navController,
                     wordpressList = viewModel.wordpressList,
@@ -159,6 +114,31 @@ class MainActivity : AppCompatActivity() {
                     remoteConfig = remoteConfig
                 )
             }
+        }
+    }
+
+    private fun initRemoteConfig(
+        remoteConfig: FirebaseRemoteConfig,
+        context: Context,
+        viewModel: MyViewModel
+    ) {
+        val configSettings = remoteConfigSettings {
+            minimumFetchIntervalInSeconds = 3600
+        }
+        remoteConfig.setConfigSettingsAsync(configSettings)
+        remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
+        remoteConfig.fetchAndActivate().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val updated = task.result
+                Log.d(TAG, "Config params updated: $updated")
+                Log.i(TAG, "Config updated.")
+            } else {
+                Toast.makeText(context, "Fetch failed", Toast.LENGTH_SHORT).show()
+            }
+            val url = remoteConfig.getString("wp_api_url")
+
+            // this also will auto query wp posts
+            autoSetConnectionState(context, viewModel, url)
         }
     }
 
@@ -215,94 +195,6 @@ class MainActivity : AppCompatActivity() {
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
-        }
-    }
-}
-
-@ExperimentalMaterial3Api
-@Composable
-private fun Bob(
-    onClick: (NavigationDrawerRoutes?, CoroutineScope, DrawerState) -> Unit,
-    navHostController: NavHostController,
-    wordpressList: List<Array<String>>,
-    selectedDrawerItem: MutableState<NavigationDrawerRoutes>,
-    scope: CoroutineScope,
-    viewModel: MyViewModel,
-    drawerState: DrawerState,
-    remoteConfig: FirebaseRemoteConfig
-) {
-    val appBarTitle = remember {
-        mutableStateOf("Shintaikan")
-    }
-
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
-
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            ModalDrawerSheet {
-                DrawerContent(viewModel, selectedDrawerItem.value, remoteConfig) {
-                    onClick(it, scope, drawerState)
-                }
-            }
-        }
-    ) {
-        Scaffold(
-            topBar = {
-                ShintaikanAppBar(
-                    appBarTitle,
-                    scope,
-                    drawerState,
-                    scrollBehavior = scrollBehavior
-                )
-            },
-            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
-        ) { innerPadding ->
-            val firestoreData = viewModel.firestoreData
-            if (firestoreData.isEmpty()) {
-                viewModel.updateFirestoreData()
-            }
-            val imageList: IntArray = intArrayOf(
-                R.drawable.bonsai,
-                R.drawable.sakura,
-                R.drawable.seerose1,
-                R.drawable.bonsai
-            )
-            imageList.shuffle()
-
-            Column(
-                modifier = Modifier
-                    .imePadding()
-                    .padding(innerPadding),
-            ) {
-                if (!viewModel.isConnected.value) Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .height(30.dp)
-                        .background(Color.Red),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center,
-                ) {
-                    Icon(
-                        Icons.Outlined.CloudOff,
-                        tint = Color.White,
-                        contentDescription = "Offline icon",
-                        modifier = Modifier.padding(end = 8.dp)
-                    )
-                    Text(
-                        text = "OFFLINE!",
-                        style = TextStyle(color = Color.White),
-                    )
-                }
-                MainNavHost(
-                    navHostController,
-                    viewModel,
-                    wordpressList,
-                    appBarTitle,
-                    imageList,
-                    selectedDrawerItem
-                )
-            }
         }
     }
 }
