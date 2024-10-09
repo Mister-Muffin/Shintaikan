@@ -1,5 +1,6 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity
 
+import android.content.Intent
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.pulltorefresh.PullToRefreshState
 import androidx.compose.runtime.Composable
@@ -49,7 +50,15 @@ fun MainNavHost(
             Home(wordpressList, viewModel = viewModel)
             appBarTitle.value = "Shintaikan"
         }
-        composable(NavigationDrawerRoutes.TRPLAN.toString()) {
+        composable(
+            NavigationDrawerRoutes.TRPLAN.toString(),
+            deepLinks = listOf(
+                navDeepLink {
+                    uriPattern = "https://shintaikan.de/trainingsplan"
+                    action = Intent.ACTION_VIEW
+                }
+            ),
+        ) {
             Trplan(viewModel)
             appBarTitle.value = "Trainingsplan"
         }
