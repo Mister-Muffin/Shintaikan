@@ -1,9 +1,10 @@
-package de.schweininchen.shintaikan.shintaikan.jetpack
+package de.schweininchen.shintaikan.shintaikan.jetpack.util
 
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.os.Build
+import de.schweininchen.shintaikan.shintaikan.jetpack.MyViewModel
 
 fun autoSetConnectionState(context: Context, viewModel: MyViewModel, url: String) {
 

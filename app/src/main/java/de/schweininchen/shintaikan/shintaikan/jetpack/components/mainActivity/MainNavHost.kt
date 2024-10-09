@@ -1,5 +1,6 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity
 
+import android.content.Intent
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.pulltorefresh.PullToRefreshState
 import androidx.compose.runtime.Composable
@@ -11,7 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import de.schweininchen.shintaikan.shintaikan.jetpack.BuildConfig
 import de.schweininchen.shintaikan.shintaikan.jetpack.MyViewModel
-import de.schweininchen.shintaikan.shintaikan.jetpack.NavigationDrawerRoutes
+import de.schweininchen.shintaikan.shintaikan.jetpack.components.navDrawer.NavigationDrawerRoutes
 import de.schweininchen.shintaikan.shintaikan.jetpack.pages.Anfaenger
 import de.schweininchen.shintaikan.shintaikan.jetpack.pages.ClubWeg
 import de.schweininchen.shintaikan.shintaikan.jetpack.pages.Colors
@@ -28,9 +29,11 @@ fun MainNavHost(
     viewModel: MyViewModel,
     wordpressList: List<Array<String>>,
     appBarTitle: MutableState<String>,
-    imageList: IntArray,
-    selectedDrawerItem: MutableState<NavigationDrawerRoutes>,
+    imageList: IntArray
 ) {
+    val webLinkScheme = "https://"
+    val webLinkDomain = "shintaikan.de"
+
     val refreshScope = rememberCoroutineScope()
     fun refresh(state: PullToRefreshState) {
         refreshScope.launch {
@@ -41,15 +44,25 @@ fun MainNavHost(
             }
         }
     }
+    // Note: As it seems, NavHost automatically routes to a composable via an app shortcut,
+    // if the shortcut ID matches the composable ID without any explicit code.
     NavHost(
         navController = navHostController,
         startDestination = NavigationDrawerRoutes.HOME.toString(),
     ) {
         composable(NavigationDrawerRoutes.HOME.toString()) {
-            Home(wordpressList, viewModel = viewModel)
+            Home(wordpressList, viewModel)
             appBarTitle.value = "Shintaikan"
         }
-        composable(NavigationDrawerRoutes.TRPLAN.toString()) {
+        composable(
+            NavigationDrawerRoutes.TRPLAN.toString(),
+            deepLinks = listOf(
+                navDeepLink {
+                    uriPattern = "$webLinkScheme$webLinkDomain/trainingsplan"
+                    action = Intent.ACTION_VIEW
+                }
+            ),
+        ) {
             Trplan(viewModel)
             appBarTitle.value = "Trainingsplan"
         }
@@ -67,7 +80,12 @@ fun MainNavHost(
             NachSoFe(viewModel)
             appBarTitle.value = "Nach den Sommerferien"
         }
-        composable(NavigationDrawerRoutes.CLUBWEG.toString()) {
+        composable(NavigationDrawerRoutes.CLUBWEG.toString(), deepLinks = listOf(
+            navDeepLink {
+                uriPattern = "$webLinkScheme$webLinkDomain/weg-und-dojo"
+                action = Intent.ACTION_VIEW
+            }
+        )) {
             ClubWeg(viewModel)
             appBarTitle.value = "Der Club"
         }
@@ -78,28 +96,6 @@ fun MainNavHost(
         composable(NavigationDrawerRoutes.COLORS.toString()) {
             Colors(vm = viewModel)
             appBarTitle.value = BuildConfig.BUILD_TYPE
-        }
-        composable(
-            "?page_id={id}",
-            deepLinks = listOf(navDeepLink { uriPattern = "shintaikan.de/?page_id={id}" }) // 18
-        ) { backStackEntry ->
-            if (backStackEntry.arguments?.getString("id") == "18") {
-                Trplan(viewModel)
-                appBarTitle.value = "Trainingsplan"
-                navHostController.navigate(NavigationDrawerRoutes.TRPLAN.toString()) {
-                    popUpTo(NavigationDrawerRoutes.HOME.toString())
-                    launchSingleTop = true
-                }
-                selectedDrawerItem.value = NavigationDrawerRoutes.TRPLAN
-            } else {
-                Home(wordpressList, viewModel = viewModel)
-                appBarTitle.value = "Shintaikan"
-                navHostController.navigate(NavigationDrawerRoutes.HOME.toString()) {
-                    popUpTo(NavigationDrawerRoutes.HOME.toString())
-                    launchSingleTop = true
-                }
-                selectedDrawerItem.value = NavigationDrawerRoutes.HOME
-            }
         }
     }
 }

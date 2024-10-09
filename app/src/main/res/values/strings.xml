@@ -82,4 +82,27 @@
         Studenten/Azubis:                       € 2.-\n
         jedes zusätzliche Familienmitglied:     € 2,-\n
     </string>
+    <string name="push_problem">
+        Push-Benachrichtigungen sind deaktiviert.
+        Um Benachichtigungen empfangen zu können, musst du diese erlauben.
+    </string>
+    <string name="push_locked">
+        Push-Benachrichtigungen sind gesperrt.
+        Wechsel zu den App Einstellungen, um diese zu erlauben.
+    </string>
+    <string name="push_dialog_text">
+        Damit die App Benachrichtigungen senden kann, musst zu zuerst die Berechtigung dafür gewähren
+    </string>
+    <string name="push_important">
+        Benachichtigungen, die von uns manuell gesendet werden
+    </string>
+    <string name="push_auto">
+        Benachrichtigungen, die automatisch durch neue Posts auf der Homepage gesendet werden
+    </string>
+    <string name="home_push_card_content">
+        Die App kann jetzt automatisch Push-Benachichtigungen senden, wenn es etwas neues gibt.
+        Schau dazu im Menü nach den Einstellungen dafür, um sie zu aktivieren.
+    </string>
+    <string name="shortcut_trplan_short">Trainingsplan</string>
+    <string name="shortcut_trplan_long">Trainingsplan öffnen</string>
 </resources>

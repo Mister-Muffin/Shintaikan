@@ -32,8 +32,7 @@ fun FirebaseDataPage(
     document: String,
     imageResource: Int,
     vm: MyViewModel,
-    onRefresh: (s: PullToRefreshState) -> Unit,
-    extraComposable: @Composable () -> Unit = {}
+    onRefresh: (s: PullToRefreshState) -> Unit
 ) {
     val refreshState = rememberPullToRefreshState()
     val firestoreData = vm.firestoreData[document]
@@ -63,8 +62,6 @@ fun FirebaseDataPage(
             } else {
                 Html(text = firestoreData["html"].toString())
             }
-
-            extraComposable()
 
             Image(
                 painter = painterResource(id = imageResource),

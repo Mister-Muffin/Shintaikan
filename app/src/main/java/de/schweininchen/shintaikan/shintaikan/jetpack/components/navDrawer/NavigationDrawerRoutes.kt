@@ -1,4 +1,4 @@
-package de.schweininchen.shintaikan.shintaikan.jetpack
+package de.schweininchen.shintaikan.shintaikan.jetpack.components.navDrawer
 
 enum class NavigationDrawerRoutes {
     HOME,

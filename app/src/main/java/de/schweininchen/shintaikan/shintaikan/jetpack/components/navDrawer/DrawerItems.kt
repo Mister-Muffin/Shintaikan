@@ -15,12 +15,14 @@ import androidx.compose.material.icons.automirrored.outlined.DirectionsWalk
 import androidx.compose.material.icons.automirrored.outlined.ExitToApp
 import androidx.compose.material.icons.outlined.AttachFile
 import androidx.compose.material.icons.outlined.DateRange
+import androidx.compose.material.icons.outlined.EditNotifications
 import androidx.compose.material.icons.outlined.Face
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Mail
 import androidx.compose.material.icons.outlined.Movie
+import androidx.compose.material.icons.outlined.Route
 import androidx.compose.material.icons.outlined.SportsMartialArts
 import androidx.compose.material.icons.outlined.WbSunny
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -40,10 +42,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import de.schweininchen.shintaikan.shintaikan.jetpack.ContactActivity
-import de.schweininchen.shintaikan.shintaikan.jetpack.NavigationDrawerRoutes
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
-import de.schweininchen.shintaikan.shintaikan.jetpack.linkToWebpage
+import de.schweininchen.shintaikan.shintaikan.jetpack.activities.ContactActivity
+import de.schweininchen.shintaikan.shintaikan.jetpack.activities.NotificationActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -95,7 +96,7 @@ fun DrawerItems(
     Column {
         DrawerItem(
             "Start",
-            Icons.Outlined.Info,
+            Icons.Outlined.Home,
             selected = selectedMain,
             route = NavigationDrawerRoutes.HOME,
             onClick = onClickMain,
@@ -123,7 +124,7 @@ fun DrawerItems(
         )
         DrawerItem(
             "Der Club / Wegbeschreibung",
-            Icons.Outlined.Home,
+            Icons.Outlined.Route,
             selected = selectedMain,
             route = NavigationDrawerRoutes.CLUBWEG,
             onClick = onClickMain,
@@ -151,11 +152,11 @@ fun DrawerItems(
                 .padding(vertical = 4.dp),
             color = MaterialTheme.colorScheme.outline
         )
-        DrawerItem(
-            "Kontakt und Feedback",
-            Icons.Outlined.Mail, externalLink = false,
-        ) {
+        DrawerItem("Kontakt und Feedback", Icons.Outlined.Mail) {
             Intent(context, ContactActivity::class.java).also { context.startActivity(it) }
+        }
+        DrawerItem("Benachichtigungen", Icons.Outlined.EditNotifications) {
+            Intent(context, NotificationActivity::class.java).also { context.startActivity(it) }
         }
         DrawerItem(
             "Impressum",

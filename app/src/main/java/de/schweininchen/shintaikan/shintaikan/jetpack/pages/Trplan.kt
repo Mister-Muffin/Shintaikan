@@ -1,7 +1,11 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.pages
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -19,8 +23,6 @@ fun Trplan(vm: MyViewModel) {
     val firestoreData = vm.trplanData.value
     val days = arrayOf("Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag")
     if (firestoreData.isEmpty()) vm.updateTrplan()
-
-    //Log.d("TAG", "TTrplan: ${firestoreData}")
 
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
