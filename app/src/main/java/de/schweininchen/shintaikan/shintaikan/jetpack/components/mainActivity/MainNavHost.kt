@@ -44,6 +44,8 @@ fun MainNavHost(
             }
         }
     }
+    // Note: As it seems, NavHost automatically routes to a composable via an app shortcut,
+    // if the shortcut ID matches the composable ID without any explicit code.
     NavHost(
         navController = navHostController,
         startDestination = NavigationDrawerRoutes.HOME.toString(),

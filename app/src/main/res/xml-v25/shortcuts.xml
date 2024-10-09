@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="trplan"
+        android:enabled="true"
+        android:icon="@drawable/outline_date_range_24"
+        android:shortcutShortLabel="@string/shortcut_trplan_short"
+        android:shortcutLongLabel="@string/shortcut_trplan_long">
+        <!--suppress AndroidDomInspection -->
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="de.schweininchen.shintaikan.shintaikan.new"
+            android:targetClass="de.schweininchen.shintaikan.shintaikan.jetpack.MainActivity" />
+    </shortcut>
+</shortcuts>

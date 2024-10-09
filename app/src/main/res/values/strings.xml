@@ -103,4 +103,6 @@
         Die App kann jetzt automatisch Push-Benachichtigungen senden, wenn es etwas neues gibt.
         Schau dazu im Menü nach den Einstellungen dafür, um sie zu aktivieren.
     </string>
+    <string name="shortcut_trplan_short">Trainingsplan</string>
+    <string name="shortcut_trplan_long">Trainingsplan öffnen</string>
 </resources>
