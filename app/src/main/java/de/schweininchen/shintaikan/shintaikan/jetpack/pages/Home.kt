@@ -108,7 +108,8 @@ fun Home(
         if (showInfoCard && !getPermissionGranted(Manifest.permission.POST_NOTIFICATIONS, context))
             item {
                 Card(
-                    colors = CardDefaults.cardColors().copy(containerColor = Color(0xFFFFC107)),
+                    colors = CardDefaults.cardColors()
+                        .copy(containerColor = MaterialTheme.colorScheme.tertiaryContainer),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Column(
@@ -117,13 +118,15 @@ fun Home(
                             .fillMaxWidth()
                     ) {
                         Text(
-                            color = Color(0xFFD88100),
                             style = MaterialTheme.typography.headlineSmall,
                             modifier = Modifier.align(Alignment.CenterHorizontally),
                             text = "Pushbenachichtigungen"
                         )
                         Box(Modifier.padding(top = 8.dp)) {
-                            Text(stringResource(R.string.home_push_card_content))
+                            Text(
+                                color = MaterialTheme.colorScheme.onTertiaryContainer,
+                                text = stringResource(R.string.home_push_card_content)
+                            )
                         }
                         Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
                             Button(onClick = {
