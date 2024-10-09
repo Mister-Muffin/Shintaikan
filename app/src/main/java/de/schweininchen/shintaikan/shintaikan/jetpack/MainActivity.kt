@@ -160,7 +160,6 @@ class MainActivity : AppCompatActivity() {
                 )
             }
         }
-
     }
 
     private fun changeLazyState(
