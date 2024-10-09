@@ -12,7 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import de.schweininchen.shintaikan.shintaikan.jetpack.BuildConfig
 import de.schweininchen.shintaikan.shintaikan.jetpack.MyViewModel
-import de.schweininchen.shintaikan.shintaikan.jetpack.NavigationDrawerRoutes
+import de.schweininchen.shintaikan.shintaikan.jetpack.components.navDrawer.NavigationDrawerRoutes
 import de.schweininchen.shintaikan.shintaikan.jetpack.pages.Anfaenger
 import de.schweininchen.shintaikan.shintaikan.jetpack.pages.ClubWeg
 import de.schweininchen.shintaikan.shintaikan.jetpack.pages.Colors
@@ -30,7 +30,7 @@ fun MainNavHost(
     wordpressList: List<Array<String>>,
     appBarTitle: MutableState<String>,
     imageList: IntArray,
-    selectedDrawerItem: MutableState<NavigationDrawerRoutes>,
+    selectedDrawerItem: MutableState<NavigationDrawerRoutes>
 ) {
     val webLinkScheme = "https://"
     val webLinkDomain = "shintaikan.de"
@@ -50,7 +50,7 @@ fun MainNavHost(
         startDestination = NavigationDrawerRoutes.HOME.toString(),
     ) {
         composable(NavigationDrawerRoutes.HOME.toString()) {
-            Home(wordpressList, viewModel = viewModel)
+            Home(wordpressList, viewModel)
             appBarTitle.value = "Shintaikan"
         }
         composable(

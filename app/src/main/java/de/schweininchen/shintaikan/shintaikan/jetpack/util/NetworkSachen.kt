@@ -1,4 +1,4 @@
-package de.schweininchen.shintaikan.shintaikan.jetpack
+package de.schweininchen.shintaikan.shintaikan.jetpack.util
 
 import android.content.Context
 import android.util.Log
@@ -9,12 +9,10 @@ import com.android.volley.toolbox.Volley
 import org.json.JSONArray
 
 fun getHttpJson(
-    getURL: String, context: Context, onError: (VolleyError) -> Unit = {
-        Log.e(
-            "NetworkSachen.kt",
-            "getHttpJson: ${it.message}",
-        )
-    }, setText: (JSONArray) -> Unit
+    getURL: String,
+    context: Context,
+    onError: (VolleyError) -> Unit = { volleyError(it) },
+    setText: (JSONArray) -> Unit
 ) {
     val requestQueue = Volley.newRequestQueue(context)
 
@@ -28,5 +26,9 @@ fun getHttpJson(
     )
     jsonObjectRequest.setShouldCache(false)
     requestQueue.add(jsonObjectRequest)
+    Log.d("NetworkSachen.kt", "getHttpJson: $getURL")
+}
 
+private fun volleyError(ve: VolleyError) {
+    Log.e("NetworkSachen.kt", "getHttpJson: ${ve.message}")
 }

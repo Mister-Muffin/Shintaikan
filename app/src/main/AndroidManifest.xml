@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="false"
@@ -36,9 +37,25 @@
                 <data android:pathPrefix="/weg-und-dojo" />
             </intent-filter>
         </activity>
-        <activity android:name=".ContactActivity" />
+        <activity android:name=".activities.ContactActivity" />
+        <activity android:name=".activities.NotificationActivity" />
         <activity android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity" />
         <activity android:name="com.google.android.gms.oss.licenses.OssLicensesActivity" />
+
+        <service
+            android:name=".MessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/baseline_sports_martial_arts_24" />
+        <!--        <meta-data
+                    android:name="com.google.firebase.messaging.default_notification_color"
+                    android:resource="@color/design_default_color_on_primary" />-->
 
         <meta-data
             android:name="firebase_analytics_collection_enabled"

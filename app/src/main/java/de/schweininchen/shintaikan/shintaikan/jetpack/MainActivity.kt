@@ -1,5 +1,9 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -50,7 +54,10 @@ import com.google.firebase.remoteconfig.remoteConfig
 import com.google.firebase.remoteconfig.remoteConfigSettings
 import de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity.MainNavHost
 import de.schweininchen.shintaikan.shintaikan.jetpack.components.mainActivity.ShintaikanAppBar
+import de.schweininchen.shintaikan.shintaikan.jetpack.components.navDrawer.DrawerContent
+import de.schweininchen.shintaikan.shintaikan.jetpack.components.navDrawer.NavigationDrawerRoutes
 import de.schweininchen.shintaikan.shintaikan.jetpack.ui.theme.ShintaikanJetpackTheme
+import de.schweininchen.shintaikan.shintaikan.jetpack.util.autoSetConnectionState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -74,10 +81,10 @@ class MainActivity : AppCompatActivity() {
             }
 
             val remoteConfig: FirebaseRemoteConfig = Firebase.remoteConfig
-            val url = remoteConfig.getString("wp_api_url")
 
-            val context = applicationContext
+            val context = baseContext
             LaunchedEffect(Unit) {
+                createNotificationChannel()
                 val configSettings = remoteConfigSettings {
                     minimumFetchIntervalInSeconds = 3600
                 }
@@ -89,14 +96,11 @@ class MainActivity : AppCompatActivity() {
                         Log.d(TAG, "Config params updated: $updated")
                         Log.i(TAG, "Config updated.")
                     } else {
-                        Toast.makeText(
-                            context,
-                            "Fetch failed",
-                            Toast.LENGTH_SHORT,
-                        ).show()
+                        Toast.makeText(context, "Fetch failed", Toast.LENGTH_SHORT).show()
                     }
-                    if (viewModel.wordpressList.isEmpty()) viewModel.updateHomeData(url, context)
+                    val url = remoteConfig.getString("wp_api_url")
 
+                    // this also will auto query wp posts
                     autoSetConnectionState(context, viewModel, url)
                 }
             }
@@ -147,7 +151,7 @@ class MainActivity : AppCompatActivity() {
                 Bob(
                     onClick = ::navDrawerClickie,
                     navHostController = navController,
-                    viewModel.wordpressList,
+                    wordpressList = viewModel.wordpressList,
                     scope = scope,
                     selectedDrawerItem = selectedDrawerItem,
                     viewModel = viewModel,
@@ -196,6 +200,23 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
+    private fun createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is not in the Support Library.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "Default"
+            val descriptionText = "Alle Benachrichtigungen, Einstellungen sind in der App"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+                description = descriptionText
+            }
+            // Register the channel with the system.
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
 }
 
 @ExperimentalMaterial3Api
@@ -205,7 +226,8 @@ private fun Bob(
     navHostController: NavHostController,
     wordpressList: List<Array<String>>,
     selectedDrawerItem: MutableState<NavigationDrawerRoutes>,
-    scope: CoroutineScope, viewModel: MyViewModel,
+    scope: CoroutineScope,
+    viewModel: MyViewModel,
     drawerState: DrawerState,
     remoteConfig: FirebaseRemoteConfig
 ) {
@@ -278,7 +300,7 @@ private fun Bob(
                     wordpressList,
                     appBarTitle,
                     imageList,
-                    selectedDrawerItem,
+                    selectedDrawerItem
                 )
             }
         }

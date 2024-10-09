@@ -15,6 +15,7 @@ import androidx.compose.material.icons.automirrored.outlined.DirectionsWalk
 import androidx.compose.material.icons.automirrored.outlined.ExitToApp
 import androidx.compose.material.icons.outlined.AttachFile
 import androidx.compose.material.icons.outlined.DateRange
+import androidx.compose.material.icons.outlined.EditNotifications
 import androidx.compose.material.icons.outlined.Face
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Info
@@ -40,10 +41,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import de.schweininchen.shintaikan.shintaikan.jetpack.ContactActivity
-import de.schweininchen.shintaikan.shintaikan.jetpack.NavigationDrawerRoutes
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
-import de.schweininchen.shintaikan.shintaikan.jetpack.linkToWebpage
+import de.schweininchen.shintaikan.shintaikan.jetpack.activities.ContactActivity
+import de.schweininchen.shintaikan.shintaikan.jetpack.activities.NotificationActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -151,11 +151,11 @@ fun DrawerItems(
                 .padding(vertical = 4.dp),
             color = MaterialTheme.colorScheme.outline
         )
-        DrawerItem(
-            "Kontakt und Feedback",
-            Icons.Outlined.Mail, externalLink = false,
-        ) {
+        DrawerItem("Kontakt und Feedback", Icons.Outlined.Mail) {
             Intent(context, ContactActivity::class.java).also { context.startActivity(it) }
+        }
+        DrawerItem("Benachichtigungen", Icons.Outlined.EditNotifications) {
+            Intent(context, NotificationActivity::class.java).also { context.startActivity(it) }
         }
         DrawerItem(
             "Impressum",
