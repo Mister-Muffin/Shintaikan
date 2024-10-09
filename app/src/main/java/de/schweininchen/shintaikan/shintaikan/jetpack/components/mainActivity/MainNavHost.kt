@@ -32,6 +32,9 @@ fun MainNavHost(
     imageList: IntArray,
     selectedDrawerItem: MutableState<NavigationDrawerRoutes>,
 ) {
+    val webLinkScheme = "https://"
+    val webLinkDomain = "shintaikan.de"
+
     val refreshScope = rememberCoroutineScope()
     fun refresh(state: PullToRefreshState) {
         refreshScope.launch {
@@ -54,7 +57,7 @@ fun MainNavHost(
             NavigationDrawerRoutes.TRPLAN.toString(),
             deepLinks = listOf(
                 navDeepLink {
-                    uriPattern = "https://shintaikan.de/trainingsplan"
+                    uriPattern = "$webLinkScheme$webLinkDomain/trainingsplan"
                     action = Intent.ACTION_VIEW
                 }
             ),
@@ -76,7 +79,12 @@ fun MainNavHost(
             NachSoFe(viewModel)
             appBarTitle.value = "Nach den Sommerferien"
         }
-        composable(NavigationDrawerRoutes.CLUBWEG.toString()) {
+        composable(NavigationDrawerRoutes.CLUBWEG.toString(), deepLinks = listOf(
+            navDeepLink {
+                uriPattern = "$webLinkScheme$webLinkDomain/weg-und-dojo"
+                action = Intent.ACTION_VIEW
+            }
+        )) {
             ClubWeg(viewModel)
             appBarTitle.value = "Der Club"
         }
@@ -87,28 +95,6 @@ fun MainNavHost(
         composable(NavigationDrawerRoutes.COLORS.toString()) {
             Colors(vm = viewModel)
             appBarTitle.value = BuildConfig.BUILD_TYPE
-        }
-        composable(
-            "?page_id={id}",
-            deepLinks = listOf(navDeepLink { uriPattern = "shintaikan.de/?page_id={id}" }) // 18
-        ) { backStackEntry ->
-            if (backStackEntry.arguments?.getString("id") == "18") {
-                Trplan(viewModel)
-                appBarTitle.value = "Trainingsplan"
-                navHostController.navigate(NavigationDrawerRoutes.TRPLAN.toString()) {
-                    popUpTo(NavigationDrawerRoutes.HOME.toString())
-                    launchSingleTop = true
-                }
-                selectedDrawerItem.value = NavigationDrawerRoutes.TRPLAN
-            } else {
-                Home(wordpressList, viewModel = viewModel)
-                appBarTitle.value = "Shintaikan"
-                navHostController.navigate(NavigationDrawerRoutes.HOME.toString()) {
-                    popUpTo(NavigationDrawerRoutes.HOME.toString())
-                    launchSingleTop = true
-                }
-                selectedDrawerItem.value = NavigationDrawerRoutes.HOME
-            }
         }
     }
 }

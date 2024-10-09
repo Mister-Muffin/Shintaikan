@@ -33,6 +33,7 @@
                 <data android:scheme="https" />
                 <data android:host="shintaikan.de" />
                 <data android:pathPrefix="/trainingsplan" />
+                <data android:pathPrefix="/weg-und-dojo" />
             </intent-filter>
         </activity>
         <activity android:name=".ContactActivity" />
