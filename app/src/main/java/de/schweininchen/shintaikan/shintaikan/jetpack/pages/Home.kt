@@ -74,7 +74,9 @@ fun Home(
 
     val pushCardKey = "discard_card_push_key"
     var showInfoCard by remember {
-        mutableStateOf(sharedPreferences.getBoolean(pushCardKey, true))
+        // TODO: Enable when push notifications working in Wordpress
+        // mutableStateOf(sharedPreferences.getBoolean(pushCardKey, true))
+        mutableStateOf(false)
     }
 
     LazyColumn(
