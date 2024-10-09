@@ -22,6 +22,7 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Mail
 import androidx.compose.material.icons.outlined.Movie
+import androidx.compose.material.icons.outlined.Route
 import androidx.compose.material.icons.outlined.SportsMartialArts
 import androidx.compose.material.icons.outlined.WbSunny
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -95,7 +96,7 @@ fun DrawerItems(
     Column {
         DrawerItem(
             "Start",
-            Icons.Outlined.Info,
+            Icons.Outlined.Home,
             selected = selectedMain,
             route = NavigationDrawerRoutes.HOME,
             onClick = onClickMain,
@@ -123,7 +124,7 @@ fun DrawerItems(
         )
         DrawerItem(
             "Der Club / Wegbeschreibung",
-            Icons.Outlined.Home,
+            Icons.Outlined.Route,
             selected = selectedMain,
             route = NavigationDrawerRoutes.CLUBWEG,
             onClick = onClickMain,
