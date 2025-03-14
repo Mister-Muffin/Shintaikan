@@ -21,7 +21,7 @@ import de.schweininchen.shintaikan.shintaikan.jetpack.R
 @Composable
 fun Trplan(vm: MyViewModel) {
     val firestoreData = vm.trplanData.value
-    val days = arrayOf("Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag")
+    val days = arrayOf("Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag")
     if (firestoreData.isEmpty()) vm.updateTrplan()
 
     LazyColumn(
