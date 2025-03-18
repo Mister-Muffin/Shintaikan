@@ -5,7 +5,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.pulltorefresh.PullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -22,7 +26,6 @@ import de.schweininchen.shintaikan.shintaikan.jetpack.pages.NachSoFe
 import de.schweininchen.shintaikan.shintaikan.jetpack.pages.Trplan
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainNavHost(
     navHostController: NavHostController,
@@ -35,11 +38,11 @@ fun MainNavHost(
     val webLinkDomain = "shintaikan.de"
 
     val refreshScope = rememberCoroutineScope()
-    fun refresh(state: PullToRefreshState) {
+    fun refresh(endRefresh: () -> Unit) {
         refreshScope.launch {
             viewModel.updateFirestoreData {
                 refreshScope.launch {
-                    state.endRefresh()
+                    endRefresh()
                 }
             }
         }
@@ -80,12 +83,13 @@ fun MainNavHost(
             NachSoFe(viewModel)
             appBarTitle.value = "Nach den Sommerferien"
         }
-        composable(NavigationDrawerRoutes.CLUBWEG.toString(), deepLinks = listOf(
-            navDeepLink {
-                uriPattern = "$webLinkScheme$webLinkDomain/weg-und-dojo"
-                action = Intent.ACTION_VIEW
-            }
-        )) {
+        composable(
+            NavigationDrawerRoutes.CLUBWEG.toString(), deepLinks = listOf(
+                navDeepLink {
+                    uriPattern = "$webLinkScheme$webLinkDomain/weg-und-dojo"
+                    action = Intent.ACTION_VIEW
+                }
+            )) {
             ClubWeg(viewModel)
             appBarTitle.value = "Der Club"
         }

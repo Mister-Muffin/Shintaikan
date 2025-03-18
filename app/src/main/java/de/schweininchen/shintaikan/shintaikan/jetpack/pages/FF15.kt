@@ -12,11 +12,15 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.PullToRefreshState
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -32,14 +36,18 @@ fun FirebaseDataPage(
     document: String,
     imageResource: Int,
     vm: MyViewModel,
-    onRefresh: (s: PullToRefreshState) -> Unit
+    onRefresh: (endRefresh: () -> Unit) -> Unit
 ) {
     val refreshState = rememberPullToRefreshState()
     val firestoreData = vm.firestoreData[document]
 
-    if (refreshState.isRefreshing) onRefresh(refreshState)
+    var isRefreshing by remember { mutableStateOf(false) }
 
-    Box(Modifier.nestedScroll(refreshState.nestedScrollConnection)) {
+    PullToRefreshBox(
+        state = refreshState,
+        isRefreshing = isRefreshing,
+        onRefresh = { onRefresh { isRefreshing = false } }
+    ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
@@ -72,15 +80,5 @@ fun FirebaseDataPage(
             )
 
         }
-        PullToRefreshContainer(
-            modifier = Modifier.align(Alignment.TopCenter),
-            state = refreshState,
-            indicator = {
-                Indicator(
-                    state = refreshState,
-                )
-            }
-
-        )
     }
 }
