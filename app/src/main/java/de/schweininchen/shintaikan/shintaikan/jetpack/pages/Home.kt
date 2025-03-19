@@ -3,8 +3,6 @@ package de.schweininchen.shintaikan.shintaikan.jetpack.pages
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -51,10 +49,9 @@ import androidx.core.text.HtmlCompat
 import de.schweininchen.shintaikan.shintaikan.jetpack.MyViewModel
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
 import de.schweininchen.shintaikan.shintaikan.jetpack.activities.NotificationActivity
+import de.schweininchen.shintaikan.shintaikan.jetpack.components.home.Today
 import de.schweininchen.shintaikan.shintaikan.jetpack.util.getPermissionGranted
 import de.schweininchen.shintaikan.shintaikan.jetpack.util.toColorMatrix
-import java.time.LocalDate
-import java.time.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -84,8 +81,7 @@ fun Home(
         horizontalAlignment = Alignment.CenterHorizontally,
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         state = viewModel.lazyStateStart
     ) {
         item {
@@ -106,6 +102,10 @@ fun Home(
                 contentDescription = "Shintaikan logo",
                 Modifier.size(200.dp)
             )
+        }
+
+        item {
+            Today(viewModel)
         }
 
         if (showInfoCard && !getPermissionGranted(Manifest.permission.POST_NOTIFICATIONS, context))
@@ -247,62 +247,4 @@ fun Html(text: String) {
         HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY).toString().trim(),
         style = MaterialTheme.typography.bodyMedium
     )
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-private fun Today(viewModel: MyViewModel) {
-    val firestoreData = viewModel.trplanData.value
-
-    val target: LocalTime = LocalTime.now()
-    val targetInZone = (target.isBefore(LocalTime.parse("20:00:00"))
-            &&
-            target.isAfter(LocalTime.parse("06:00:00")))
-
-    val dayWord = LocalDate.now().dayOfWeek.getDisplayName(
-        java.time.format.TextStyle.FULL,
-        java.util.Locale.getDefault()
-    )
-    val day = LocalDate.now().dayOfWeek.value
-
-    if (!targetInZone || day > 5) { // return if in between times
-        return
-    }
-
-
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(16.dp)) {
-        Text(
-            text = "Heute, $dayWord",
-            style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-
-        for (j in firestoreData.keys) {
-            //Log.d("TAG", "Today: $j")
-            if (!firestoreData[j].isNullOrEmpty() &&
-                firestoreData[j]?.get("start")
-                    .toString().isNotEmpty() &&
-                firestoreData[j]?.get("key").toString()
-                    .startsWith(day.toString())
-            ) {
-                if (firestoreData[j]?.get("group")
-                        .toString() == "Benutzerdefiniert"
-                ) {
-                    Text(
-                        text = "${firestoreData[j]?.get("start").toString()} - " +
-                                "${firestoreData[j]?.get("end").toString()}: " +
-                                firestoreData[j]?.get("customText").toString(),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                } else {
-                    Text(
-                        text = "${firestoreData[j]?.get("start").toString()} - " +
-                                "${firestoreData[j]?.get("end").toString()}: " +
-                                firestoreData[j]?.get("group").toString(),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-            }
-        }
-    }
 }
