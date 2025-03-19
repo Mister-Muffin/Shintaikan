@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.clickable
@@ -469,7 +470,7 @@ class NotificationActivity : AppCompatActivity() {
         scrollBehavior: TopAppBarScrollBehavior,
     ) {
         Box {
-            val activity = LocalContext.current as Activity
+            val activity = LocalActivity.current
             CenterAlignedTopAppBar(
                 modifier = Modifier.statusBarsPadding(),
                 scrollBehavior = scrollBehavior,
@@ -478,7 +479,7 @@ class NotificationActivity : AppCompatActivity() {
                 },
                 navigationIcon = {
                     IconButton(onClick = {
-                        scope.launch { activity.finish() }
+                        scope.launch { activity?.finish() }
                     }
                     ) {
                         Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = null)
