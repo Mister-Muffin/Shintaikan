@@ -51,7 +51,7 @@ fun Today(firestoreData: Map<String, MutableMap<String, Any>>, calendar: java.ut
         ) {
             Text(
                 text = "Heute, $dayWord",
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.headlineSmall,
                 modifier = Modifier
                     .padding(bottom = 8.dp)
                     .align(Alignment.CenterHorizontally),
