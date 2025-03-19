@@ -2,9 +2,11 @@ package de.schweininchen.shintaikan.shintaikan.jetpack.pages
 
 import android.Manifest
 import android.app.Activity
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
-import android.os.Build
-import androidx.annotation.RequiresApi
+import android.content.IntentFilter
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -25,11 +27,13 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,14 +50,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.edit
 import androidx.core.text.HtmlCompat
 import de.schweininchen.shintaikan.shintaikan.jetpack.MyViewModel
 import de.schweininchen.shintaikan.shintaikan.jetpack.R
 import de.schweininchen.shintaikan.shintaikan.jetpack.activities.NotificationActivity
+import de.schweininchen.shintaikan.shintaikan.jetpack.components.home.Today
 import de.schweininchen.shintaikan.shintaikan.jetpack.util.getPermissionGranted
 import de.schweininchen.shintaikan.shintaikan.jetpack.util.toColorMatrix
-import java.time.LocalDate
-import java.time.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -79,12 +83,33 @@ fun Home(
         mutableStateOf(false)
     }
 
+    var currentTime by remember { mutableStateOf(java.util.Calendar.getInstance()) }
+
+    Log.d("currentTime", currentTime.toString())
+
+    DisposableEffect(context) {
+        val receiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                // Update the current time when a time tick or time change occurs
+                currentTime = java.util.Calendar.getInstance()
+            }
+        }
+        // Register for time tick and time change events
+        val filter = IntentFilter().apply {
+            addAction(Intent.ACTION_TIME_TICK)
+            addAction(Intent.ACTION_TIME_CHANGED)
+        }
+        context.registerReceiver(receiver, filter)
+        onDispose {
+            context.unregisterReceiver(receiver)
+        }
+    }
+
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         state = viewModel.lazyStateStart
     ) {
         item {
@@ -105,6 +130,10 @@ fun Home(
                 contentDescription = "Shintaikan logo",
                 Modifier.size(200.dp)
             )
+        }
+
+        item {
+            Today(viewModel.trplanData.value, currentTime)
         }
 
         if (showInfoCard && !getPermissionGranted(Manifest.permission.POST_NOTIFICATIONS, context))
@@ -141,7 +170,7 @@ fun Home(
                             }
                             Spacer(modifier = Modifier.width(8.dp))
                             OutlinedButton(onClick = {
-                                sharedPreferences.edit().putBoolean(pushCardKey, false).apply()
+                                sharedPreferences.edit() { putBoolean(pushCardKey, false) }
                                 showInfoCard = false
                             }) {
                                 Text(text = "Verwerfen")
@@ -171,6 +200,16 @@ fun Home(
                 )
             }
         } else {
+            item {
+                HorizontalDivider()
+            }
+            item {
+                Text(
+                    text = "Aktuelles",
+                    style = MaterialTheme.typography.headlineMedium,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
             items(postsList) { post ->
                 Card(modifier = Modifier.fillMaxWidth()) {
                     Column(
@@ -246,62 +285,4 @@ fun Html(text: String) {
         HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY).toString().trim(),
         style = MaterialTheme.typography.bodyMedium
     )
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-private fun Today(viewModel: MyViewModel) {
-    val firestoreData = viewModel.trplanData.value
-
-    val target: LocalTime = LocalTime.now()
-    val targetInZone = (target.isBefore(LocalTime.parse("20:00:00"))
-            &&
-            target.isAfter(LocalTime.parse("06:00:00")))
-
-    val dayWord = LocalDate.now().dayOfWeek.getDisplayName(
-        java.time.format.TextStyle.FULL,
-        java.util.Locale.getDefault()
-    )
-    val day = LocalDate.now().dayOfWeek.value
-
-    if (!targetInZone || day > 5) { // return if in between times
-        return
-    }
-
-
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(16.dp)) {
-        Text(
-            text = "Heute, $dayWord",
-            style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-
-        for (j in firestoreData.keys) {
-            //Log.d("TAG", "Today: $j")
-            if (!firestoreData[j].isNullOrEmpty() &&
-                firestoreData[j]?.get("start")
-                    .toString().isNotEmpty() &&
-                firestoreData[j]?.get("key").toString()
-                    .startsWith(day.toString())
-            ) {
-                if (firestoreData[j]?.get("group")
-                        .toString() == "Benutzerdefiniert"
-                ) {
-                    Text(
-                        text = "${firestoreData[j]?.get("start").toString()} - " +
-                                "${firestoreData[j]?.get("end").toString()}: " +
-                                firestoreData[j]?.get("customText").toString(),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                } else {
-                    Text(
-                        text = "${firestoreData[j]?.get("start").toString()} - " +
-                                "${firestoreData[j]?.get("end").toString()}: " +
-                                firestoreData[j]?.get("group").toString(),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-            }
-        }
-    }
 }

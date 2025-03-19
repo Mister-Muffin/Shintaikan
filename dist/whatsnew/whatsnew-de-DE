@@ -1,8 +1,14 @@
+4.6.0 (NEU)
+* Tagesübersicht für den Studenplan des aktuellen Tages hinzugefügt
+
+- Framework updates
+
 4.5.1 (NEU)
 * Samstag und Sonntag zum Stundenplan hinzugefügt
 
 4.5.0
 * Option zum Einstellen von Benachrichtigungen hinzugefügt
 * App Shortcut hinzugefügt
+
 - Deep Link Integration verbessert
 - Kleinere Fehlerbehebungen

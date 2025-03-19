@@ -10,18 +10,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
-import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import de.schweininchen.shintaikan.shintaikan.jetpack.MyViewModel
 import kotlin.random.Random
@@ -33,15 +34,18 @@ fun Colors(vm: MyViewModel) {
     val colors = remember {
         mutableStateListOf<IntArray>()
     }
-
-    if (refreshState.isRefreshing) {
-        refreshColors(colors)
-        refreshState.endRefresh()
-    }
+    var isRefreshing by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = true) { refreshColors(colors = colors) }
 
-    Box(Modifier.nestedScroll(refreshState.nestedScrollConnection)) {
+    PullToRefreshBox(
+        state = refreshState,
+        isRefreshing = isRefreshing,
+        onRefresh = {
+            refreshColors(colors)
+            isRefreshing = false
+        }
+    ) {
         LazyColumn(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth(),
@@ -67,16 +71,6 @@ fun Colors(vm: MyViewModel) {
                 )
             }
         }
-        PullToRefreshContainer(
-            modifier = Modifier.align(Alignment.TopCenter),
-            state = refreshState,
-            indicator = {
-                Indicator(
-                    state = refreshState,
-                )
-            }
-
-        )
     }
 }
 

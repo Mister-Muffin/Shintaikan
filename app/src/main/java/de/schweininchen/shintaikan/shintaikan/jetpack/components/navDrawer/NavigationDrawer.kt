@@ -4,7 +4,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -44,7 +43,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.content.ContextCompat.startActivity
+import androidx.core.net.toUri
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import de.schweininchen.shintaikan.shintaikan.jetpack.BuildConfig
@@ -230,6 +229,6 @@ fun AboutAlertDialog(onDissmiss: () -> Unit) {
 
 fun linkToWebpage(uri: String, context: Context) {
     val openURL = Intent(Intent.ACTION_VIEW)
-    openURL.data = Uri.parse(uri)
-    startActivity(context, openURL, null)
+    openURL.data = uri.toUri()
+    context.startActivity(openURL, null)
 }
