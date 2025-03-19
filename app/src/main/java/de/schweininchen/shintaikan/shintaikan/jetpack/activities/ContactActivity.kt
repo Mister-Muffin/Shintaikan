@@ -1,12 +1,12 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.activities
 
-import android.app.Activity
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.os.Build
 import android.os.Bundle
 import android.util.Patterns
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
@@ -274,7 +274,7 @@ class ContactActivity : AppCompatActivity() {
         send: () -> Unit,
     ) {
         Box {
-            val activity = LocalContext.current as Activity
+            val activity = LocalActivity.current
             CenterAlignedTopAppBar(
                 modifier = Modifier.statusBarsPadding(),
                 scrollBehavior = scrollBehavior,
@@ -284,7 +284,7 @@ class ContactActivity : AppCompatActivity() {
                 navigationIcon = {
                     IconButton(onClick = {
                         scope.launch {
-                            activity.finish()
+                            activity?.finish()
                         }
                     }
                     ) {
