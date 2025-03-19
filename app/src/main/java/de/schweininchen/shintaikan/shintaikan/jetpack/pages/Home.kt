@@ -2,7 +2,11 @@ package de.schweininchen.shintaikan.shintaikan.jetpack.pages
 
 import android.Manifest
 import android.app.Activity
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +32,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -77,6 +82,28 @@ fun Home(
         mutableStateOf(false)
     }
 
+    var currentTime by remember { mutableStateOf(java.util.Calendar.getInstance()) }
+
+    Log.d("currentTime", currentTime.toString())
+
+    DisposableEffect(context) {
+        val receiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                // Update the current time when a time tick or time change occurs
+                currentTime = java.util.Calendar.getInstance()
+            }
+        }
+        // Register for time tick and time change events
+        val filter = IntentFilter().apply {
+            addAction(Intent.ACTION_TIME_TICK)
+            addAction(Intent.ACTION_TIME_CHANGED)
+        }
+        context.registerReceiver(receiver, filter)
+        onDispose {
+            context.unregisterReceiver(receiver)
+        }
+    }
+
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
         contentPadding = PaddingValues(16.dp),
@@ -105,7 +132,7 @@ fun Home(
         }
 
         item {
-            Today(viewModel)
+            Today(viewModel.trplanData.value, currentTime)
         }
 
         if (showInfoCard && !getPermissionGranted(Manifest.permission.POST_NOTIFICATIONS, context))
