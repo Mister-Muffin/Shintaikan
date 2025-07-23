@@ -1,8 +1,8 @@
 package de.schweininchen.shintaikan.shintaikan.jetpack.util
 
 import android.util.Log
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
 
 private const val TAG = "Firestore.kt"
 
