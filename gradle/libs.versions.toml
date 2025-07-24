@@ -2,7 +2,7 @@
 compose-bom-version = "2025.07.00"
 firebase-bom-version = "34.0.0"
 google-services-version = "4.4.3"
-gradle = "8.9.1"
+gradle = "8.11.1"
 kotlin = "2.0.0"
 android-gradle = "8.4.1"
 google-services = "4.4.1"
