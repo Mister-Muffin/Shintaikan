@@ -8,12 +8,12 @@ plugins {
 }
 
 android {
-    compileSdk 35
+    compileSdk 36
 
     defaultConfig {
         applicationId "de.schweininchen.shintaikan.shintaikan.new"
         minSdk 23
-        targetSdk 35
+        targetSdk 36
         versionCode 48
         versionName "4.6.0"
 
