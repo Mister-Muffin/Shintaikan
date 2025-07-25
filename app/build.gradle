@@ -78,7 +78,5 @@ dependencies {
     implementation libs.volley
     implementation libs.oss.licenses
 
-    implementation libs.material
-
     implementation libs.accompanist.permissions
 }
