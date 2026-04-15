@@ -1,0 +1,49 @@
+[versions]
+gradle = "9.1.1"
+kotlin = "2.3.20"
+google-services = "4.4.4"
+oss-licenses-plugin = "0.11.0"
+firebase-perf-plugin = "2.0.2"
+
+compose-bom = "2026.03.01"
+activity-compose = "1.13.0"
+appcompat = "1.7.1"
+core-ktx = "1.18.0"
+navigation-compose = "2.9.7"
+lifecycle-runtime-ktx = "2.10.0"
+firebase-bom = "34.12.0"
+volley = "1.2.1"
+oss-licenses = "17.5.0"
+accompanist-permissions = "0.37.3"
+
+[libraries]
+activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
+appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-bom" }
+core-ktx = { module = "androidx.core:core-ktx", version.ref = "core-ktx" }
+
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
+firebase-config = { module = "com.google.firebase:firebase-config" }
+firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
+firebase-functions = { module = "com.google.firebase:firebase-functions" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
+firebase-perf = { module = "com.google.firebase:firebase-perf" }
+gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
+material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
+material3 = { module = "androidx.compose.material3:material3" }
+navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation-compose" }
+lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle-runtime-ktx" }
+
+ui = { module = "androidx.compose.ui:ui" }
+ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+volley = { module = "com.android.volley:volley", version.ref = "volley" }
+oss-licenses = { module = "com.google.android.gms:play-services-oss-licenses", version.ref = "oss-licenses" }
+
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist-permissions" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "gradle" }
+google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
+oss-licenses = { id = "com.google.android.gms.oss-licenses-plugin", version.ref = "oss-licenses-plugin" }
+firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "firebase-perf-plugin" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

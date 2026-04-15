@@ -1,20 +1,20 @@
 plugins {
-    id 'com.android.application'
-    id 'kotlin-android'
-    id 'com.google.gms.google-services'
-    id 'com.google.android.gms.oss-licenses-plugin'
-    id 'com.google.firebase.firebase-perf'
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.oss.licenses)
+    alias(libs.plugins.firebase.perf)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
-    compileSdk 35
+    compileSdk 36
 
     defaultConfig {
         applicationId "de.schweininchen.shintaikan.shintaikan.new"
-        minSdk 23
-        targetSdk 35
-        versionCode 48
-        versionName "4.6.0"
+        minSdk 24
+        targetSdk 36
+        versionCode 49
+        versionName "4.6.1"
 
         //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -44,9 +44,6 @@ android {
         compose true
         buildConfig true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion compose_version
-    }
     packagingOptions {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
@@ -56,32 +53,29 @@ android {
 }
 
 dependencies {
-    Dependency composeBom = platform('androidx.compose:compose-bom:2025.03.00')
-    implementation composeBom
+    implementation(platform(libs.compose.bom))
 
-    implementation 'androidx.activity:activity-compose:1.10.1'
-    implementation 'androidx.appcompat:appcompat:1.7.0'
-    implementation 'androidx.core:core-ktx:1.15.0'
+    implementation libs.activity.compose
+    implementation libs.appcompat
+    implementation libs.core.ktx
 
-    implementation "androidx.compose.ui:ui"
-    implementation "androidx.compose.ui:ui-tooling-preview"
-    implementation "androidx.compose.material:material-icons-extended"
-    implementation "androidx.compose.material3:material3"
+    implementation libs.ui
+    implementation libs.ui.tooling.preview
+    implementation libs.material.icons.extended
+    implementation libs.material3
 
-    implementation "androidx.navigation:navigation-compose:2.8.9"
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.7'
+    implementation libs.navigation.compose
+    implementation libs.lifecycle.runtime.ktx
 
-    implementation platform('com.google.firebase:firebase-bom:33.10.0')
-    implementation "com.google.firebase:firebase-firestore-ktx"
-    implementation "com.google.firebase:firebase-messaging-ktx"
-    implementation 'com.google.firebase:firebase-functions-ktx'
-    implementation("com.google.firebase:firebase-config")
-    implementation("com.google.firebase:firebase-perf")
+    implementation platform(libs.firebase.bom)
+    implementation libs.firebase.firestore
+    implementation libs.firebase.messaging
+    implementation libs.firebase.functions
+    implementation libs.firebase.config
+    implementation libs.firebase.perf
 
-    implementation "com.android.volley:volley:1.2.1"
-    implementation 'com.google.android.gms:play-services-oss-licenses:17.1.0'
+    implementation libs.volley
+    implementation libs.oss.licenses
 
-    implementation 'com.google.android.material:material:1.12.0'
-
-    implementation "com.google.accompanist:accompanist-permissions:0.32.0"
+    implementation libs.accompanist.permissions
 }
