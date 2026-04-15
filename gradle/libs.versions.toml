@@ -43,7 +43,6 @@ accompanist-permissions = { module = "com.google.accompanist:accompanist-permiss
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "gradle" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 oss-licenses = { id = "com.google.android.gms.oss-licenses-plugin", version.ref = "oss-licenses-plugin" }
 firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "firebase-perf-plugin" }
