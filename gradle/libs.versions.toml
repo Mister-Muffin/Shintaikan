@@ -1,5 +1,5 @@
 [versions]
-gradle = "8.11.1"
+gradle = "8.13.2"
 kotlin = "2.2.0"
 google-services = "4.4.3"
 oss-licenses-plugin = "0.10.6"
