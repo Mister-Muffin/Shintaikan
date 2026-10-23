@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalLocale
 import androidx.compose.ui.unit.dp
 import java.time.LocalTime
 
@@ -30,7 +31,7 @@ fun Today(firestoreData: Map<String, MutableMap<String, Any>>, calendar: java.ut
 
     val isInTimeZone = hour in 6..22
 
-    val sdf = java.text.SimpleDateFormat("EEEE", java.util.Locale.getDefault())
+    val sdf = java.text.SimpleDateFormat("EEEE", LocalLocale.current.platformLocale)
     val dayWord = sdf.format(calendar.time)
 
     // Convert Calendar.DAY_OF_WEEK (Sunday=1, Monday=2, ..., Saturday=7) to ISO standard (Monday=1, ..., Sunday=7)
